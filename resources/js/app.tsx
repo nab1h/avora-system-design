@@ -4,10 +4,10 @@ import './bootstrap';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-import { LanguageProvider } from './avora/providers/LanguageProvider';
-import { ThemeProvider } from './avora/providers/ThemeProvider';
+import { LanguageProvider } from './avora-dash/providers/LanguageProvider';
+import { ThemeProvider } from './avora-dash/providers/ThemeProvider';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = document.documentElement.dataset.appName || 'Laravel';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

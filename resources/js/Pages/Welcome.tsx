@@ -1,4 +1,4 @@
-import { Button } from '@/avora/components/Button';
+import { Button } from '@/avora-dash/components/Button';
 import {
     Card,
     CardContent,
@@ -9,10 +9,10 @@ import {
     CardMeta,
     CardPrice,
     CardTitle,
-} from '@/avora/components/Card';
-import { Container } from '@/avora/components/Container';
-import { Grid, GridItem } from '@/avora/components/Grid';
-import { LanguageButton } from '@/avora/components/LanguageButton';
+} from '@/avora-dash/components/Card';
+import { Container } from '@/avora-dash/components/Container';
+import { Grid, GridItem } from '@/avora-dash/components/Grid';
+import { LanguageButton } from '@/avora-dash/components/LanguageButton';
 import {
     Navbar,
     NavbarActions,
@@ -25,22 +25,24 @@ import {
     NavbarMobileMenu,
     NavbarOverlay,
     NavbarToggle,
-} from '@/avora/components/Navbar';
-import { useLanguage } from '@/avora/providers/LanguageProvider';
-import ModeButton from '@/avora/providers/ModeButton';
-import { useTheme } from '@/avora/providers/ThemeProvider';
+} from '@/avora-dash/components/Navbar';
+import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
+import ModeButton from '@/avora-dash/providers/ModeButton';
+import { useTheme } from '@/avora-dash/providers/ThemeProvider';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
+import { useAppName } from '@/avora-dash/hooks/useAppName';
 
 export default function Welcome({}: PageProps) {
     const { colors } = useTheme();
     const { translate } = useLanguage();
+    const appName = useAppName();
 
     const products = [
         {
             image: '/images/avora-card-blue.svg',
             category: translate({ ar: 'تصميم واجهات', en: 'UI Design' }),
-            title: translate({ ar: 'نظام أفورا', en: 'Avora System' }),
+            title: translate({ ar: `نظام ${appName}`, en: `${appName} System` }),
             description: translate({
                 ar: 'مكونات مرنة لبناء واجهات سريعة ومتناسقة.',
                 en: 'Flexible components for fast and consistent interfaces.',
@@ -73,8 +75,8 @@ export default function Welcome({}: PageProps) {
         <>
             <Head
                 title={translate({
-                    ar: 'معرض نظام أفورا',
-                    en: 'Avora System Showcase',
+                    ar: `معرض نظام ${appName}`,
+                    en: `${appName} System Showcase`,
                 })}
             />
 
@@ -91,8 +93,8 @@ export default function Welcome({}: PageProps) {
                             href="#"
                             src="/images/avora-logo.svg"
                             alt={translate({
-                                ar: 'شعار أفورا',
-                                en: 'Avora logo',
+                                ar: `شعار ${appName}`,
+                                en: `${appName} logo`,
                             })}
                             imageClassName="h-10"
                         />

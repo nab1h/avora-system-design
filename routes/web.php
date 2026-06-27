@@ -1,22 +1,102 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\PermissionPageController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserPageController;
+use App\Http\Controllers\Admin\WebsiteSettingController;
+use App\Http\Controllers\Admin\WebsiteSettingPageController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\SiteManifestController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-});
+Route::get('/', HomeController::class);
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/site.webmanifest', SiteManifestController::class)->name('site.webmanifest');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+// صلاحية users.manage: عرض وإضافة وتعديل وحذف المستخدمين.
+Route::get('/dashboard/users', UserPageController::class)
+    ->middleware(['auth', 'verified', 'permission:users.manage'])
+    ->name('dashboard.users');
+
+Route::post('/dashboard/users', [UserController::class, 'store'])
+    ->middleware(['auth', 'verified', 'permission:users.manage'])
+    ->name('dashboard.users.store');
+
+Route::put('/dashboard/users/{user}', [UserController::class, 'update'])
+    ->middleware(['auth', 'verified', 'permission:users.manage'])
+    ->name('dashboard.users.update');
+
+Route::delete('/dashboard/users/{user}', [UserController::class, 'destroy'])
+    ->middleware(['auth', 'verified', 'permission:users.manage'])
+    ->name('dashboard.users.destroy');
+
+// صلاحية permissions.manage: عرض وإدارة الأدوار والصلاحيات.
+Route::get('/dashboard/permissions', PermissionPageController::class)
+    ->middleware(['auth', 'verified', 'permission:permissions.manage'])
+    ->name('dashboard.permissions');
+
+Route::post('/dashboard/roles', [RoleController::class, 'store'])
+    ->middleware(['auth', 'verified', 'permission:permissions.manage'])
+    ->name('dashboard.roles.store');
+
+Route::put('/dashboard/roles/{role}', [RoleController::class, 'update'])
+    ->middleware(['auth', 'verified', 'permission:permissions.manage'])
+    ->name('dashboard.roles.update');
+
+Route::delete('/dashboard/roles/{role}', [RoleController::class, 'destroy'])
+    ->middleware(['auth', 'verified', 'permission:permissions.manage'])
+    ->name('dashboard.roles.destroy');
+
+Route::post('/dashboard/permissions', [PermissionController::class, 'store'])
+    ->middleware(['auth', 'verified', 'permission:permissions.manage'])
+    ->name('dashboard.permissions.store');
+
+Route::put('/dashboard/permissions/{permission}', [PermissionController::class, 'update'])
+    ->middleware(['auth', 'verified', 'permission:permissions.manage'])
+    ->name('dashboard.permissions.update');
+
+Route::delete('/dashboard/permissions/{permission}', [PermissionController::class, 'destroy'])
+    ->middleware(['auth', 'verified', 'permission:permissions.manage'])
+    ->name('dashboard.permissions.destroy');
+
+// صلاحية settings.manage: عرض وتعديل إعدادات الموقع العامة.
+Route::get('/dashboard/settings', WebsiteSettingPageController::class)
+    ->middleware(['auth', 'verified', 'permission:settings.manage'])
+    ->name('dashboard.settings');
+
+Route::put('/dashboard/settings/website', [WebsiteSettingController::class, 'update'])
+    ->middleware(['auth', 'verified', 'permission:settings.manage'])
+    ->name('dashboard.settings.website.update');
+
+Route::post('/dashboard/settings/website/test-email', [WebsiteSettingController::class, 'sendTestEmail'])
+    ->middleware(['auth', 'verified', 'permission:settings.manage'])
+    ->name('dashboard.settings.website.test-email');
+
+// أقسام الداشبورد العامة: تحتاج تسجيل دخول فقط بدون صلاحية خاصة.
+Route::get('/dashboard/{section}', [DashboardController::class, 'section'])
+    ->where('section', 'orders|products|customers|reports|calendar|forms|tables|ui-elements')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard.section');
+
+// حساب المستخدم الحالي: تعديل البروفايل وحذف الحساب.
+Route::get('/profile', [ProfileController::class, 'edit'])
+    ->middleware('auth')
+    ->name('profile.edit');
+
+Route::patch('/profile', [ProfileController::class, 'update'])
+    ->middleware('auth')
+    ->name('profile.update');
+
+Route::delete('/profile', [ProfileController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('profile.destroy');
 
 require __DIR__.'/auth.php';

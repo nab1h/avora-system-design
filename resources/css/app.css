@@ -1,3 +1,113 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .avora-button-primary {
+        background-color: var(--avora-primary);
+    }
+
+    .avora-button-danger {
+        background-color: var(--avora-danger);
+    }
+
+    .avora-button-secondary {
+        background-color: var(--avora-secondary);
+    }
+
+    .avora-button-primary:hover,
+    .avora-button-danger:hover,
+    .avora-button-secondary:hover {
+        filter: brightness(0.9);
+    }
+
+    .avora-button-outline {
+        border-color: var(--avora-primary);
+        color: var(--avora-primary);
+    }
+
+    .avora-button-outline:hover {
+        background-color: color-mix(in srgb, var(--avora-primary) 10%, transparent);
+    }
+
+    .avora-text-primary {
+        color: var(--avora-primary);
+    }
+
+    .avora-bg-primary {
+        background-color: var(--avora-primary);
+    }
+
+    .avora-bg-primary-soft {
+        background-color: color-mix(in srgb, var(--avora-primary) 12%, transparent);
+    }
+
+    .avora-brand-gradient {
+        background-image: linear-gradient(135deg, color-mix(in srgb, var(--avora-primary) 72%, #0f172a), var(--avora-primary));
+    }
+
+    .avora-secondary-gradient {
+        background-image: linear-gradient(135deg, color-mix(in srgb, var(--avora-secondary) 72%, #0f172a), var(--avora-secondary));
+    }
+
+    .avora-success-gradient {
+        background-image: linear-gradient(135deg, color-mix(in srgb, var(--avora-success) 72%, #0f172a), var(--avora-success));
+    }
+
+    .avora-goal-card {
+        background-image: linear-gradient(135deg, color-mix(in srgb, var(--avora-primary) 32%, #020617), #020617);
+    }
+
+    .avora-progress-primary {
+        background-color: var(--avora-primary);
+    }
+
+    .avora-sales-bar {
+        background-image: linear-gradient(to top, color-mix(in srgb, var(--avora-primary) 82%, black), var(--avora-primary));
+    }
+
+    .avora-form-field:focus {
+        border-color: var(--avora-primary);
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--avora-primary) 10%, transparent);
+    }
+
+    .avora-checkbox {
+        accent-color: var(--avora-primary);
+    }
+
+    .avora-dashboard {
+        background-color: var(--avora-background);
+        color: var(--avora-text);
+    }
+
+    .avora-surface {
+        background-color: var(--avora-surface);
+    }
+
+    .avora-surface-muted {
+        background-color: var(--avora-surface-muted);
+    }
+
+    .avora-border {
+        border-color: var(--avora-border);
+    }
+
+    .avora-muted {
+        color: var(--avora-muted);
+    }
+
+    .avora-status-success {
+        background-color: color-mix(in srgb, var(--avora-success) 12%, transparent);
+        color: var(--avora-success);
+    }
+
+    .avora-status-warning {
+        background-color: color-mix(in srgb, var(--avora-warning) 12%, transparent);
+        color: var(--avora-warning);
+    }
+
+    .avora-status-danger {
+        background-color: color-mix(in srgb, var(--avora-danger) 12%, transparent);
+        color: var(--avora-danger);
+    }
+}

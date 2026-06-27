@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -21,6 +22,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'avatar_path',
+        'role_id',
         'password',
     ];
 
@@ -45,5 +48,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        return $this->role()
+            ->whereHas('permissions', fn ($query) => $query->where('slug', $permission))
+            ->exists();
+    }
+
+    public function permissionSlugs(): array
+    {
+        if (! $this->relationLoaded('role')) {
+            $this->load('role.permissions');
+        }
+
+        return $this->role?->permissions->pluck('slug')->all() ?? [];
     }
 }

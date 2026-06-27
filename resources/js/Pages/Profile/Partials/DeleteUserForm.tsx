@@ -1,124 +1,16 @@
-import DangerButton from '@/Components/DangerButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
+import { FormField } from '@/avora-dash/components/forms/FormField';
+import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import { useForm } from '@inertiajs/react';
-import { FormEventHandler, useRef, useState } from 'react';
+import { useState, type FormEventHandler } from 'react';
+import { Button } from '@/avora-dash/components/Button';
 
-export default function DeleteUserForm({
-    className = '',
-}: {
-    className?: string;
-}) {
-    const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
-    const passwordInput = useRef<HTMLInputElement>(null);
-
-    const {
-        data,
-        setData,
-        delete: destroy,
-        processing,
-        reset,
-        errors,
-        clearErrors,
-    } = useForm({
-        password: '',
-    });
-
-    const confirmUserDeletion = () => {
-        setConfirmingUserDeletion(true);
-    };
-
-    const deleteUser: FormEventHandler = (e) => {
-        e.preventDefault();
-
-        destroy(route('profile.destroy'), {
-            preserveScroll: true,
-            onSuccess: () => closeModal(),
-            onError: () => passwordInput.current?.focus(),
-            onFinish: () => reset(),
-        });
-    };
-
-    const closeModal = () => {
-        setConfirmingUserDeletion(false);
-
-        clearErrors();
-        reset();
-    };
-
+export default function DeleteUserForm() {
+    const { translate } = useLanguage();
+    const [open, setOpen] = useState(false);
+    const { data, setData, delete: destroy, processing, reset, errors, clearErrors } = useForm({ password: '' });
+    const close = () => { setOpen(false); clearErrors(); reset(); };
+    const submit: FormEventHandler = (event) => { event.preventDefault(); destroy(route('profile.destroy'), { preserveScroll: true, onSuccess: close }); };
     return (
-        <section className={`space-y-6 ${className}`}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Delete Account
-                </h2>
-
-                <p className="mt-1 text-sm text-gray-600">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Before deleting your account,
-                    please download any data or information that you wish to
-                    retain.
-                </p>
-            </header>
-
-            <DangerButton onClick={confirmUserDeletion}>
-                Delete Account
-            </DangerButton>
-
-            <Modal show={confirmingUserDeletion} onClose={closeModal}>
-                <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900">
-                        Are you sure you want to delete your account?
-                    </h2>
-
-                    <p className="mt-1 text-sm text-gray-600">
-                        Once your account is deleted, all of its resources and
-                        data will be permanently deleted. Please enter your
-                        password to confirm you would like to permanently delete
-                        your account.
-                    </p>
-
-                    <div className="mt-6">
-                        <InputLabel
-                            htmlFor="password"
-                            value="Password"
-                            className="sr-only"
-                        />
-
-                        <TextInput
-                            id="password"
-                            type="password"
-                            name="password"
-                            ref={passwordInput}
-                            value={data.password}
-                            onChange={(e) =>
-                                setData('password', e.target.value)
-                            }
-                            className="mt-1 block w-3/4"
-                            isFocused
-                            placeholder="Password"
-                        />
-
-                        <InputError
-                            message={errors.password}
-                            className="mt-2"
-                        />
-                    </div>
-
-                    <div className="mt-6 flex justify-end">
-                        <SecondaryButton onClick={closeModal}>
-                            Cancel
-                        </SecondaryButton>
-
-                        <DangerButton className="ms-3" disabled={processing}>
-                            Delete Account
-                        </DangerButton>
-                    </div>
-                </form>
-            </Modal>
-        </section>
+        <section><h2 className="text-lg font-bold text-rose-700 dark:text-rose-400">{translate({ ar: 'حذف الحساب', en: 'Delete account' })}</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">{translate({ ar: 'سيتم حذف الحساب وكل بياناته نهائيًا، ولا يمكن التراجع عن هذه الخطوة.', en: 'Your account and all of its data will be permanently deleted. This cannot be undone.' })}</p><Button type="button" variant="danger" rounded="lg" className="mt-5 h-auto px-5 py-3" onClick={() => setOpen(true)}>{translate({ ar: 'حذف الحساب', en: 'Delete account' })}</Button>{open && <div className="fixed inset-0 z-[100] grid place-items-center bg-slate-950/60 p-4 backdrop-blur-sm"><form onSubmit={submit} className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-950"><h3 className="text-xl font-bold">{translate({ ar: 'هل أنت متأكد؟', en: 'Are you sure?' })}</h3><p className="my-4 text-sm leading-6 text-slate-500">{translate({ ar: 'أدخل كلمة المرور لتأكيد حذف الحساب نهائيًا.', en: 'Enter your password to permanently delete the account.' })}</p><FormField label={translate({ ar: 'كلمة المرور', en: 'Password' })} type="password" value={data.password} onChange={(event) => setData('password', event.target.value)} error={errors.password} autoFocus /><div className="mt-6 flex justify-end gap-3"><Button type="button" variant="outline" rounded="lg" onClick={close}>{translate({ ar: 'إلغاء', en: 'Cancel' })}</Button><Button variant="danger" rounded="lg" disabled={processing}>{translate({ ar: 'حذف نهائي', en: 'Delete permanently' })}</Button></div></form></div>}</section>
     );
 }

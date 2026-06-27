@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\WebsiteSetting;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -29,10 +30,26 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $websiteSettings = WebsiteSetting::current();
+
         return [
             ...parent::share($request),
+            'appName' => $websiteSettings->website_name,
+            'websiteSettings' => $websiteSettings->toFrontend(),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user()
+                    ? [
+                        'id' => $request->user()->id,
+                        'name' => $request->user()->name,
+                        'email' => $request->user()->email,
+                        'email_verified_at' => $request->user()->email_verified_at,
+                        'role' => $request->user()->role?->only(['id', 'name', 'slug']),
+                        'permissions' => $request->user()->permissionSlugs(),
+                        'avatar_url' => $request->user()->avatar_path
+                            ? '/storage/'.$request->user()->avatar_path
+                            : null,
+                    ]
+                    : null,
             ],
         ];
     }

@@ -1,51 +1,19 @@
-import PrimaryButton from '@/Components/PrimaryButton';
-import GuestLayout from '@/Layouts/GuestLayout';
+import { FormButton } from '@/avora-dash/components/forms/FormButton';
+import { AuthLayout } from '@/Layouts/AuthLayout';
+import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import type { FormEventHandler } from 'react';
 
 export default function VerifyEmail({ status }: { status?: string }) {
+    const { translate } = useLanguage();
     const { post, processing } = useForm({});
-
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-
-        post(route('verification.send'));
-    };
-
+    const submit: FormEventHandler = (event) => { event.preventDefault(); post(route('verification.send')); };
     return (
-        <GuestLayout>
-            <Head title="Email Verification" />
-
-            <div className="mb-4 text-sm text-gray-600">
-                Thanks for signing up! Before getting started, could you verify
-                your email address by clicking on the link we just emailed to
-                you? If you didn't receive the email, we will gladly send you
-                another.
-            </div>
-
-            {status === 'verification-link-sent' && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
-                </div>
-            )}
-
-            <form onSubmit={submit}>
-                <div className="mt-4 flex items-center justify-between">
-                    <PrimaryButton disabled={processing}>
-                        Resend Verification Email
-                    </PrimaryButton>
-
-                    <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Log Out
-                    </Link>
-                </div>
-            </form>
-        </GuestLayout>
+        <AuthLayout title={translate({ ar: 'تحقق من بريدك', en: 'Verify your email' })} description={translate({ ar: 'أرسلنا رابط تحقق إلى بريدك الإلكتروني. افتحه قبل الدخول إلى لوحة التحكم.', en: 'We sent a verification link to your email. Open it before accessing the dashboard.' })}>
+            <Head title={translate({ ar: 'التحقق من البريد', en: 'Email verification' })} />
+            {status === 'verification-link-sent' && <div className="mb-5 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">{translate({ ar: 'تم إرسال رابط تحقق جديد.', en: 'A new verification link has been sent.' })}</div>}
+            <form onSubmit={submit}><FormButton disabled={processing} className="w-full">{translate({ ar: 'إعادة إرسال رابط التحقق', en: 'Resend verification email' })}</FormButton></form>
+            <Link href={route('logout')} method="post" as="button" className="mt-4 w-full rounded-xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300">{translate({ ar: 'تسجيل الخروج', en: 'Log out' })}</Link>
+        </AuthLayout>
     );
 }

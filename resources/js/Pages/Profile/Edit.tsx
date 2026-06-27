@@ -1,43 +1,24 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps } from '@/types';
+import { DashboardLayout } from '@/Layouts/DashboardLayout';
+import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
+import type { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
+import { useAppName } from '@/avora-dash/hooks/useAppName';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
-export default function Edit({
-    mustVerifyEmail,
-    status,
-}: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+export default function Edit({ mustVerifyEmail, status }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+    const { translate } = useLanguage();
+    const appName = useAppName();
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Profile
-                </h2>
-            }
-        >
-            <Head title="Profile" />
-
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <UpdateProfileInformationForm
-                            mustVerifyEmail={mustVerifyEmail}
-                            status={status}
-                            className="max-w-xl"
-                        />
-                    </div>
-
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <UpdatePasswordForm className="max-w-xl" />
-                    </div>
-
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <DeleteUserForm className="max-w-xl" />
-                    </div>
-                </div>
+        <DashboardLayout>
+            <Head title={translate({ ar: 'الملف الشخصي', en: 'Profile' })} />
+            <header className="mb-6"><p className="text-sm font-semibold" style={{ color: 'var(--avora-primary)' }}>{appName} Admin</p><h1 className="mt-1 text-3xl font-black text-slate-950 dark:text-white">{translate({ ar: 'إعدادات الحساب', en: 'Account settings' })}</h1><p className="mt-2 text-sm text-slate-500">{translate({ ar: 'حدّث بياناتك وكلمة المرور وإعدادات الأمان.', en: 'Update your details, password, and account security.' })}</p></header>
+            <div className="grid gap-6 xl:grid-cols-2">
+                <article className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"><UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} /></article>
+                <article className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"><UpdatePasswordForm /></article>
+                <article className="rounded-2xl border border-rose-200 bg-white p-6 xl:col-span-2 dark:border-rose-500/20 dark:bg-slate-950"><DeleteUserForm /></article>
             </div>
-        </AuthenticatedLayout>
+        </DashboardLayout>
     );
 }
