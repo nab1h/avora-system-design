@@ -29,6 +29,14 @@ class WebsiteSettingController extends Controller
             'currency' => ['required', 'string', 'max:10'],
             'default_language' => ['required', 'in:auto,ar,en'],
             'default_theme' => ['required', 'in:system,light,dark'],
+            'google_login_enabled' => ['sometimes', 'boolean'],
+            'google_client_id' => ['nullable', 'string', 'max:255'],
+            'google_client_secret' => ['nullable', 'string', 'max:1000'],
+            'google_redirect_url' => ['nullable', 'url', 'max:255'],
+            'facebook_login_enabled' => ['sometimes', 'boolean'],
+            'facebook_client_id' => ['nullable', 'string', 'max:255'],
+            'facebook_client_secret' => ['nullable', 'string', 'max:1000'],
+            'facebook_redirect_url' => ['nullable', 'url', 'max:255'],
             'facebook_url' => ['nullable', 'url', 'max:255'],
             'instagram_url' => ['nullable', 'url', 'max:255'],
             'x_url' => ['nullable', 'url', 'max:255'],
@@ -67,6 +75,19 @@ class WebsiteSettingController extends Controller
         if (blank($validated['smtp_password'] ?? null)) {
             unset($validated['smtp_password']);
         }
+
+        if (blank($validated['google_client_secret'] ?? null)) {
+            unset($validated['google_client_secret']);
+        }
+
+        if (blank($validated['facebook_client_secret'] ?? null)) {
+            unset($validated['facebook_client_secret']);
+        }
+
+        $validated['google_login_enabled'] = $request->boolean('google_login_enabled');
+        $validated['facebook_login_enabled'] = $request->boolean('facebook_login_enabled');
+        $validated['google_redirect_url'] = $validated['google_redirect_url'] ?: url('/auth/google/callback');
+        $validated['facebook_redirect_url'] = $validated['facebook_redirect_url'] ?: url('/auth/facebook/callback');
 
         $settings->update($validated);
 

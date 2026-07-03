@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 96" role="img" aria-labelledby="title">
+  <title id="title">Tap Payments</title>
+  <rect width="240" height="96" rx="24" fill="#101820"/>
+  <circle cx="58" cy="48" r="26" fill="#00C48C"/>
+  <path d="M45 47h26M58 34v28" stroke="#101820" stroke-width="8" stroke-linecap="round"/>
+  <text x="98" y="57" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900">tap</text>
+  <text x="156" y="57" fill="#9FB4C4" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">payments</text>
+</svg>

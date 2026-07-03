@@ -19,7 +19,14 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        $middleware->validateCsrfTokens(except: [
+            'checkout/*/tap/webhook',
+            'checkout/paymob/callback',
+            'checkout/moyasar/callback',
+        ]);
+
         $middleware->alias([
+            'dashboard.access' => \App\Http\Middleware\EnsureUserCanAccessDashboard::class,
             'permission' => \App\Http\Middleware\EnsureUserHasPermission::class,
         ]);
     })

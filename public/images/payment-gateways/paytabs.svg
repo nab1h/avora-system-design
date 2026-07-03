@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 96" role="img" aria-labelledby="title">
+  <title id="title">PayTabs</title>
+  <rect width="240" height="96" rx="24" fill="#FFFFFF"/>
+  <rect x="16" y="16" width="208" height="64" rx="18" fill="#fff" stroke="#DDE8F0"/>
+  <path d="M43 29h38c9 0 16 7 16 16v6c0 9-7 16-16 16H43V29Z" fill="#14B8A6"/>
+  <path d="M56 43h22c3 0 5 2 5 5s-2 5-5 5H56V43Z" fill="#fff"/>
+  <text x="108" y="57" fill="#123A4A" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800">PayTabs</text>
+</svg>

@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\WebsiteSetting;
+use App\Models\PaymentGateway;
+use Illuminate\Support\Facades\Schema;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -36,6 +38,13 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'appName' => $websiteSettings->website_name,
             'websiteSettings' => $websiteSettings->toFrontend(),
+            'paymentGateways' => fn () => Schema::hasTable('payment_gateways')
+                ? PaymentGateway::query()
+                    ->orderBy('id')
+                    ->get()
+                    ->map
+                    ->toFrontend()
+                : [],
             'auth' => [
                 'user' => $request->user()
                     ? [
@@ -47,7 +56,7 @@ class HandleInertiaRequests extends Middleware
                         'permissions' => $request->user()->permissionSlugs(),
                         'avatar_url' => $request->user()->avatar_path
                             ? '/storage/'.$request->user()->avatar_path
-                            : null,
+                            : $request->user()->social_avatar_url,
                     ]
                     : null,
             ],

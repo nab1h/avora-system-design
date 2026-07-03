@@ -6,8 +6,9 @@ import { FormField } from '@/avora-dash/components/forms/FormField';
 import { Modal } from '@/avora-dash/components/Modal';
 import { useAppName } from '@/avora-dash/hooks/useAppName';
 import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
+import { PaymentGatewaysInclude } from '@/includes/PaymentGatewaysInclude';
 import { DashboardLayout } from '@/Layouts/DashboardLayout';
-import type { PageProps, WebsiteSettings } from '@/types';
+import type { PageProps, PaymentGateway, WebsiteSettings } from '@/types';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { useState, type FormEventHandler } from 'react';
 
@@ -36,6 +37,19 @@ type PermissionRow = {
     slug: string;
 };
 
+type PurchaseRow = {
+    uuid: string;
+    customer_name: string;
+    customer_email: string | null;
+    product_name: string;
+    amount_decimal: string;
+    currency: string;
+    status: string;
+    gateway_name: string | null;
+    gateway_reference: string | null;
+    created_at: string | null;
+};
+
 type RoleRow = {
     id: number;
     name: string;
@@ -51,6 +65,8 @@ type AdminPageProps = {
     roles?: RoleOption[] | RoleRow[];
     permissions?: PermissionRow[];
     websiteSettings?: WebsiteSettings;
+    paymentGateways?: PaymentGateway[];
+    purchases?: PurchaseRow[];
 };
 
 type UserForm = {
@@ -93,6 +109,14 @@ type WebsiteSettingForm = {
     currency: string;
     default_language: 'auto' | 'ar' | 'en';
     default_theme: 'system' | 'light' | 'dark';
+    google_login_enabled: boolean;
+    google_client_id: string;
+    google_client_secret: string;
+    google_redirect_url: string;
+    facebook_login_enabled: boolean;
+    facebook_client_id: string;
+    facebook_client_secret: string;
+    facebook_redirect_url: string;
     facebook_url: string;
     instagram_url: string;
     x_url: string;
@@ -127,6 +151,8 @@ const sectionTitles = {
     tables: { ar: 'الجداول', en: 'Tables' },
     'ui-elements': { ar: 'عناصر الواجهة', en: 'UI elements' },
     settings: { ar: 'إعدادات النظام', en: 'System settings' },
+    payments: { ar: 'المدفوعات', en: 'Payments' },
+    purchases: { ar: 'المشتريات', en: 'Purchases' },
 } as const;
 
 const customers = [
@@ -150,6 +176,8 @@ export function DashboardModuleInclude({ section }: DashboardModuleIncludeProps)
     const permissionRoles = (page.props.roles ?? []) as RoleRow[];
     const permissions = page.props.permissions ?? [];
     const websiteSettings = page.props.websiteSettings ?? page.props.websiteSettings;
+    const paymentGateways = page.props.paymentGateways ?? [];
+    const purchases = page.props.purchases ?? [];
     const title = sectionTitles[section as keyof typeof sectionTitles] ?? sectionTitles.orders;
     const appName = useAppName();
 
@@ -200,6 +228,14 @@ export function DashboardModuleInclude({ section }: DashboardModuleIncludeProps)
         currency: websiteSettings?.currency ?? 'EGP',
         default_language: websiteSettings?.default_language ?? 'auto',
         default_theme: websiteSettings?.default_theme ?? 'system',
+        google_login_enabled: websiteSettings?.google_login_enabled ?? false,
+        google_client_id: websiteSettings?.google_client_id ?? '',
+        google_client_secret: '',
+        google_redirect_url: websiteSettings?.google_redirect_url ?? `${window.location.origin}/auth/google/callback`,
+        facebook_login_enabled: websiteSettings?.facebook_login_enabled ?? false,
+        facebook_client_id: websiteSettings?.facebook_client_id ?? '',
+        facebook_client_secret: '',
+        facebook_redirect_url: websiteSettings?.facebook_redirect_url ?? `${window.location.origin}/auth/facebook/callback`,
         facebook_url: websiteSettings?.facebook_url ?? '',
         instagram_url: websiteSettings?.instagram_url ?? '',
         x_url: websiteSettings?.x_url ?? '',
@@ -579,6 +615,8 @@ export function DashboardModuleInclude({ section }: DashboardModuleIncludeProps)
                     web_app_manifest_192: null,
                     web_app_manifest_512: null,
                     site_webmanifest: null,
+                    google_client_secret: '',
+                    facebook_client_secret: '',
                     smtp_password: '',
                 });
             },
@@ -638,6 +676,50 @@ export function DashboardModuleInclude({ section }: DashboardModuleIncludeProps)
             </section>
 
             <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 dark:border-slate-800 dark:bg-slate-950">
+                <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 dark:border-slate-800 dark:bg-slate-950">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <h2 className="text-lg font-black text-slate-950 dark:text-white">{translate({ ar: 'تسجيل الدخول الاجتماعي', en: 'Social login' })}</h2>
+                            <p className="mt-1 text-sm text-slate-500">{translate({ ar: 'فعّل تسجيل الدخول بجوجل أو فيسبوك وعدّل بيانات OAuth من هنا.', en: 'Enable Google or Facebook login and manage OAuth credentials here.' })}</p>
+                        </div>
+                        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+                            {translate({ ar: 'الأسرار محفوظة مشفرة', en: 'Secrets are encrypted' })}
+                        </span>
+                    </div>
+
+                    <div className="mt-5 grid gap-5 xl:grid-cols-2">
+                        <div className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
+                            <label className="mb-4 flex items-center justify-between gap-3 rounded-xl bg-slate-50 p-3 dark:bg-slate-900">
+                                <span>
+                                    <span className="block text-sm font-black text-slate-900 dark:text-white">Google</span>
+                                    <span className="text-xs text-slate-500">{translate({ ar: 'إظهار زر الدخول بجوجل في صفحة تسجيل الدخول', en: 'Show Google login button on the login page' })}</span>
+                                </span>
+                                <input type="checkbox" checked={websiteSettingForm.data.google_login_enabled} onChange={(event) => websiteSettingForm.setData('google_login_enabled', event.target.checked)} className="avora-checkbox rounded border-slate-300" />
+                            </label>
+                            <div className="grid gap-4">
+                                <FormField label="Google Client ID" value={websiteSettingForm.data.google_client_id} onChange={(event) => websiteSettingForm.setData('google_client_id', event.target.value)} error={websiteSettingForm.errors.google_client_id} />
+                                <FormField label="Google Client Secret" type="password" value={websiteSettingForm.data.google_client_secret} onChange={(event) => websiteSettingForm.setData('google_client_secret', event.target.value)} error={websiteSettingForm.errors.google_client_secret} placeholder={websiteSettings?.google_secret_configured ? translate({ ar: 'اتركه فارغًا للاحتفاظ بالقديم', en: 'Leave empty to keep current secret' }) : ''} />
+                                <FormField label="Google Redirect URL" type="url" value={websiteSettingForm.data.google_redirect_url} onChange={(event) => websiteSettingForm.setData('google_redirect_url', event.target.value)} error={websiteSettingForm.errors.google_redirect_url} />
+                            </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
+                            <label className="mb-4 flex items-center justify-between gap-3 rounded-xl bg-slate-50 p-3 dark:bg-slate-900">
+                                <span>
+                                    <span className="block text-sm font-black text-slate-900 dark:text-white">Facebook</span>
+                                    <span className="text-xs text-slate-500">{translate({ ar: 'إظهار زر الدخول بفيسبوك في صفحة تسجيل الدخول', en: 'Show Facebook login button on the login page' })}</span>
+                                </span>
+                                <input type="checkbox" checked={websiteSettingForm.data.facebook_login_enabled} onChange={(event) => websiteSettingForm.setData('facebook_login_enabled', event.target.checked)} className="avora-checkbox rounded border-slate-300" />
+                            </label>
+                            <div className="grid gap-4">
+                                <FormField label="Facebook Client ID" value={websiteSettingForm.data.facebook_client_id} onChange={(event) => websiteSettingForm.setData('facebook_client_id', event.target.value)} error={websiteSettingForm.errors.facebook_client_id} />
+                                <FormField label="Facebook Client Secret" type="password" value={websiteSettingForm.data.facebook_client_secret} onChange={(event) => websiteSettingForm.setData('facebook_client_secret', event.target.value)} error={websiteSettingForm.errors.facebook_client_secret} placeholder={websiteSettings?.facebook_secret_configured ? translate({ ar: 'اتركه فارغًا للاحتفاظ بالقديم', en: 'Leave empty to keep current secret' }) : ''} />
+                                <FormField label="Facebook Redirect URL" type="url" value={websiteSettingForm.data.facebook_redirect_url} onChange={(event) => websiteSettingForm.setData('facebook_redirect_url', event.target.value)} error={websiteSettingForm.errors.facebook_redirect_url} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <h2 className="text-lg font-black text-slate-950 dark:text-white">{translate({ ar: 'أيقونات المتصفح والتطبيق', en: 'Browser & app icons' })}</h2>
                 <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {renderFileField('favicon_96', 'favicon-96x96.png', websiteSettings?.favicon_96_url, 'image/png')}
@@ -719,8 +801,95 @@ export function DashboardModuleInclude({ section }: DashboardModuleIncludeProps)
         </form>
     );
 
+    const renderPurchases = () => {
+        const statusClass = (status: string) => {
+            if (['paid', 'paid_waiting_webhook'].includes(status)) return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300';
+            if (['failed', 'cancelled'].includes(status)) return 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300';
+            if (['redirected', 'pending'].includes(status)) return 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300';
+            return 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300';
+        };
+
+        return (
+            <section className="space-y-5">
+                <div className="grid gap-4 md:grid-cols-3">
+                    <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+                        <p className="text-sm text-slate-500">{translate({ ar: 'إجمالي العمليات', en: 'Total transactions' })}</p>
+                        <p className="mt-2 text-2xl font-black">{purchases.length}</p>
+                    </article>
+                    <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+                        <p className="text-sm text-slate-500">{translate({ ar: 'عمليات ناجحة', en: 'Paid transactions' })}</p>
+                        <p className="mt-2 text-2xl font-black">{purchases.filter((purchase) => ['paid', 'paid_waiting_webhook'].includes(purchase.status)).length}</p>
+                    </article>
+                    <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+                        <p className="text-sm text-slate-500">{translate({ ar: 'عمليات معلقة', en: 'Pending transactions' })}</p>
+                        <p className="mt-2 text-2xl font-black">{purchases.filter((purchase) => ['pending', 'redirected'].includes(purchase.status)).length}</p>
+                    </article>
+                </div>
+
+                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+                    <div className="border-b border-slate-200 p-5 dark:border-slate-800">
+                        <h2 className="text-lg font-black text-slate-950 dark:text-white">
+                            {translate({ ar: 'قائمة المشتريات', en: 'Purchases list' })}
+                        </h2>
+                        <p className="mt-1 text-sm text-slate-500">
+                            {translate({ ar: 'اعرف مين اشترى، المنتج، المبلغ، بوابة الدفع، وحالة العملية.', en: 'See who purchased, the product, amount, gateway, and transaction status.' })}
+                        </p>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full min-w-[980px] text-sm">
+                            <thead className="bg-slate-50 text-slate-500 dark:bg-slate-900/70 dark:text-slate-400">
+                                <tr>
+                                    <th className="px-5 py-4 text-start">{translate({ ar: 'العميل', en: 'Customer' })}</th>
+                                    <th className="px-5 py-4 text-start">{translate({ ar: 'المنتج', en: 'Product' })}</th>
+                                    <th className="px-5 py-4 text-start">{translate({ ar: 'المبلغ', en: 'Amount' })}</th>
+                                    <th className="px-5 py-4 text-start">{translate({ ar: 'البوابة', en: 'Gateway' })}</th>
+                                    <th className="px-5 py-4 text-start">{translate({ ar: 'الحالة', en: 'Status' })}</th>
+                                    <th className="px-5 py-4 text-start">{translate({ ar: 'التاريخ', en: 'Date' })}</th>
+                                    <th className="px-5 py-4 text-start">{translate({ ar: 'رقم العملية', en: 'Reference' })}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {purchases.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="px-5 py-10 text-center text-slate-500">
+                                            {translate({ ar: 'لا توجد مشتريات حتى الآن.', en: 'No purchases yet.' })}
+                                        </td>
+                                    </tr>
+                                ) : purchases.map((purchase) => (
+                                    <tr key={purchase.uuid} className="border-t border-slate-100 dark:border-slate-800">
+                                        <td className="px-5 py-4">
+                                            <p className="font-bold text-slate-950 dark:text-white">{purchase.customer_name}</p>
+                                            <p className="mt-1 text-xs text-slate-500">{purchase.customer_email ?? translate({ ar: 'زائر بدون حساب', en: 'Guest checkout' })}</p>
+                                        </td>
+                                        <td className="px-5 py-4 font-semibold">{purchase.product_name}</td>
+                                        <td className="px-5 py-4 font-black">{purchase.amount_decimal} {purchase.currency}</td>
+                                        <td className="px-5 py-4">{purchase.gateway_name}</td>
+                                        <td className="px-5 py-4">
+                                            <span className={`rounded-full px-3 py-1 text-xs font-black ${statusClass(purchase.status)}`}>
+                                                {purchase.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-4 text-slate-500">{purchase.created_at}</td>
+                                        <td className="px-5 py-4">
+                                            <span className="block max-w-[180px] truncate font-mono text-xs text-slate-500">
+                                                {purchase.gateway_reference ?? purchase.uuid}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        );
+    };
+
     const renderContent = () => {
         if (section === 'settings') return renderWebsiteSettings();
+        if (section === 'payments') return <PaymentGatewaysInclude gateways={paymentGateways} />;
+        if (section === 'purchases') return renderPurchases();
         if (section === 'users') return renderUsers();
         if (section === 'permissions') return renderPermissions();
         if (section === 'orders' || section === 'tables') return <RecentOrders />;

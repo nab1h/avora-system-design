@@ -22,6 +22,14 @@ class WebsiteSetting extends Model
         'currency',
         'default_language',
         'default_theme',
+        'google_login_enabled',
+        'google_client_id',
+        'google_client_secret',
+        'google_redirect_url',
+        'facebook_login_enabled',
+        'facebook_client_id',
+        'facebook_client_secret',
+        'facebook_redirect_url',
         'facebook_url',
         'instagram_url',
         'x_url',
@@ -47,6 +55,10 @@ class WebsiteSetting extends Model
     {
         return [
             'smtp_password' => 'encrypted',
+            'google_login_enabled' => 'boolean',
+            'google_client_secret' => 'encrypted',
+            'facebook_login_enabled' => 'boolean',
+            'facebook_client_secret' => 'encrypted',
         ];
     }
 
@@ -60,6 +72,8 @@ class WebsiteSetting extends Model
             'currency' => 'EGP',
             'default_language' => 'auto',
             'default_theme' => 'system',
+            'google_redirect_url' => url('/auth/google/callback'),
+            'facebook_redirect_url' => url('/auth/facebook/callback'),
         ]);
     }
 
@@ -86,6 +100,16 @@ class WebsiteSetting extends Model
             'currency' => $this->currency,
             'default_language' => $this->default_language ?: 'auto',
             'default_theme' => $this->default_theme ?: 'system',
+            'google_login_enabled' => (bool) $this->google_login_enabled,
+            'google_login_ready' => $this->googleLoginReady(),
+            'google_client_id' => $this->google_client_id,
+            'google_redirect_url' => $this->google_redirect_url ?: url('/auth/google/callback'),
+            'google_secret_configured' => filled($this->google_client_secret),
+            'facebook_login_enabled' => (bool) $this->facebook_login_enabled,
+            'facebook_login_ready' => $this->facebookLoginReady(),
+            'facebook_client_id' => $this->facebook_client_id,
+            'facebook_redirect_url' => $this->facebook_redirect_url ?: url('/auth/facebook/callback'),
+            'facebook_secret_configured' => filled($this->facebook_client_secret),
             'facebook_url' => $this->facebook_url,
             'instagram_url' => $this->instagram_url,
             'x_url' => $this->x_url,
@@ -105,5 +129,19 @@ class WebsiteSetting extends Model
             'smtp_from_address' => $this->smtp_from_address ?: config('mail.from.address'),
             'smtp_from_name' => $this->smtp_from_name ?: config('mail.from.name'),
         ];
+    }
+
+    public function googleLoginReady(): bool
+    {
+        return $this->google_login_enabled
+            && filled($this->google_client_id)
+            && filled($this->google_client_secret);
+    }
+
+    public function facebookLoginReady(): bool
+    {
+        return $this->facebook_login_enabled
+            && filled($this->facebook_client_id)
+            && filled($this->facebook_client_secret);
     }
 }

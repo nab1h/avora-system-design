@@ -28,6 +28,16 @@ export interface WebsiteSettings {
     currency?: string | null;
     default_language?: 'auto' | 'ar' | 'en';
     default_theme?: 'system' | 'light' | 'dark';
+    google_login_enabled?: boolean;
+    google_login_ready?: boolean;
+    google_client_id?: string | null;
+    google_redirect_url?: string | null;
+    google_secret_configured?: boolean;
+    facebook_login_enabled?: boolean;
+    facebook_login_ready?: boolean;
+    facebook_client_id?: string | null;
+    facebook_redirect_url?: string | null;
+    facebook_secret_configured?: boolean;
     facebook_url?: string | null;
     instagram_url?: string | null;
     x_url?: string | null;
@@ -48,11 +58,39 @@ export interface WebsiteSettings {
     smtp_from_name?: string | null;
 }
 
+export interface PaymentGateway {
+    id: number;
+    name: string;
+    slug: 'stripe' | 'paymob' | 'paytabs' | 'tap' | 'moyasar';
+    region?: string | null;
+    website_url?: string | null;
+    enabled: boolean;
+    is_backup: boolean;
+    test_mode: boolean;
+    public_config: Record<string, string | boolean | null>;
+    secret_fields: Record<string, boolean>;
+}
+
+export interface PaymentTransaction {
+    uuid: string;
+    product_name: string;
+    amount: number;
+    amount_decimal: string;
+    currency: string;
+    status: 'pending' | 'redirected' | 'paid_waiting_webhook' | 'cancelled' | 'failed' | string;
+    gateway_slug?: PaymentGateway['slug'] | string | null;
+    gateway_name?: string | null;
+    gateway_reference?: string | null;
+    checkout_url?: string | null;
+    created_at?: string | null;
+}
+
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
     appName: string;
     websiteSettings: WebsiteSettings;
+    paymentGateways: PaymentGateway[];
     auth: {
         user: User;
     };

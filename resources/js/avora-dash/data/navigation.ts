@@ -12,6 +12,11 @@ export const dashboardNavigation: DashboardNavItem[] = [
         href: '/dashboard/orders',
     },
     {
+        label: { ar: 'المشتريات', en: 'Purchases' },
+        icon: 'purchases',
+        href: '/dashboard/purchases',
+    },
+    {
         label: { ar: 'المنتجات', en: 'Products' },
         icon: 'products',
         href: '/dashboard/products',
@@ -45,6 +50,11 @@ export const dashboardNavigation: DashboardNavItem[] = [
         label: { ar: 'عناصر الواجهة', en: 'UI elements' },
         icon: 'components',
         href: '/dashboard/ui-elements',
+    },
+    {
+        label: { ar: 'المدفوعات', en: 'Payments' },
+        icon: 'payments',
+        href: '/dashboard/payments',
     },
 ];
 

@@ -1,4 +1,4 @@
-import { Button } from '@/avora-dash/components/Button';
+﻿import { Button } from "@/avora-dash/components/Button";
 import {
     Card,
     CardContent,
@@ -9,10 +9,10 @@ import {
     CardMeta,
     CardPrice,
     CardTitle,
-} from '@/avora-dash/components/Card';
-import { Container } from '@/avora-dash/components/Container';
-import { Grid, GridItem } from '@/avora-dash/components/Grid';
-import { LanguageButton } from '@/avora-dash/components/LanguageButton';
+} from "@/avora-dash/components/Card";
+import { Container } from "@/avora-dash/components/Container";
+import { Grid, GridItem } from "@/avora-dash/components/Grid";
+import { LanguageButton } from "@/avora-dash/components/LanguageButton";
 import {
     Navbar,
     NavbarActions,
@@ -25,49 +25,140 @@ import {
     NavbarMobileMenu,
     NavbarOverlay,
     NavbarToggle,
-} from '@/avora-dash/components/Navbar';
-import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
-import ModeButton from '@/avora-dash/providers/ModeButton';
-import { useTheme } from '@/avora-dash/providers/ThemeProvider';
-import { PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
-import { useAppName } from '@/avora-dash/hooks/useAppName';
+} from "@/avora-dash/components/Navbar";
+import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
+import ModeButton from "@/avora-dash/providers/ModeButton";
+import { useTheme } from "@/avora-dash/providers/ThemeProvider";
+import { PageProps } from "@/types";
+import { Head, router, usePage } from "@inertiajs/react";
+import { useAppName } from "@/avora-dash/hooks/useAppName";
+import { AddressPage } from "@/Components/AddressPage";
+import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
+import { useState } from "react";
+import { FaRightFromBracket, FaUserCheck } from "react-icons/fa6";
+
+const publicAsset = (path: string) => `${window.location.origin}${path}`;
 
 export default function Welcome({}: PageProps) {
     const { colors } = useTheme();
     const { translate } = useLanguage();
     const appName = useAppName();
+    const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
+    const [purchasingProductId, setPurchasingProductId] = useState<string | null>(null);
+    const page = usePage<PageProps & { errors?: Record<string, string> }>();
+    const user = page.props.auth.user;
+    const websiteCurrency = page.props.websiteSettings.currency ?? "EGP";
+    const enabledPaymentGateways = page.props.paymentGateways.filter((gateway) => gateway.enabled);
+    const activePaymentGateway = enabledPaymentGateways[0];
+
+    const buyProduct = (productId: string) => {
+        router.post(route("checkout.store"), {
+            product_id: productId,
+        }, {
+            preserveScroll: true,
+            onStart: () => setPurchasingProductId(productId),
+            onFinish: () => setPurchasingProductId(null),
+        });
+    };
+
+    const checkoutGatewayError = page.props.errors?.gateway_slug ?? page.props.errors?.product_id;
+
+    const customerAction = (fullWidth = false) =>
+        user ? (
+            <Button
+                size="sm"
+                variant="danger"
+                fullWidth={fullWidth}
+                type="button"
+                onClick={() => router.post(route('logout'))}
+                className="gap-2"
+            >
+                <FaRightFromBracket className="h-4 w-4" />
+                {translate({ ar: "تسجيل الخروج", en: "Logout" })}
+            </Button>
+        ) : (
+            <Button
+                size="sm"
+                variant="outline"
+                fullWidth={fullWidth}
+                type="button"
+                onClick={() => setCustomerAuthOpen(true)}
+                className="gap-2"
+            >
+                {user ? <FaRightFromBracket className="h-4 w-4" /> : <FaUserCheck className="h-4 w-4" />}
+                {user ? translate({ ar: "تسجيل الخروج", en: "Logout" }) : translate({ ar: "دخول العملاء", en: "Client login" })}
+            </Button>
+        );
+
+    const navbar = [
+        {
+            href: "#home",
+            name: translate({ ar: "الرئسية", en: "Home" }),
+        },
+
+        {
+            href: "#cards",
+            name: translate({ ar: "الكروت", en: "Cards" }),
+        },
+
+        {
+            href: "#buy",
+            name: translate({ ar: "شراء", en: "Buy" }),
+        },
+
+        {
+            href: "#dashboard",
+            name: translate({ ar: "الداشبورد", en: "Dashboard" }),
+        },
+
+        {
+            href: "#backgrounds",
+            name: translate({ ar: "الخلفيات", en: "Backgrounds" }),
+        },
+    ];
 
     const products = [
         {
-            image: '/images/avora-card-blue.svg',
-            category: translate({ ar: 'تصميم واجهات', en: 'UI Design' }),
-            title: translate({ ar: `نظام ${appName}`, en: `${appName} System` }),
-            description: translate({
-                ar: 'مكونات مرنة لبناء واجهات سريعة ومتناسقة.',
-                en: 'Flexible components for fast and consistent interfaces.',
+            id: "avora-system",
+            image: publicAsset("/images/product-ui-design.png"),
+            category: translate({ ar: "تصميم واجهات", en: "UI Design" }),
+            title: translate({
+                ar: `نظام ${appName}`,
+                en: `${appName} System`,
             }),
-            price: translate({ ar: '١٢٠٠ ج.م', en: 'EGP 1,200' }),
+            description: translate({
+                ar: "مكونات مرنة لبناء واجهات سريعة ومتناسقة.",
+                en: "Flexible components for fast and consistent interfaces.",
+            }),
+            amount: 1200,
+            price: translate({ ar: `١٢٠٠ ${websiteCurrency}`, en: `${websiteCurrency} 1,200` }),
         },
         {
-            image: '/images/avora-card-violet.svg',
-            category: translate({ ar: 'هوية بصرية', en: 'Brand Identity' }),
-            title: translate({ ar: 'حزمة الألوان', en: 'Color Collection' }),
+            id: "color-collection",
+            image: publicAsset("/images/product-colors.png"),
+            category: translate({ ar: "هوية بصرية", en: "Brand Identity" }),
+            title: translate({ ar: "حزمة الألوان", en: "Color Collection" }),
             description: translate({
-                ar: 'ألوان جاهزة للوضع الفاتح والداكن.',
-                en: 'Ready colors for both light and dark modes.',
+                ar: "ألوان جاهزة للوضع الفاتح والداكن.",
+                en: "Ready colors for both light and dark modes.",
             }),
-            price: translate({ ar: '٨٥٠ ج.م', en: 'EGP 850' }),
+            amount: 850,
+            price: translate({ ar: `٨٥٠ ${websiteCurrency}`, en: `${websiteCurrency} 850` }),
         },
         {
-            image: '/images/avora-card-emerald.svg',
-            category: translate({ ar: 'تخطيط متجاوب', en: 'Responsive Layout' }),
-            title: translate({ ar: 'مجموعة الجريد', en: 'Grid Collection' }),
-            description: translate({
-                ar: 'تقسيمات ذكية تتأقلم مع جميع الشاشات.',
-                en: 'Smart layouts that adapt to every screen size.',
+            id: "grid-collection",
+            image: publicAsset("/images/product-grid.png"),
+            category: translate({
+                ar: "تخطيط متجاوب",
+                en: "Responsive Layout",
             }),
-            price: translate({ ar: '٩٥٠ ج.م', en: 'EGP 950' }),
+            title: translate({ ar: "مجموعة الجريد", en: "Grid Collection" }),
+            description: translate({
+                ar: "تقسيمات ذكية تتأقلم مع جميع الشاشات.",
+                en: "Smart layouts that adapt to every screen size.",
+            }),
+            amount: 950,
+            price: translate({ ar: `٩٥٠ ${websiteCurrency}`, en: `${websiteCurrency} 950` }),
         },
     ];
 
@@ -80,18 +171,12 @@ export default function Welcome({}: PageProps) {
                 })}
             />
 
-            <Navbar
-                position="sticky"
-                background="glass"
-                shadow="sm"
-                bordered
-
-            >
-                <NavbarContainer width="full" height="md">
+            <Navbar position="sticky" background="surface" shadow="sm" bordered>
+                <NavbarContainer width="full" height="lg">
                     <NavbarBrand>
                         <NavbarLogo
                             href="#"
-                            src="/images/avora-logo.svg"
+                            src={publicAsset("/images/avora-logo.svg")}
                             alt={translate({
                                 ar: `شعار ${appName}`,
                                 en: `${appName} logo`,
@@ -102,25 +187,25 @@ export default function Welcome({}: PageProps) {
 
                     <NavbarDesktop>
                         <NavbarLinks>
-                            <NavbarLink href="#">
-                                {translate({ ar: 'الرئيسية', en: 'Home' })}
-                            </NavbarLink>
-                            <NavbarLink href="#cards">
-                                {translate({ ar: 'الكروت', en: 'Cards' })}
-                            </NavbarLink>
-                            <NavbarLink href="#dashboard">
-                                {translate({ ar: 'الداشبورد', en: 'Dashboard' })}
-                            </NavbarLink>
-                            <NavbarLink href="#backgrounds">
-                                {translate({ ar: 'الخلفيات', en: 'Backgrounds' })}
-                            </NavbarLink>
+                            {navbar.map((nav) => (
+                                <NavbarLink href={nav.href}>
+                                    {nav.name}
+                                </NavbarLink>
+                            ))}
                         </NavbarLinks>
 
                         <NavbarActions>
                             <ModeButton />
                             <LanguageButton />
-                            <Button size="sm">
-                                {translate({ ar: 'ابدأ الآن', en: 'Get started' })}
+                            <Button size="sm" variant={user ? "danger" : "outline"} type="button" onClick={() => user ? router.post(route('logout')) : setCustomerAuthOpen(true)} className="gap-2">
+                                {user ? <FaRightFromBracket className="h-4 w-4" /> : <FaUserCheck className="h-4 w-4" />}
+                                {user ? translate({ ar: "تسجيل الخروج", en: "Logout" }) : translate({ ar: "دخول العملاء", en: "Client login" })}
+                            </Button>
+                            <Button size="sm" type="button" onClick={() => setCustomerAuthOpen(true)}>
+                                {translate({
+                                    ar: "ابدأ الآن",
+                                    en: "Get started",
+                                })}
                             </Button>
                         </NavbarActions>
                     </NavbarDesktop>
@@ -161,25 +246,20 @@ export default function Welcome({}: PageProps) {
                     duration="normal"
                 >
                     <NavbarLinks className="flex-col items-stretch">
-                        <NavbarLink href="#">
-                            {translate({ ar: 'الرئيسية', en: 'Home' })}
-                        </NavbarLink>
-                        <NavbarLink href="#cards">
-                            {translate({ ar: 'الكروت', en: 'Cards' })}
-                        </NavbarLink>
-                        <NavbarLink href="#dashboard">
-                            {translate({ ar: 'الداشبورد', en: 'Dashboard' })}
-                        </NavbarLink>
-                        <NavbarLink href="#backgrounds">
-                            {translate({ ar: 'الخلفيات', en: 'Backgrounds' })}
-                        </NavbarLink>
+                        {navbar.map((nav) => (
+                            <NavbarLink href={nav.href}>{nav.name}</NavbarLink>
+                        ))}
                     </NavbarLinks>
 
                     <NavbarActions className="mt-4 border-t border-slate-200 pt-4 dark:border-slate-700">
                         <ModeButton />
                         <LanguageButton />
-                        <Button size="sm" fullWidth>
-                            {translate({ ar: 'ابدأ الآن', en: 'Get started' })}
+                        <Button size="sm" variant={user ? "danger" : "outline"} fullWidth type="button" onClick={() => user ? router.post(route('logout')) : setCustomerAuthOpen(true)} className="gap-2">
+                            {user ? <FaRightFromBracket className="h-4 w-4" /> : <FaUserCheck className="h-4 w-4" />}
+                            {user ? translate({ ar: "تسجيل الخروج", en: "Logout" }) : translate({ ar: "دخول العملاء", en: "Client login" })}
+                        </Button>
+                        <Button size="sm" fullWidth type="button" onClick={() => setCustomerAuthOpen(true)}>
+                            {translate({ ar: "ابدأ الآن", en: "Get started" })}
                         </Button>
                     </NavbarActions>
                 </NavbarMobileMenu>
@@ -211,14 +291,14 @@ export default function Welcome({}: PageProps) {
                         <div className="space-y-5">
                             <CardMeta>
                                 {translate({
-                                    ar: 'متجاوب • عربي وإنجليزي',
-                                    en: 'Responsive • Arabic & English',
+                                    ar: "متجاوب • عربي وإنجليزي",
+                                    en: "Responsive • Arabic & English",
                                 })}
                             </CardMeta>
                             <h2 className="max-w-2xl text-3xl font-bold leading-tight sm:text-5xl">
                                 {translate({
-                                    ar: 'ابنِ صفحات أنيقة بجريد واحد مرن.',
-                                    en: 'Build polished pages with one flexible grid.',
+                                    ar: "ابنِ صفحات أنيقة بجريد واحد مرن.",
+                                    en: "Build polished pages with one flexible grid.",
                                 })}
                             </h2>
                             <p
@@ -226,21 +306,25 @@ export default function Welcome({}: PageProps) {
                                 style={{ color: colors.muted }}
                             >
                                 {translate({
-                                    ar: 'غيّر حجم الشاشة لتشاهد الكروت والتقسيمات وهي تتجاوب تلقائيًا.',
-                                    en: 'Resize the screen to see cards and layouts adapt automatically.',
+                                    ar: "غيّر حجم الشاشة لتشاهد الكروت والتقسيمات وهي تتجاوب تلقائيًا.",
+                                    en: "Resize the screen to see cards and layouts adapt automatically.",
                                 })}
                             </p>
                             <div className="flex flex-wrap gap-3">
-                                <Button>
+                                <Button type="button" variant={user ? "danger" : "outline"} onClick={() => user ? router.post(route('logout')) : setCustomerAuthOpen(true)} className="gap-2">
+                                    {user ? <FaRightFromBracket className="h-4 w-4" /> : <FaUserCheck className="h-4 w-4" />}
+                                    {user ? translate({ ar: "تسجيل الخروج", en: "Logout" }) : translate({ ar: "دخول العملاء", en: "Client login" })}
+                                </Button>
+                                <Button type="button" onClick={() => setCustomerAuthOpen(true)}>
                                     {translate({
-                                        ar: 'ابدأ الآن',
-                                        en: 'Get started',
+                                        ar: "ابدأ الآن",
+                                        en: "Get started",
                                     })}
                                 </Button>
                                 <Button variant="outline">
                                     {translate({
-                                        ar: 'عرض الخيارات',
-                                        en: 'View options',
+                                        ar: "عرض الخيارات",
+                                        en: "View options",
                                     })}
                                 </Button>
                             </div>
@@ -249,12 +333,12 @@ export default function Welcome({}: PageProps) {
                         <Card variant="elevated" padding="lg">
                             <CardMeta>
                                 {translate({
-                                    ar: 'معاينة مباشرة',
-                                    en: 'Live preview',
+                                    ar: "معاينة مباشرة",
+                                    en: "Live preview",
                                 })}
                             </CardMeta>
                             <div className="mt-5 grid grid-cols-2 gap-3">
-                                {['01', '02', '03', '04'].map((number) => (
+                                {["01", "02", "03", "04"].map((number) => (
                                     <div
                                         key={number}
                                         className="rounded-xl p-5 text-center text-lg font-bold"
@@ -270,18 +354,73 @@ export default function Welcome({}: PageProps) {
                         </Card>
                     </Grid>
 
+                    <section id="buy" className="scroll-mt-24 space-y-6">
+                        <AddressPage
+                            supAddress="CHECKOUT"
+                            address={translate({
+                                ar: "جرب شراء منتج وتحويله لبوابة الدفع",
+                                en: "Try buying a product and redirecting to payment",
+                            })}
+                        />
+
+                        <Card variant="elevated" padding="lg" className="overflow-hidden">
+                            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+                                <div className="space-y-4">
+                                    <CardMeta>
+                                        {translate({ ar: "طريقة الدفع", en: "Checkout flow" })}
+                                    </CardMeta>
+                                    <CardTitle>
+                                        {translate({ ar: "السعر بيتحدد من المنتج نفسه", en: "Price comes from the selected product" })}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        {translate({
+                                            ar: "العميل يضغط شراء من كارت المنتج. الموقع يبعت رقم المنتج فقط، والباك إند يجيب الاسم والسعر الحقيقيين من الكتالوج قبل ما يرسل العملية للبوابة.",
+                                            en: "The customer buys from a product card. The website sends only the product ID, then the backend resolves the real name and price before creating the gateway checkout.",
+                                        })}
+                                    </CardDescription>
+                                </div>
+
+                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900">
+                                        <span className="block font-semibold text-slate-700 dark:text-slate-200">
+                                            {translate({ ar: "عملة الموقع", en: "Website currency" })}
+                                        </span>
+                                        <span className="mt-1 block text-slate-500 dark:text-slate-400">
+                                            {websiteCurrency}
+                                        </span>
+                                    </div>
+
+                                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900">
+                                        <span className="block font-semibold text-slate-700 dark:text-slate-200">
+                                            {translate({ ar: "بوابة الدفع المفعلة", en: "Active payment gateway" })}
+                                        </span>
+                                        <span className="mt-1 block text-slate-500 dark:text-slate-400">
+                                            {activePaymentGateway
+                                                ? activePaymentGateway.name
+                                                : translate({ ar: "لا توجد بوابة مفعلة", en: "No enabled gateway" })}
+                                        </span>
+                                        {checkoutGatewayError && <span className="mt-1 block text-xs text-red-500">{checkoutGatewayError}</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+                    </section>
+
                     <section id="cards" className="scroll-mt-24 space-y-6">
-                        <div>
-                            <CardMeta>AUTO-FIT GRID</CardMeta>
-                            <h2 className="mt-1 text-2xl font-bold">
-                                {translate({
-                                    ar: 'كروت متجاوبة تلقائيًا',
-                                    en: 'Automatically responsive cards',
-                                })}
-                            </h2>
-                        </div>
+                        <AddressPage
+                            supAddress="AUTO-FIT GRID"
+                            address={translate({
+                                ar: "كروت متجاوبة تلقائيًا",
+                                en: "Automatically responsive cards",
+                            })}
+                        />
 
                         <Grid minItemWidth="260px" gap="lg">
+                            {checkoutGatewayError && (
+                                <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
+                                    {checkoutGatewayError}
+                                </div>
+                            )}
                             {products.map((product) => (
                                 <Card
                                     key={product.title}
@@ -301,11 +440,18 @@ export default function Welcome({}: PageProps) {
                                     </CardHeader>
                                     <CardFooter>
                                         <CardPrice>{product.price}</CardPrice>
-                                        <Button size="sm">
-                                            {translate({
-                                                ar: 'التفاصيل',
-                                                en: 'Details',
-                                            })}
+                                        <Button
+                                            size="sm"
+                                            type="button"
+                                            disabled={purchasingProductId !== null}
+                                            onClick={() => buyProduct(product.id)}
+                                        >
+                                            {purchasingProductId === product.id
+                                                ? translate({ ar: "جاري الدفع...", en: "Paying..." })
+                                                : translate({
+                                                    ar: "اشتري الآن",
+                                                    en: "Buy now",
+                                                })}
                                         </Button>
                                     </CardFooter>
                                 </Card>
@@ -314,29 +460,26 @@ export default function Welcome({}: PageProps) {
                     </section>
 
                     <section id="dashboard" className="scroll-mt-24 space-y-6">
-                        <div>
-                            <CardMeta>DASHBOARD GRID</CardMeta>
-                            <h2 className="mt-1 text-2xl font-bold">
-                                {translate({
-                                    ar: 'تقسيم داشبورد بأحجام مختلفة',
-                                    en: 'Dashboard with different item sizes',
-                                })}
-                            </h2>
-                        </div>
-
+                        <AddressPage
+                            supAddress="AUTO-FIT GRID"
+                            address={translate({
+                                ar: "تقسيم داشبورد بأحجام مختلفة",
+                                en: "Dashboard with different item sizes",
+                            })}
+                        />
                         <Grid layout="dashboard" gap="md">
                             <GridItem mdSpan="two">
                                 <Card variant="elevated" padding="lg">
                                     <CardMeta>
                                         {translate({
-                                            ar: 'إجمالي المبيعات',
-                                            en: 'Total sales',
+                                            ar: "إجمالي المبيعات",
+                                            en: "Total sales",
                                         })}
                                     </CardMeta>
                                     <p className="mt-3 text-3xl font-bold">
                                         {translate({
-                                            ar: '٤٨٬٢٠٠ ج.م',
-                                            en: 'EGP 48,200',
+                                            ar: "٤٨٬٢٠٠ ج.م",
+                                            en: "EGP 48,200",
                                         })}
                                     </p>
                                     <p
@@ -349,15 +492,15 @@ export default function Welcome({}: PageProps) {
                             </GridItem>
 
                             {[
-                                translate({ ar: '١٢٤ طلب', en: '124 orders' }),
-                                translate({ ar: '٨٩ عميل', en: '89 clients' }),
+                                translate({ ar: "١٢٤ طلب", en: "124 orders" }),
+                                translate({ ar: "٨٩ عميل", en: "89 clients" }),
                             ].map((value) => (
                                 <GridItem key={value}>
                                     <Card padding="lg" className="h-full">
                                         <CardMeta>
                                             {translate({
-                                                ar: 'هذا الشهر',
-                                                en: 'This month',
+                                                ar: "هذا الشهر",
+                                                en: "This month",
                                             })}
                                         </CardMeta>
                                         <p className="mt-3 text-2xl font-bold">
@@ -370,22 +513,19 @@ export default function Welcome({}: PageProps) {
                     </section>
 
                     <section className="space-y-6">
-                        <div>
-                            <CardMeta>SIDEBAR GRID</CardMeta>
-                            <h2 className="mt-1 text-2xl font-bold">
-                                {translate({
-                                    ar: 'تقسيم صفحة مع قائمة جانبية',
-                                    en: 'Page layout with a sidebar',
-                                })}
-                            </h2>
-                        </div>
-
+                        <AddressPage
+                            supAddress="AUTO-FIT GRID"
+                            address={translate({
+                                ar: "تقسيم صفحة مع قائمة جانبية",
+                                en: "Page layout with a sidebar",
+                            })}
+                        />
                         <Grid
                             layout="sidebarStart"
                             gap="lg"
                             padding="lg"
                             background="muted"
-                            backgroundImage="/images/avora-card-blue.svg"
+                            backgroundImage={publicAsset("/images/avora-card-blue.svg")}
                             backgroundImageOpacity={0.08}
                             backgroundImageAttachment="fixed"
                             backgroundImageSize="cover"
@@ -394,13 +534,22 @@ export default function Welcome({}: PageProps) {
                         >
                             <Card padding="md">
                                 <CardTitle>
-                                    {translate({ ar: 'الفلاتر', en: 'Filters' })}
+                                    {translate({
+                                        ar: "الفلاتر",
+                                        en: "Filters",
+                                    })}
                                 </CardTitle>
                                 <div className="mt-4 space-y-2">
                                     {[
-                                        translate({ ar: 'الكل', en: 'All' }),
-                                        translate({ ar: 'تصميم', en: 'Design' }),
-                                        translate({ ar: 'تطوير', en: 'Development' }),
+                                        translate({ ar: "الكل", en: "All" }),
+                                        translate({
+                                            ar: "تصميم",
+                                            en: "Design",
+                                        }),
+                                        translate({
+                                            ar: "تطوير",
+                                            en: "Development",
+                                        }),
                                     ].map((item, index) => (
                                         <button
                                             key={item}
@@ -410,7 +559,7 @@ export default function Welcome({}: PageProps) {
                                                 backgroundColor:
                                                     index === 0
                                                         ? `${colors.primary}18`
-                                                        : 'transparent',
+                                                        : "transparent",
                                                 color:
                                                     index === 0
                                                         ? colors.primary
@@ -441,32 +590,24 @@ export default function Welcome({}: PageProps) {
                         </Grid>
                     </section>
 
-                    <section id="backgrounds" className="scroll-mt-24 space-y-6">
-                        <div>
-                            <CardMeta>BACKGROUND IMAGE OPTIONS</CardMeta>
-                            <h2 className="mt-1 text-2xl font-bold">
-                                {translate({
-                                    ar: 'صور خلفية بطرق عرض مختلفة',
-                                    en: 'Background images in different modes',
-                                })}
-                            </h2>
-                            <p
-                                className="mt-2 max-w-2xl text-sm leading-6"
-                                style={{ color: colors.muted }}
-                            >
-                                {translate({
-                                    ar: 'مرّر الصفحة لتلاحظ أن خلفية المثال الكبير ثابتة، بينما الأمثلة الصغيرة تتحرك بشكل طبيعي.',
-                                    en: 'Scroll the page to see the large background stay fixed while the small previews move normally.',
-                                })}
-                            </p>
-                        </div>
+                    <section
+                        id="backgrounds"
+                        className="scroll-mt-24 space-y-6"
+                    >
+                        <AddressPage
+                            supAddress="BACKGROUND IMAGE OPTIONS"
+                            address={translate({
+                                ar: "صور خلفية بطرق عرض مختلفة",
+                                en: "Background images in different modes",
+                            })}
+                        />
 
                         <Grid
                             layout="two"
                             gap="lg"
                             padding="xl"
                             background="surface"
-                            backgroundImage="/images/image.png"
+                            backgroundImage={publicAsset("/images/image.png")}
                             backgroundImageOpacity={0.28}
                             backgroundImageAttachment="fixed"
                             backgroundImageSize="cover"
@@ -479,8 +620,8 @@ export default function Welcome({}: PageProps) {
                                 <CardMeta>FIXED + COVER + 28% OPACITY</CardMeta>
                                 <h3 className="text-3xl font-bold leading-tight sm:text-4xl">
                                     {translate({
-                                        ar: 'خلفية ثابتة لا تؤثر على وضوح المحتوى.',
-                                        en: 'A fixed background that keeps content clear.',
+                                        ar: "خلفية ثابتة لا تؤثر على وضوح المحتوى.",
+                                        en: "A fixed background that keeps content clear.",
                                     })}
                                 </h3>
                                 <p
@@ -488,8 +629,8 @@ export default function Welcome({}: PageProps) {
                                     style={{ color: colors.muted }}
                                 >
                                     {translate({
-                                        ar: 'شفافية الصورة منفصلة عن العناصر، لذلك تظل النصوص والكروت بكامل وضوحها.',
-                                        en: 'Image opacity is separate from the elements, so text and cards remain fully visible.',
+                                        ar: "شفافية الصورة منفصلة عن العناصر، لذلك تظل النصوص والكروت بكامل وضوحها.",
+                                        en: "Image opacity is separate from the elements, so text and cards remain fully visible.",
                                     })}
                                 </p>
                             </div>
@@ -497,20 +638,20 @@ export default function Welcome({}: PageProps) {
                             <Card variant="elevated" padding="lg">
                                 <CardMeta>
                                     {translate({
-                                        ar: 'كارت فوق الخلفية',
-                                        en: 'Card over background',
+                                        ar: "كارت فوق الخلفية",
+                                        en: "Card over background",
                                     })}
                                 </CardMeta>
                                 <CardTitle className="mt-3 text-2xl">
                                     {translate({
-                                        ar: 'المحتوى مستقل',
-                                        en: 'Independent content',
+                                        ar: "المحتوى مستقل",
+                                        en: "Independent content",
                                     })}
                                 </CardTitle>
                                 <CardDescription className="mt-2">
                                     {translate({
-                                        ar: 'غيّر شفافية الصورة بدون تغيير شفافية هذا الكارت.',
-                                        en: 'Change the image opacity without changing this card opacity.',
+                                        ar: "غيّر شفافية الصورة بدون تغيير شفافية هذا الكارت.",
+                                        en: "Change the image opacity without changing this card opacity.",
                                     })}
                                 </CardDescription>
                             </Card>
@@ -521,7 +662,7 @@ export default function Welcome({}: PageProps) {
                                 layout="one"
                                 padding="lg"
                                 background="primary"
-                                backgroundImage="/images/avora-card-emerald.svg"
+                                backgroundImage={publicAsset("/images/avora-card-emerald.svg")}
                                 backgroundImageOpacity={0.2}
                                 backgroundImageSize="contain"
                                 backgroundImagePosition="center"
@@ -532,8 +673,8 @@ export default function Welcome({}: PageProps) {
                                     <CardMeta>CONTAIN • OPACITY 20%</CardMeta>
                                     <CardTitle className="mt-2">
                                         {translate({
-                                            ar: 'الصورة كاملة داخل المساحة',
-                                            en: 'The full image fits inside',
+                                            ar: "الصورة كاملة داخل المساحة",
+                                            en: "The full image fits inside",
                                         })}
                                     </CardTitle>
                                 </Card>
@@ -543,7 +684,7 @@ export default function Welcome({}: PageProps) {
                                 layout="one"
                                 padding="lg"
                                 background="muted"
-                                backgroundImage="/images/avora-card-blue.svg"
+                                backgroundImage={publicAsset("/images/avora-card-blue.svg")}
                                 backgroundImageOpacity={0.12}
                                 backgroundImageSize="180px"
                                 backgroundImageRepeat="repeat"
@@ -554,8 +695,8 @@ export default function Welcome({}: PageProps) {
                                     <CardMeta>REPEAT • CUSTOM SIZE</CardMeta>
                                     <CardTitle className="mt-2">
                                         {translate({
-                                            ar: 'نمط صورة متكرر',
-                                            en: 'Repeating image pattern',
+                                            ar: "نمط صورة متكرر",
+                                            en: "Repeating image pattern",
                                         })}
                                     </CardTitle>
                                 </Card>
@@ -564,6 +705,13 @@ export default function Welcome({}: PageProps) {
                     </section>
                 </Container>
             </main>
+
+            <CustomerAuthModal
+                open={!user && customerAuthOpen}
+                onClose={() => setCustomerAuthOpen(false)}
+            />
         </>
     );
 }
+
+

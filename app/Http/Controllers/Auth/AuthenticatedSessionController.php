@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\WebsiteSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,9 +19,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
+        $settings = WebsiteSetting::current();
+
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
+            'socialProviders' => [
+                'google' => $settings->googleLoginReady(),
+                'facebook' => $settings->facebookLoginReady(),
+            ],
         ]);
     }
 
@@ -32,6 +39,12 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        if (count($request->user()->permissionSlugs()) === 0) {
+            $request->session()->forget('url.intended');
+
+            return redirect()->route('home');
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
