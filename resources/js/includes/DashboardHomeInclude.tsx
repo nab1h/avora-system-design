@@ -2,15 +2,65 @@ import { Link, usePage } from '@inertiajs/react';
 import type { PageProps } from '@/types';
 import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import { MetricCard } from '@/avora-dash/components/dashboard/MetricCard';
-import { RecentOrders } from '@/avora-dash/components/dashboard/RecentOrders';
-import { SalesOverview } from '@/avora-dash/components/dashboard/SalesOverview';
+import { RecentOrders, type RecentOrder } from '@/avora-dash/components/dashboard/RecentOrders';
+import { SalesOverview, type MonthlySale } from '@/avora-dash/components/dashboard/SalesOverview';
 import { DashboardLayout } from '@/Layouts/DashboardLayout';
 import { DashboardIcon } from '@/avora-dash/components/DashboardIcon';
 
+type DashboardMetric = {
+    value: string;
+    change: string;
+    trend: 'up' | 'down';
+};
+
+type DashboardStats = {
+    usersCount: number;
+    rolesCount: number;
+    customersCount: number;
+    paymentGatewaysCount: number;
+    activeGatewaysCount: number;
+    metrics: {
+        totalSales: DashboardMetric;
+        totalOrders: DashboardMetric;
+        newCustomers: DashboardMetric;
+        paymentSuccessRate: DashboardMetric;
+    };
+    monthlySales: MonthlySale[];
+    recentOrders: RecentOrder[];
+    monthlyTarget: {
+        percent: number;
+        achieved: string;
+        remaining: string;
+    };
+};
+
+const emptyStats: DashboardStats = {
+    usersCount: 0,
+    rolesCount: 0,
+    customersCount: 0,
+    paymentGatewaysCount: 0,
+    activeGatewaysCount: 0,
+    metrics: {
+        totalSales: { value: '0.00 EGP', change: '0%', trend: 'up' },
+        totalOrders: { value: '0', change: '0%', trend: 'up' },
+        newCustomers: { value: '0', change: '0%', trend: 'up' },
+        paymentSuccessRate: { value: '0%', change: '0 failed/cancelled', trend: 'down' },
+    },
+    monthlySales: [],
+    recentOrders: [],
+    monthlyTarget: {
+        percent: 0,
+        achieved: '0.00 EGP',
+        remaining: '0.00 EGP',
+    },
+};
+
 export function DashboardHomeInclude() {
-    const { auth, dashboardStats } = usePage<PageProps<{ dashboardStats?: { usersCount: number; rolesCount: number } }>>().props;
+    const { auth, dashboardStats } = usePage<PageProps<{ dashboardStats?: DashboardStats }>>().props;
     const { language, translate } = useLanguage();
+    const stats = dashboardStats ?? emptyStats;
     const userPermissions = auth.user.permissions ?? [];
+
     const managementCards = [
         {
             title: { ar: 'إدارة المستخدمين', en: 'User management' },
@@ -21,7 +71,7 @@ export function DashboardHomeInclude() {
             href: '/dashboard/users',
             permission: 'users.manage',
             icon: 'customers' as const,
-            stats: { ar: `${dashboardStats?.usersCount ?? 0} مستخدم`, en: `${dashboardStats?.usersCount ?? 0} users` },
+            stats: { ar: `${stats.usersCount} مستخدم`, en: `${stats.usersCount} users` },
         },
         {
             title: { ar: 'إدارة الصلاحيات', en: 'Permission management' },
@@ -32,12 +82,12 @@ export function DashboardHomeInclude() {
             href: '/dashboard/permissions',
             permission: 'permissions.manage',
             icon: 'settings' as const,
-            stats: { ar: `${dashboardStats?.rolesCount ?? 0} أدوار`, en: `${dashboardStats?.rolesCount ?? 0} roles` },
+            stats: { ar: `${stats.rolesCount} أدوار`, en: `${stats.rolesCount} roles` },
         },
         {
             title: { ar: 'إعدادات الموقع', en: 'Website settings' },
             description: {
-                ar: 'تحكم في اسم الموقع واللوجو والأيقونات والتواصل والسوشيال وSMTP.',
+                ar: 'تحكم في اسم الموقع واللوجو والأيقونات والتواصل والسوشيال و SMTP.',
                 en: 'Manage website name, logo, icons, contact, social links, and SMTP.',
             },
             href: '/dashboard/settings',
@@ -45,17 +95,32 @@ export function DashboardHomeInclude() {
             icon: 'settings' as const,
             stats: { ar: 'هوية الموقع', en: 'Website identity' },
         },
+        {
+            title: { ar: 'بوابات الدفع', en: 'Payment gateways' },
+            description: {
+                ar: 'اختار البوابة الأساسية والاحتياطية وتابع حالة بوابات الدفع.',
+                en: 'Choose the primary and backup gateway and monitor payment gateways.',
+            },
+            href: '/dashboard/payments',
+            permission: 'settings.manage',
+            icon: 'payments' as const,
+            stats: { ar: `${stats.activeGatewaysCount}/${stats.paymentGatewaysCount} مفعلة`, en: `${stats.activeGatewaysCount}/${stats.paymentGatewaysCount} active` },
+        },
     ].filter((card) => userPermissions.includes(card.permission));
 
     return (
         <DashboardLayout>
             <section className="mb-6 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="avora-text-primary text-sm font-medium">{translate({ ar: 'لوحة التحكم', en: 'Dashboard' })}</p>
+                    <p className="avora-text-primary text-sm font-medium">
+                        {translate({ ar: 'لوحة التحكم', en: 'Dashboard' })}
+                    </p>
                     <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl dark:text-white">
                         {translate({ ar: `أهلًا، ${auth.user.name}`, en: `Welcome, ${auth.user.name}` })}
                     </h1>
-                    <p className="mt-2 text-sm text-slate-500">{translate({ ar: 'إليك ملخص سريع لأداء نشاطك اليوم.', en: "Here's a quick summary of your business today." })}</p>
+                    <p className="mt-2 text-sm text-slate-500">
+                        {translate({ ar: 'ملخص حقيقي من قاعدة البيانات لنشاط الموقع والمدفوعات.', en: 'A real database summary for website activity and payments.' })}
+                    </p>
                 </div>
                 <p className="avora-surface avora-border avora-muted rounded-xl border px-4 py-2 text-sm font-medium">
                     {new Intl.DateTimeFormat(language === 'ar' ? 'ar-EG' : 'en-US', { dateStyle: 'long' }).format(new Date())}
@@ -63,10 +128,10 @@ export function DashboardHomeInclude() {
             </section>
 
             <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <MetricCard label={{ ar: 'إجمالي المبيعات', en: 'Total sales' }} value="48,200 ج.م" change="18.4%" trend="up" icon="sales" color="blue" />
-                <MetricCard label={{ ar: 'إجمالي الطلبات', en: 'Total orders' }} value="1,248" change="12.1%" trend="up" icon="orders" color="violet" />
-                <MetricCard label={{ ar: 'عملاء جدد', en: 'New customers' }} value="356" change="8.7%" trend="up" icon="customers" color="emerald" />
-                <MetricCard label={{ ar: 'معدل الاسترداد', en: 'Refund rate' }} value="2.4%" change="0.6%" trend="down" icon="reports" color="amber" />
+                <MetricCard label={{ ar: 'إجمالي المبيعات', en: 'Total sales' }} value={stats.metrics.totalSales.value} change={stats.metrics.totalSales.change} trend={stats.metrics.totalSales.trend} icon="sales" color="blue" />
+                <MetricCard label={{ ar: 'إجمالي الطلبات', en: 'Total orders' }} value={stats.metrics.totalOrders.value} change={stats.metrics.totalOrders.change} trend={stats.metrics.totalOrders.trend} icon="orders" color="violet" />
+                <MetricCard label={{ ar: 'عملاء جدد', en: 'New customers' }} value={stats.metrics.newCustomers.value} change={stats.metrics.newCustomers.change} trend={stats.metrics.newCustomers.trend} icon="customers" color="emerald" />
+                <MetricCard label={{ ar: 'نجاح الدفع', en: 'Payment success' }} value={stats.metrics.paymentSuccessRate.value} change={stats.metrics.paymentSuccessRate.change} trend={stats.metrics.paymentSuccessRate.trend} icon="reports" color="amber" />
             </section>
 
             <section className="mt-6 grid gap-4 lg:grid-cols-2">
@@ -100,20 +165,34 @@ export function DashboardHomeInclude() {
             </section>
 
             <section className="mt-6 grid gap-6 xl:grid-cols-3">
-                <div className="xl:col-span-2"><SalesOverview /></div>
+                <div className="xl:col-span-2">
+                    <SalesOverview values={stats.monthlySales} />
+                </div>
                 <article className="avora-goal-card avora-border rounded-2xl border p-6 text-white shadow-sm">
-                    <p className="text-sm text-white/70">{translate({ ar: 'الهدف الشهري', en: 'Monthly target' })}</p>
-                    <p className="mt-2 text-3xl font-bold">78%</p>
-                    <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-white/15"><div className="avora-progress-primary h-full w-[78%] rounded-full" /></div>
-                    <p className="mt-5 text-sm leading-6 text-slate-300">{translate({ ar: 'أنت قريب جدًا من تحقيق هدف هذا الشهر. استمر على نفس الأداء!', en: "You're very close to this month's target. Keep it going!" })}</p>
+                    <p className="text-sm text-white/70">{translate({ ar: 'هدف الشهر', en: 'Monthly target' })}</p>
+                    <p className="mt-2 text-3xl font-bold">{stats.monthlyTarget.percent}%</p>
+                    <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-white/15">
+                        <div className="avora-progress-primary h-full rounded-full" style={{ width: `${stats.monthlyTarget.percent}%` }} />
+                    </div>
+                    <p className="mt-5 text-sm leading-6 text-slate-300">
+                        {translate({ ar: 'النسبة محسوبة من مبيعات الشهر الحالي الفعلية.', en: 'This percentage is calculated from actual current-month sales.' })}
+                    </p>
                     <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/10 pt-5">
-                        <div><p className="text-xs text-slate-400">{translate({ ar: 'المحقق', en: 'Achieved' })}</p><p className="mt-1 font-bold">78,000 ج.م</p></div>
-                        <div><p className="text-xs text-slate-400">{translate({ ar: 'المتبقي', en: 'Remaining' })}</p><p className="mt-1 font-bold">22,000 ج.م</p></div>
+                        <div>
+                            <p className="text-xs text-slate-400">{translate({ ar: 'المحقق', en: 'Achieved' })}</p>
+                            <p className="mt-1 font-bold">{stats.monthlyTarget.achieved}</p>
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-400">{translate({ ar: 'المتبقي', en: 'Remaining' })}</p>
+                            <p className="mt-1 font-bold">{stats.monthlyTarget.remaining}</p>
+                        </div>
                     </div>
                 </article>
             </section>
 
-            <section className="mt-6"><RecentOrders /></section>
+            <section className="mt-6">
+                <RecentOrders orders={stats.recentOrders} />
+            </section>
         </DashboardLayout>
     );
 }

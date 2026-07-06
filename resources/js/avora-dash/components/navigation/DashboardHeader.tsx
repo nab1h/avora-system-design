@@ -14,17 +14,25 @@ type DashboardHeaderProps = {
 };
 
 export function DashboardHeader({ desktopSidebarOpen, onMenuClick, onDesktopMenuClick }: DashboardHeaderProps) {
-    const { auth } = usePage<PageProps>().props;
+    const { auth, dashboardNotifications } = usePage<PageProps>().props;
     const { translate } = useLanguage();
     const initials = auth.user.name.trim().slice(0, 2).toUpperCase();
     const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+    const [notificationsOpen, setNotificationsOpen] = useState(false);
     const accountMenuRef = useRef<HTMLDivElement>(null);
+    const notificationsRef = useRef<HTMLDivElement>(null);
     const userPermissions = auth.user.permissions ?? [];
+    const unreadCount = dashboardNotifications?.unread_count ?? 0;
+    const notifications = dashboardNotifications?.items ?? [];
 
     useEffect(() => {
         const closeOnOutsideClick = (event: MouseEvent) => {
             if (!accountMenuRef.current?.contains(event.target as Node)) {
                 setAccountMenuOpen(false);
+            }
+
+            if (!notificationsRef.current?.contains(event.target as Node)) {
+                setNotificationsOpen(false);
             }
         };
 
@@ -45,6 +53,7 @@ export function DashboardHeader({ desktopSidebarOpen, onMenuClick, onDesktopMenu
                 >
                     <DashboardIcon name="menu" />
                 </Button>
+
                 <Button
                     type="button"
                     variant="outline"
@@ -52,35 +61,24 @@ export function DashboardHeader({ desktopSidebarOpen, onMenuClick, onDesktopMenu
                     rounded="lg"
                     onClick={onDesktopMenuClick}
                     aria-label={translate({
-                        ar: desktopSidebarOpen
-                            ? "إغلاق القائمة الجانبية"
-                            : "فتح القائمة الجانبية",
-                        en: desktopSidebarOpen
-                            ? "Close sidebar"
-                            : "Open sidebar",
+                        ar: desktopSidebarOpen ? 'إغلاق القائمة الجانبية' : 'فتح القائمة الجانبية',
+                        en: desktopSidebarOpen ? 'Close sidebar' : 'Open sidebar',
                     })}
                     aria-expanded={desktopSidebarOpen}
                     className="hidden lg:inline-flex"
                 >
-                    <DashboardIcon
-                        name={desktopSidebarOpen ? "close" : "menu"}
-                    />
+                    <DashboardIcon name={desktopSidebarOpen ? 'close' : 'menu'} />
                 </Button>
 
                 <label className="relative hidden max-w-md flex-1 md:block">
-                    <span className="sr-only">
-                        {translate({ ar: "بحث", en: "Search" })}
-                    </span>
+                    <span className="sr-only">{translate({ ar: 'بحث', en: 'Search' })}</span>
                     <DashboardIcon
                         name="search"
                         className="pointer-events-none absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
                     />
                     <input
                         type="search"
-                        placeholder={translate({
-                            ar: "ابحث في لوحة التحكم...",
-                            en: "Search dashboard...",
-                        })}
+                        placeholder={translate({ ar: 'ابحث في لوحة التحكم...', en: 'Search dashboard...' })}
                         className="avora-form-field w-full rounded-xl border-slate-200 bg-slate-50 py-2.5 ps-11 pe-4 text-sm placeholder:text-slate-400 dark:border-slate-700 dark:bg-slate-900"
                     />
                 </label>
@@ -88,21 +86,91 @@ export function DashboardHeader({ desktopSidebarOpen, onMenuClick, onDesktopMenu
                 <div className="ms-auto flex items-center gap-1 sm:gap-2">
                     <LanguageButton />
                     <ModeButton />
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        rounded="lg"
-                        className="relative"
-                        aria-label={translate({
-                            ar: "الإشعارات",
-                            en: "Notifications",
-                        })}
-                    >
-                        <DashboardIcon name="bell" />
-                        <span className="absolute end-2 top-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-950" />
-                    </Button>
+
+                    <div ref={notificationsRef} className="relative">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            rounded="lg"
+                            className="relative"
+                            onClick={() => setNotificationsOpen((open) => !open)}
+                            aria-expanded={notificationsOpen}
+                            aria-haspopup="menu"
+                            aria-label={translate({ ar: 'الإشعارات', en: 'Notifications' })}
+                        >
+                            <DashboardIcon name="bell" />
+                            {unreadCount > 0 && (
+                                <span className="absolute end-2 top-2 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-950" />
+                            )}
+                        </Button>
+
+                        {notificationsOpen && (
+                            <div
+                                role="menu"
+                                className="avora-surface avora-border absolute end-0 top-full mt-2 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border shadow-xl shadow-slate-900/10"
+                            >
+                                <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+                                    <div>
+                                        <p className="text-sm font-black text-slate-950 dark:text-white">
+                                            {translate({ ar: 'الإشعارات', en: 'Notifications' })}
+                                        </p>
+                                        <p className="mt-0.5 text-xs text-slate-500">
+                                            {translate({ ar: `${unreadCount} غير مقروء`, en: `${unreadCount} unread` })}
+                                        </p>
+                                    </div>
+
+                                    {unreadCount > 0 && (
+                                        <Link
+                                            href={route('dashboard.notifications.read-all')}
+                                            method="post"
+                                            as="button"
+                                            preserveScroll
+                                            className="rounded-lg px-2 py-1 text-xs font-bold text-[var(--avora-primary)] hover:bg-[var(--avora-primary)]/10"
+                                        >
+                                            {translate({ ar: 'تعليم الكل', en: 'Mark all' })}
+                                        </Link>
+                                    )}
+                                </div>
+
+                                <div className="max-h-96 overflow-y-auto p-2">
+                                    {notifications.length === 0 ? (
+                                        <div className="px-4 py-8 text-center text-sm text-slate-500">
+                                            {translate({ ar: 'لا توجد إشعارات حتى الآن.', en: 'No notifications yet.' })}
+                                        </div>
+                                    ) : (
+                                        notifications.map((notification) => (
+                                            <Link
+                                                key={notification.id}
+                                                href={route('dashboard.notifications.read', notification.id)}
+                                                role="menuitem"
+                                                onClick={() => setNotificationsOpen(false)}
+                                                className={`flex gap-3 rounded-xl px-3 py-3 text-start transition hover:bg-slate-100 dark:hover:bg-slate-800 ${
+                                                    notification.read_at ? 'opacity-75' : 'bg-rose-50/60 dark:bg-rose-500/10'
+                                                }`}
+                                            >
+                                                <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${notification.read_at ? 'bg-slate-300 dark:bg-slate-700' : 'bg-rose-500'}`} />
+                                                <span className="min-w-0 flex-1">
+                                                    <span className="block truncate text-sm font-black text-slate-900 dark:text-white">
+                                                        {notification.title ?? translate({ ar: 'إشعار جديد', en: 'New notification' })}
+                                                    </span>
+                                                    <span className="mt-1 block line-clamp-2 text-xs leading-5 text-slate-500">
+                                                        {notification.body}
+                                                    </span>
+                                                    <span className="mt-2 block text-[11px] font-semibold text-slate-400">
+                                                        {notification.created_at}
+                                                    </span>
+                                                </span>
+                                            </Link>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     <div className="mx-1 hidden h-8 w-px bg-slate-200 sm:block dark:bg-slate-700" />
+
                     <div ref={accountMenuRef} className="relative">
                         <Button
                             type="button"
@@ -115,11 +183,7 @@ export function DashboardHeader({ desktopSidebarOpen, onMenuClick, onDesktopMenu
                         >
                             <span className="avora-bg-primary-soft avora-text-primary grid h-9 w-9 place-items-center overflow-hidden rounded-xl text-xs font-bold">
                                 {auth.user.avatar_url ? (
-                                    <img
-                                        src={auth.user.avatar_url}
-                                        alt={auth.user.name}
-                                        className="h-full w-full object-cover"
-                                    />
+                                    <img src={auth.user.avatar_url} alt={auth.user.name} className="h-full w-full object-cover" />
                                 ) : (
                                     initials
                                 )}
@@ -129,20 +193,14 @@ export function DashboardHeader({ desktopSidebarOpen, onMenuClick, onDesktopMenu
                                     {auth.user.name}
                                 </span>
                                 <span className="block text-[11px] text-slate-500">
-                                    {userPermissions
-                                        ? translate({
-                                              ar: "حساب ادمين",
-                                              en: "admin",
-                                          })
-                                        : translate({
-                                              ar: "مريض",
-                                              en: "مريض",
-                                          })}
+                                    {userPermissions.length > 0
+                                        ? translate({ ar: 'حساب إدارة', en: 'Admin account' })
+                                        : translate({ ar: 'عميل', en: 'Customer' })}
                                 </span>
                             </span>
                             <DashboardIcon
                                 name="arrow-down"
-                                className={`hidden h-4 w-4 text-slate-400 transition sm:block ${accountMenuOpen ? "rotate-180" : ""}`}
+                                className={`hidden h-4 w-4 text-slate-400 transition sm:block ${accountMenuOpen ? 'rotate-180' : ''}`}
                             />
                         </Button>
 
@@ -155,22 +213,14 @@ export function DashboardHeader({ desktopSidebarOpen, onMenuClick, onDesktopMenu
                                     <div className="flex items-center gap-3">
                                         <span className="avora-bg-primary-soft avora-text-primary grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl text-xs font-bold">
                                             {auth.user.avatar_url ? (
-                                                <img
-                                                    src={auth.user.avatar_url}
-                                                    alt={auth.user.name}
-                                                    className="h-full w-full object-cover"
-                                                />
+                                                <img src={auth.user.avatar_url} alt={auth.user.name} className="h-full w-full object-cover" />
                                             ) : (
                                                 initials
                                             )}
                                         </span>
                                         <div className="min-w-0">
-                                            <p className="truncate text-sm font-bold text-slate-900 dark:text-white">
-                                                {auth.user.name}
-                                            </p>
-                                            <p className="mt-1 truncate text-xs text-slate-500">
-                                                {auth.user.email}
-                                            </p>
+                                            <p className="truncate text-sm font-bold text-slate-900 dark:text-white">{auth.user.name}</p>
+                                            <p className="mt-1 truncate text-xs text-slate-500">{auth.user.email}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -178,45 +228,32 @@ export function DashboardHeader({ desktopSidebarOpen, onMenuClick, onDesktopMenu
                                     <Link
                                         href="/profile"
                                         role="menuitem"
-                                        onClick={() =>
-                                            setAccountMenuOpen(false)
-                                        }
+                                        onClick={() => setAccountMenuOpen(false)}
                                         className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                                     >
                                         <DashboardIcon name="profile" />
-                                        {translate({
-                                            ar: "الملف الشخصي",
-                                            en: "Profile",
-                                        })}
+                                        {translate({ ar: 'الملف الشخصي', en: 'Profile' })}
                                     </Link>
                                     <Link
                                         href="/dashboard/settings"
                                         role="menuitem"
-                                        onClick={() =>
-                                            setAccountMenuOpen(false)
-                                        }
+                                        onClick={() => setAccountMenuOpen(false)}
                                         className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                                     >
                                         <DashboardIcon name="settings" />
-                                        {translate({
-                                            ar: "الإعدادات",
-                                            en: "Settings",
-                                        })}
+                                        {translate({ ar: 'الإعدادات', en: 'Settings' })}
                                     </Link>
                                 </div>
                                 <div className="border-t border-slate-100 pt-2 dark:border-slate-800">
                                     <Link
-                                        href={route("logout")}
+                                        href={route('logout')}
                                         method="post"
                                         as="button"
                                         role="menuitem"
                                         className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10"
                                     >
                                         <DashboardIcon name="logout" />
-                                        {translate({
-                                            ar: "تسجيل الخروج",
-                                            en: "Log out",
-                                        })}
+                                        {translate({ ar: 'تسجيل الخروج', en: 'Log out' })}
                                     </Link>
                                 </div>
                             </div>

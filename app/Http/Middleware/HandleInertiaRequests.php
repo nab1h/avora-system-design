@@ -45,6 +45,28 @@ class HandleInertiaRequests extends Middleware
                     ->map
                     ->toFrontend()
                 : [],
+            'dashboardNotifications' => fn () => $request->user() && Schema::hasTable('notifications')
+                ? [
+                    'unread_count' => $request->user()->unreadNotifications()->count(),
+                    'items' => $request->user()
+                        ->notifications()
+                        ->latest()
+                        ->limit(10)
+                        ->get()
+                        ->map(fn ($notification) => [
+                            'id' => $notification->id,
+                            'title' => data_get($notification->data, 'title'),
+                            'body' => data_get($notification->data, 'body'),
+                            'url' => data_get($notification->data, 'url'),
+                            'event_type' => data_get($notification->data, 'event_type'),
+                            'read_at' => $notification->read_at?->toISOString(),
+                            'created_at' => $notification->created_at?->diffForHumans(),
+                        ]),
+                ]
+                : [
+                    'unread_count' => 0,
+                    'items' => [],
+                ],
             'auth' => [
                 'user' => $request->user()
                     ? [

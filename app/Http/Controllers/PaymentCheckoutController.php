@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PaymentGateway;
 use App\Models\PaymentTransaction;
 use App\Models\WebsiteSetting;
+use App\Support\DashboardNotifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -49,6 +50,13 @@ class PaymentCheckoutController extends Controller
             ],
         ]);
 
+        $this->notifyTransaction(
+            $transaction,
+            'طلب شراء جديد',
+            'تم إنشاء طلب شراء: '.$transaction->product_name.' بقيمة '.$transaction->amountDecimal().' '.$transaction->currency,
+            'purchase_created',
+        );
+
         if ($gateway->slug === 'stripe') {
             return $this->redirectToStripe($transaction, $gateway);
         }
@@ -83,6 +91,13 @@ class PaymentCheckoutController extends Controller
             'status' => 'paid_waiting_webhook',
         ]);
 
+        $this->notifyTransaction(
+            $paymentTransaction,
+            'عملية دفع ناجحة',
+            'تم رجوع العميل من بوابة الدفع بنجاح لطلب '.$paymentTransaction->product_name,
+            'payment_success',
+        );
+
         $paymentTransaction->load('gateway');
 
         return Inertia::render('Checkout/Success', [
@@ -95,6 +110,13 @@ class PaymentCheckoutController extends Controller
         $paymentTransaction->update([
             'status' => 'cancelled',
         ]);
+
+        $this->notifyTransaction(
+            $paymentTransaction,
+            'عملية دفع ملغية',
+            'تم إلغاء أو فشل عملية دفع لطلب '.$paymentTransaction->product_name,
+            'payment_cancelled',
+        );
 
         $paymentTransaction->load('gateway');
 
@@ -114,6 +136,13 @@ class PaymentCheckoutController extends Controller
                 'tap_webhook' => $request->all(),
             ]),
         ]);
+
+        $this->notifyTransaction(
+            $paymentTransaction,
+            in_array($status, ['captured', 'paid'], true) ? 'تم تأكيد الدفع' : 'تحديث من بوابة Tap',
+            'وصل تحديث من Tap لطلب '.$paymentTransaction->product_name,
+            in_array($status, ['captured', 'paid'], true) ? 'payment_paid' : 'payment_gateway_update',
+        );
 
         return response()->noContent();
     }
@@ -145,6 +174,13 @@ class PaymentCheckoutController extends Controller
                 'paymob_callback' => $request->all(),
             ]),
         ]);
+
+        $this->notifyTransaction(
+            $transaction,
+            $success && ! $pending ? 'تم تأكيد الدفع' : ($pending ? 'عملية دفع معلقة' : 'عملية دفع فشلت'),
+            'وصل تحديث من Paymob لطلب '.$transaction->product_name,
+            $success && ! $pending ? 'payment_paid' : ($pending ? 'payment_pending' : 'payment_failed'),
+        );
 
         $transaction->load('gateway');
 
@@ -178,7 +214,24 @@ class PaymentCheckoutController extends Controller
             ]),
         ]);
 
+        $this->notifyTransaction(
+            $transaction,
+            $status === 'paid' ? 'تم تأكيد الدفع' : 'تحديث من بوابة Moyasar',
+            'وصل تحديث من Moyasar لطلب '.$transaction->product_name,
+            $status === 'paid' ? 'payment_paid' : 'payment_gateway_update',
+        );
+
         return response()->noContent();
+    }
+
+    private function notifyTransaction(PaymentTransaction $transaction, string $title, string $body, string $eventType): void
+    {
+        DashboardNotifier::send(
+            $title,
+            $body,
+            route('dashboard.purchases'),
+            $eventType,
+        );
     }
 
     private function resolveGateway(): ?PaymentGateway

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\WebsiteSettingController;
 use App\Http\Controllers\Admin\WebsiteSettingPageController;
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardNotificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentCheckoutController;
 use App\Http\Controllers\ProfileController;
@@ -124,6 +125,14 @@ Route::get('/dashboard/payments', [DashboardController::class, 'payments'])
 Route::get('/dashboard/purchases', [DashboardController::class, 'purchases'])
     ->middleware(['auth', 'verified', 'dashboard.access'])
     ->name('dashboard.purchases');
+
+Route::get('/dashboard/notifications/{notification}', [DashboardNotificationController::class, 'read'])
+    ->middleware(['auth', 'verified', 'dashboard.access'])
+    ->name('dashboard.notifications.read');
+
+Route::post('/dashboard/notifications/read-all', [DashboardNotificationController::class, 'markAllRead'])
+    ->middleware(['auth', 'verified', 'dashboard.access'])
+    ->name('dashboard.notifications.read-all');
 
 Route::get('/dashboard/{section}', [DashboardController::class, 'section'])
     ->where('section', 'orders|products|customers|reports|calendar|forms|tables|ui-elements|payments|purchases')

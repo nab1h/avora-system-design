@@ -85,12 +85,26 @@ export interface PaymentTransaction {
     created_at?: string | null;
 }
 
+export interface DashboardNotification {
+    id: string;
+    title?: string | null;
+    body?: string | null;
+    url?: string | null;
+    event_type?: string | null;
+    read_at?: string | null;
+    created_at?: string | null;
+}
+
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
     appName: string;
     websiteSettings: WebsiteSettings;
     paymentGateways: PaymentGateway[];
+    dashboardNotifications: {
+        unread_count: number;
+        items: DashboardNotification[];
+    };
     auth: {
         user: User;
     };
