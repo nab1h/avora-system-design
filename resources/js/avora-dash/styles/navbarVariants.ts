@@ -60,7 +60,7 @@ export const navbarContainerVariants = cva(
             height: {
                 sm: 'min-h-14',
                 md: 'min-h-16',
-                lg: 'min-h-20',
+                lg: 'min-h-40',
             },
         },
         defaultVariants: {

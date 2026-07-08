@@ -2,6 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    :root {
+        --avora-font-roboto: "Roboto";
+        --avora-font-science: "Science Gothic";
+        --avora-font-cairo: "Cairo";
+        --avora-font-playfair: "Playfair Display";
+        --avora-font-body: var(--avora-font-roboto);
+        --avora-font-heading: var(--avora-font-playfair);
+        --avora-font-brand: var(--avora-font-science);
+    }
+
+    html[dir="rtl"] {
+        --avora-font-body: var(--avora-font-cairo);
+        --avora-font-heading: var(--avora-font-cairo);
+        --avora-font-brand: var(--avora-font-cairo);
+    }
+
+    body {
+        font-family: var(--avora-font-body), sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--avora-font-heading), serif;
+    }
+}
+
+
+/* google fonts */
+.roboto {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 95.1;
+}
+
+.science-gothic {
+  font-family: "Science Gothic", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" -3,
+    "wdth" 100,
+    "CTRS" 0;
+}
+
+.cairo {
+  font-family: "Cairo", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 323;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0;
+}
+
+.playfair-display {
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
 @layer components {
     .avora-button-primary {
         background-color: var(--avora-primary);

@@ -7,6 +7,16 @@ export {
     type NavbarContainerProps,
 } from './NavbarContainer';
 export { NavbarDesktop, type NavbarDesktopProps } from './NavbarDesktop';
+export {
+    NavbarDropdown,
+    NavbarDropdownItem,
+    type NavbarDropdownAlign,
+    type NavbarDropdownDuration,
+    type NavbarDropdownItemProps,
+    type NavbarDropdownMotion,
+    type NavbarDropdownProps,
+    type NavbarDropdownWidth,
+} from './NavbarDropdown';
 export { NavbarLink, type NavbarLinkProps } from './NavbarLink';
 export { NavbarLinks, type NavbarLinksProps } from './NavbarLinks';
 export { NavbarLogo, type NavbarLogoProps } from './NavbarLogo';
