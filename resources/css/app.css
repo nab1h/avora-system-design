@@ -136,7 +136,7 @@
 
     .avora-form-field:focus {
         border-color: var(--avora-primary);
-        box-shadow: 0 0 0 4px color-mix(in srgb, var(--avora-primary) 10%, transparent);
+        box-shadow: 0 0 0 0px color-mix(in srgb, var(--avora-primary) 10%, transparent);
     }
 
     .avora-checkbox {

@@ -14,7 +14,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
                 </span>
                 <input
                     ref={ref}
-                    className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 dark:bg-slate-900 dark:text-white ${error ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' : 'avora-form-field border-slate-200 dark:border-slate-700'} ${className}`}
+                    className={`w-full border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 dark:bg-slate-900 dark:text-white ${error ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' : 'avora-form-field border-slate-200 dark:border-slate-700'} ${className}`}
                     {...props}
                 />
                 {error && (

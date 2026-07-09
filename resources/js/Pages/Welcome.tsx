@@ -69,7 +69,7 @@ export default function Welcome({}: PageProps) {
                 })}
             />
 
-            <Navbar position="sticky" background="surface" shadow="sm" bordered>
+            <Navbar position="sticky" background="surface">
                 <NavbarContainer
                     width="full"
                     className="min-h-24 grid grid-cols-[2.5rem_1fr_2.5rem] md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"

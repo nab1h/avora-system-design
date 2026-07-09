@@ -1,5 +1,5 @@
 export const lightColors = {
-    primary: "#f59e0b",
+    primary: "#424242",
     secondary: "#64748b",
     success: "#16a34a",
     danger: "#dc2626",
@@ -13,7 +13,7 @@ export const lightColors = {
 };
 
 export const darkColors = {
-    primary: "#f59e0b",
+    primary: "#424242",
     secondary: "#94a3b8",
     success: "#22c55e",
     danger: "#ef4444",
