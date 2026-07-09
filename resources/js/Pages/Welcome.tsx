@@ -1,4 +1,6 @@
 import { Button } from "@/avora-dash/components/Button";
+import { Container } from "@/avora-dash/components/Container/Container";
+import { Grid } from "@/avora-dash/components/Grid";
 import { LanguageButton } from "@/avora-dash/components/LanguageButton";
 import {
     Navbar,
@@ -15,6 +17,7 @@ import {
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import ModeButton from "@/avora-dash/providers/ModeButton";
+import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
 import { PageProps } from "@/types";
 import { Head, router, usePage } from "@inertiajs/react";
@@ -31,6 +34,7 @@ import {
 } from "react-icons/lu";
 
 export default function Welcome({}: PageProps) {
+    const { colors } = useTheme();
     const { translate, direction } = useLanguage();
     const appName = useAppName();
     const page = usePage<PageProps & { errors?: Record<string, string> }>();
@@ -72,7 +76,7 @@ export default function Welcome({}: PageProps) {
             <Navbar position="sticky" background="surface">
                 <NavbarContainer
                     width="full"
-                    className="min-h-24 grid grid-cols-[2.5rem_1fr_2.5rem] md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+                    className="min-h-24 my-10  grid grid-cols-[2.5rem_1fr_2.5rem] md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
                     dir="ltr"
                 >
                     <NavbarActions
@@ -198,6 +202,12 @@ export default function Welcome({}: PageProps) {
                         <ModeButton />
                         <LanguageButton />
                     </NavbarActions>
+
+                    <NavbarLinks className="row-start-2 hidden md:flex col-start-2 justify-self-center">
+                        {navbar.map((nav) => (
+                            <NavbarLink href={nav.href}>{nav.name}</NavbarLink>
+                        ))}
+                    </NavbarLinks>
 
                     <NavbarBrand
                         className="col-start-2 row-start-1 justify-self-center md:col-start-2"
@@ -340,6 +350,32 @@ export default function Welcome({}: PageProps) {
                 open={!user && customerAuthOpen}
                 onClose={() => setCustomerAuthOpen(false)}
             />
+
+            {/* start page content */}
+
+            <main
+                className="min-h-screen transition-colors duration-300"
+                style={{
+                    background: `linear-gradient(${colors.muted}0d, ${colors.muted}0d), ${colors.background}`,
+                    color: colors.text,
+                }}
+            >
+                <Container
+                    width="content"
+                    gutter="none"
+                    paddingY="sm"
+                    className="space-y-14"
+                >
+                    <Grid
+                        layout="two"
+                        gap="lg"
+                        padding="lg"
+                        background="gradient"
+                        rounded="none"
+                        align="center"
+                    ></Grid>
+                </Container>
+            </main>
         </>
     );
 }

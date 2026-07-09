@@ -78,7 +78,7 @@ export function DashboardSidebar({ open, desktopOpen, onClose }: DashboardSideba
                             <span className="block text-[11px] text-slate-500">{translate({ ar: 'مساحة الإدارة', en: 'Admin workspace' })}</span>
                         </span>
                     </Link>
-                    <Button type="button" variant="ghost" size="icon" rounded="lg" onClick={onClose} className="lg:hidden">
+                    <Button type="button" variant="ghost" size="icon" rounded="no" onClick={onClose} className="lg:hidden">
                         <DashboardIcon name="close" />
                     </Button>
                 </div>
@@ -94,7 +94,7 @@ export function DashboardSidebar({ open, desktopOpen, onClose }: DashboardSideba
                     <p className="text-sm font-semibold">{translate({ ar: 'تحتاج مساعدة؟', en: 'Need some help?' })}</p>
                     <p className="mt-1 text-xs leading-5 text-white/70">{translate({ ar: 'فريق الدعم جاهز لمساعدتك في أي وقت.', en: 'Our support team is ready whenever you need us.' })}</p>
                     {websiteSettings?.contact_email && <p className="mt-2 break-all text-xs font-semibold text-white/80">{websiteSettings.contact_email}</p>}
-                    <Button type="button" variant="ghost" size="sm" rounded="lg" className="mt-3 bg-white/15 text-white hover:bg-white/25 hover:text-white">{translate({ ar: 'تواصل معنا', en: 'Contact us' })}</Button>
+                    <Button type="button" variant="ghost" size="sm" rounded="no" className="mt-3 bg-white/15 text-white hover:bg-white/25 hover:text-white">{translate({ ar: 'تواصل معنا', en: 'Contact us' })}</Button>
                 </div>
             </aside>
         </>

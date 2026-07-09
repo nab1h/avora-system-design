@@ -179,7 +179,6 @@ export function CustomerAuthModal({ open, onClose }: CustomerAuthModalProps) {
                     <Button
                         type="submit"
                         fullWidth
-                        rounded="lg"
                         disabled={registerForm.processing}
                         className="py-3.5 text-sm font-black"
                     >
@@ -241,7 +240,6 @@ export function CustomerAuthModal({ open, onClose }: CustomerAuthModalProps) {
                     <Button
                         type="submit"
                         fullWidth
-                        rounded="lg"
                         disabled={loginForm.processing}
                         className="py-3.5 text-sm font-black"
                     >

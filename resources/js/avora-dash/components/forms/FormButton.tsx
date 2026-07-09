@@ -1,10 +1,14 @@
-import type { ButtonHTMLAttributes } from 'react';
-import { Button } from '../Button';
+import type { ButtonHTMLAttributes } from "react";
+import { Button } from "../Button";
 
-export function FormButton({ children, className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
+export function FormButton({
+    children,
+    className = "",
+    ...props
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
     return (
         <Button
-            rounded="lg"
+            rounded="no"
             className={`h-auto px-5 py-3 font-semibold ${className}`}
             {...props}
         >

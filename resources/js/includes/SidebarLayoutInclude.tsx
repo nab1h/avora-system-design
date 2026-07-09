@@ -1,27 +1,25 @@
-import type { ReactNode } from 'react';
-import { Card, CardTitle } from '@/avora-dash/components/Card';
-import { Container } from '@/avora-dash/components/Container';
-import { Grid } from '@/avora-dash/components/Grid';
-import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
-import { useTheme } from '@/avora-dash/providers/ThemeProvider';
+import type { ReactNode } from "react";
+import { Card, CardTitle } from "@/avora-dash/components/Card";
+import { Container } from "@/avora-dash/components/Container";
+import { Grid } from "@/avora-dash/components/Grid";
+import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
+import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 
 export interface SidebarLayoutIncludeProps {
     children: ReactNode;
 }
 
 // Page layout with a responsive sidebar and main content area.
-export function SidebarLayoutInclude({
-    children,
-}: SidebarLayoutIncludeProps) {
+export function SidebarLayoutInclude({ children }: SidebarLayoutIncludeProps) {
     const { translate } = useLanguage();
     const { colors } = useTheme();
 
     // Replace these items with your real filters or navigation links.
     const sidebarItems = [
-        translate({ ar: 'نظرة عامة', en: 'Overview' }),
-        translate({ ar: 'الطلبات', en: 'Orders' }),
-        translate({ ar: 'العملاء', en: 'Customers' }),
-        translate({ ar: 'الإعدادات', en: 'Settings' }),
+        translate({ ar: "نظرة عامة", en: "Overview" }),
+        translate({ ar: "الطلبات", en: "Orders" }),
+        translate({ ar: "العملاء", en: "Customers" }),
+        translate({ ar: "الإعدادات", en: "Settings" }),
     ];
 
     return (
@@ -32,12 +30,12 @@ export function SidebarLayoutInclude({
                 gap="lg"
                 padding="lg"
                 background="muted"
-                rounded="lg"
+                rounded="no"
                 align="start"
             >
                 <Card padding="md">
                     <CardTitle>
-                        {translate({ ar: 'القائمة', en: 'Menu' })}
+                        {translate({ ar: "القائمة", en: "Menu" })}
                     </CardTitle>
 
                     <nav className="mt-4 space-y-2">
@@ -54,7 +52,7 @@ export function SidebarLayoutInclude({
                                     backgroundColor:
                                         index === 0
                                             ? `${colors.primary}14`
-                                            : 'transparent',
+                                            : "transparent",
                                 }}
                             >
                                 {item}

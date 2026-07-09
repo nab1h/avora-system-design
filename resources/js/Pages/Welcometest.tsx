@@ -44,24 +44,33 @@ export default function Welcome({}: PageProps) {
     const { translate } = useLanguage();
     const appName = useAppName();
     const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
-    const [purchasingProductId, setPurchasingProductId] = useState<string | null>(null);
+    const [purchasingProductId, setPurchasingProductId] = useState<
+        string | null
+    >(null);
     const page = usePage<PageProps & { errors?: Record<string, string> }>();
     const user = page.props.auth.user;
     const websiteCurrency = page.props.websiteSettings.currency ?? "EGP";
-    const enabledPaymentGateways = page.props.paymentGateways.filter((gateway) => gateway.enabled);
+    const enabledPaymentGateways = page.props.paymentGateways.filter(
+        (gateway) => gateway.enabled,
+    );
     const activePaymentGateway = enabledPaymentGateways[0];
 
     const buyProduct = (productId: string) => {
-        router.post(route("checkout.store"), {
-            product_id: productId,
-        }, {
-            preserveScroll: true,
-            onStart: () => setPurchasingProductId(productId),
-            onFinish: () => setPurchasingProductId(null),
-        });
+        router.post(
+            route("checkout.store"),
+            {
+                product_id: productId,
+            },
+            {
+                preserveScroll: true,
+                onStart: () => setPurchasingProductId(productId),
+                onFinish: () => setPurchasingProductId(null),
+            },
+        );
     };
 
-    const checkoutGatewayError = page.props.errors?.gateway_slug ?? page.props.errors?.product_id;
+    const checkoutGatewayError =
+        page.props.errors?.gateway_slug ?? page.props.errors?.product_id;
 
     const customerAction = (fullWidth = false) =>
         user ? (
@@ -70,7 +79,7 @@ export default function Welcome({}: PageProps) {
                 variant="danger"
                 fullWidth={fullWidth}
                 type="button"
-                onClick={() => router.post(route('logout'))}
+                onClick={() => router.post(route("logout"))}
                 className="gap-2"
             >
                 <FaRightFromBracket className="h-4 w-4" />
@@ -85,8 +94,14 @@ export default function Welcome({}: PageProps) {
                 onClick={() => setCustomerAuthOpen(true)}
                 className="gap-2"
             >
-                {user ? <FaRightFromBracket className="h-4 w-4" /> : <FaUserCheck className="h-4 w-4" />}
-                {user ? translate({ ar: "تسجيل الخروج", en: "Logout" }) : translate({ ar: "دخول العملاء", en: "Client login" })}
+                {user ? (
+                    <FaRightFromBracket className="h-4 w-4" />
+                ) : (
+                    <FaUserCheck className="h-4 w-4" />
+                )}
+                {user
+                    ? translate({ ar: "تسجيل الخروج", en: "Logout" })
+                    : translate({ ar: "دخول العملاء", en: "Client login" })}
             </Button>
         );
 
@@ -131,7 +146,10 @@ export default function Welcome({}: PageProps) {
                 en: "Flexible components for fast and consistent interfaces.",
             }),
             amount: 1200,
-            price: translate({ ar: `١٢٠٠ ${websiteCurrency}`, en: `${websiteCurrency} 1,200` }),
+            price: translate({
+                ar: `١٢٠٠ ${websiteCurrency}`,
+                en: `${websiteCurrency} 1,200`,
+            }),
         },
         {
             id: "color-collection",
@@ -143,7 +161,10 @@ export default function Welcome({}: PageProps) {
                 en: "Ready colors for both light and dark modes.",
             }),
             amount: 850,
-            price: translate({ ar: `٨٥٠ ${websiteCurrency}`, en: `${websiteCurrency} 850` }),
+            price: translate({
+                ar: `٨٥٠ ${websiteCurrency}`,
+                en: `${websiteCurrency} 850`,
+            }),
         },
         {
             id: "grid-collection",
@@ -158,7 +179,10 @@ export default function Welcome({}: PageProps) {
                 en: "Smart layouts that adapt to every screen size.",
             }),
             amount: 950,
-            price: translate({ ar: `٩٥٠ ${websiteCurrency}`, en: `${websiteCurrency} 950` }),
+            price: translate({
+                ar: `٩٥٠ ${websiteCurrency}`,
+                en: `${websiteCurrency} 950`,
+            }),
         },
     ];
 
@@ -197,11 +221,37 @@ export default function Welcome({}: PageProps) {
                         <NavbarActions>
                             <ModeButton />
                             <LanguageButton />
-                            <Button size="sm" variant={user ? "danger" : "outline"} type="button" onClick={() => user ? router.post(route('logout')) : setCustomerAuthOpen(true)} className="gap-2">
-                                {user ? <FaRightFromBracket className="h-4 w-4" /> : <FaUserCheck className="h-4 w-4" />}
-                                {user ? translate({ ar: "تسجيل الخروج", en: "Logout" }) : translate({ ar: "دخول العملاء", en: "Client login" })}
+                            <Button
+                                size="sm"
+                                variant={user ? "danger" : "outline"}
+                                type="button"
+                                onClick={() =>
+                                    user
+                                        ? router.post(route("logout"))
+                                        : setCustomerAuthOpen(true)
+                                }
+                                className="gap-2"
+                            >
+                                {user ? (
+                                    <FaRightFromBracket className="h-4 w-4" />
+                                ) : (
+                                    <FaUserCheck className="h-4 w-4" />
+                                )}
+                                {user
+                                    ? translate({
+                                          ar: "تسجيل الخروج",
+                                          en: "Logout",
+                                      })
+                                    : translate({
+                                          ar: "دخول العملاء",
+                                          en: "Client login",
+                                      })}
                             </Button>
-                            <Button size="sm" type="button" onClick={() => setCustomerAuthOpen(true)}>
+                            <Button
+                                size="sm"
+                                type="button"
+                                onClick={() => setCustomerAuthOpen(true)}
+                            >
                                 {translate({
                                     ar: "ابدأ الآن",
                                     en: "Get started",
@@ -254,11 +304,39 @@ export default function Welcome({}: PageProps) {
                     <NavbarActions className="mt-4 border-t border-slate-200 pt-4 dark:border-slate-700">
                         <ModeButton />
                         <LanguageButton />
-                        <Button size="sm" variant={user ? "danger" : "outline"} fullWidth type="button" onClick={() => user ? router.post(route('logout')) : setCustomerAuthOpen(true)} className="gap-2">
-                            {user ? <FaRightFromBracket className="h-4 w-4" /> : <FaUserCheck className="h-4 w-4" />}
-                            {user ? translate({ ar: "تسجيل الخروج", en: "Logout" }) : translate({ ar: "دخول العملاء", en: "Client login" })}
+                        <Button
+                            size="sm"
+                            variant={user ? "danger" : "outline"}
+                            fullWidth
+                            type="button"
+                            onClick={() =>
+                                user
+                                    ? router.post(route("logout"))
+                                    : setCustomerAuthOpen(true)
+                            }
+                            className="gap-2"
+                        >
+                            {user ? (
+                                <FaRightFromBracket className="h-4 w-4" />
+                            ) : (
+                                <FaUserCheck className="h-4 w-4" />
+                            )}
+                            {user
+                                ? translate({
+                                      ar: "تسجيل الخروج",
+                                      en: "Logout",
+                                  })
+                                : translate({
+                                      ar: "دخول العملاء",
+                                      en: "Client login",
+                                  })}
                         </Button>
-                        <Button size="sm" fullWidth type="button" onClick={() => setCustomerAuthOpen(true)}>
+                        <Button
+                            size="sm"
+                            fullWidth
+                            type="button"
+                            onClick={() => setCustomerAuthOpen(true)}
+                        >
                             {translate({ ar: "ابدأ الآن", en: "Get started" })}
                         </Button>
                     </NavbarActions>
@@ -285,7 +363,7 @@ export default function Welcome({}: PageProps) {
                         gap="lg"
                         padding="lg"
                         background="gradient"
-                        rounded="lg"
+                        rounded="none"
                         align="center"
                     >
                         <div className="space-y-5">
@@ -311,11 +389,35 @@ export default function Welcome({}: PageProps) {
                                 })}
                             </p>
                             <div className="flex flex-wrap gap-3">
-                                <Button type="button" variant={user ? "danger" : "outline"} onClick={() => user ? router.post(route('logout')) : setCustomerAuthOpen(true)} className="gap-2">
-                                    {user ? <FaRightFromBracket className="h-4 w-4" /> : <FaUserCheck className="h-4 w-4" />}
-                                    {user ? translate({ ar: "تسجيل الخروج", en: "Logout" }) : translate({ ar: "دخول العملاء", en: "Client login" })}
+                                <Button
+                                    type="button"
+                                    variant={user ? "danger" : "outline"}
+                                    onClick={() =>
+                                        user
+                                            ? router.post(route("logout"))
+                                            : setCustomerAuthOpen(true)
+                                    }
+                                    className="gap-2"
+                                >
+                                    {user ? (
+                                        <FaRightFromBracket className="h-4 w-4" />
+                                    ) : (
+                                        <FaUserCheck className="h-4 w-4" />
+                                    )}
+                                    {user
+                                        ? translate({
+                                              ar: "تسجيل الخروج",
+                                              en: "Logout",
+                                          })
+                                        : translate({
+                                              ar: "دخول العملاء",
+                                              en: "Client login",
+                                          })}
                                 </Button>
-                                <Button type="button" onClick={() => setCustomerAuthOpen(true)}>
+                                <Button
+                                    type="button"
+                                    onClick={() => setCustomerAuthOpen(true)}
+                                >
                                     {translate({
                                         ar: "ابدأ الآن",
                                         en: "Get started",
@@ -363,14 +465,24 @@ export default function Welcome({}: PageProps) {
                             })}
                         />
 
-                        <Card variant="elevated" padding="lg" className="overflow-hidden">
+                        <Card
+                            variant="elevated"
+                            padding="lg"
+                            className="overflow-hidden"
+                        >
                             <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                                 <div className="space-y-4">
                                     <CardMeta>
-                                        {translate({ ar: "طريقة الدفع", en: "Checkout flow" })}
+                                        {translate({
+                                            ar: "طريقة الدفع",
+                                            en: "Checkout flow",
+                                        })}
                                     </CardMeta>
                                     <CardTitle>
-                                        {translate({ ar: "السعر بيتحدد من المنتج نفسه", en: "Price comes from the selected product" })}
+                                        {translate({
+                                            ar: "السعر بيتحدد من المنتج نفسه",
+                                            en: "Price comes from the selected product",
+                                        })}
                                     </CardTitle>
                                     <CardDescription>
                                         {translate({
@@ -383,7 +495,10 @@ export default function Welcome({}: PageProps) {
                                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                                     <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900">
                                         <span className="block font-semibold text-slate-700 dark:text-slate-200">
-                                            {translate({ ar: "عملة الموقع", en: "Website currency" })}
+                                            {translate({
+                                                ar: "عملة الموقع",
+                                                en: "Website currency",
+                                            })}
                                         </span>
                                         <span className="mt-1 block text-slate-500 dark:text-slate-400">
                                             {websiteCurrency}
@@ -392,14 +507,24 @@ export default function Welcome({}: PageProps) {
 
                                     <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900">
                                         <span className="block font-semibold text-slate-700 dark:text-slate-200">
-                                            {translate({ ar: "بوابة الدفع المفعلة", en: "Active payment gateway" })}
+                                            {translate({
+                                                ar: "بوابة الدفع المفعلة",
+                                                en: "Active payment gateway",
+                                            })}
                                         </span>
                                         <span className="mt-1 block text-slate-500 dark:text-slate-400">
                                             {activePaymentGateway
                                                 ? activePaymentGateway.name
-                                                : translate({ ar: "لا توجد بوابة مفعلة", en: "No enabled gateway" })}
+                                                : translate({
+                                                      ar: "لا توجد بوابة مفعلة",
+                                                      en: "No enabled gateway",
+                                                  })}
                                         </span>
-                                        {checkoutGatewayError && <span className="mt-1 block text-xs text-red-500">{checkoutGatewayError}</span>}
+                                        {checkoutGatewayError && (
+                                            <span className="mt-1 block text-xs text-red-500">
+                                                {checkoutGatewayError}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -443,15 +568,22 @@ export default function Welcome({}: PageProps) {
                                         <Button
                                             size="sm"
                                             type="button"
-                                            disabled={purchasingProductId !== null}
-                                            onClick={() => buyProduct(product.id)}
+                                            disabled={
+                                                purchasingProductId !== null
+                                            }
+                                            onClick={() =>
+                                                buyProduct(product.id)
+                                            }
                                         >
                                             {purchasingProductId === product.id
-                                                ? translate({ ar: "جاري الدفع...", en: "Paying..." })
+                                                ? translate({
+                                                      ar: "جاري الدفع...",
+                                                      en: "Paying...",
+                                                  })
                                                 : translate({
-                                                    ar: "اشتري الآن",
-                                                    en: "Buy now",
-                                                })}
+                                                      ar: "اشتري الآن",
+                                                      en: "Buy now",
+                                                  })}
                                         </Button>
                                     </CardFooter>
                                 </Card>
@@ -525,11 +657,13 @@ export default function Welcome({}: PageProps) {
                             gap="lg"
                             padding="lg"
                             background="muted"
-                            backgroundImage={publicAsset("/images/avora-card-blue.svg")}
+                            backgroundImage={publicAsset(
+                                "/images/avora-card-blue.svg",
+                            )}
                             backgroundImageOpacity={0.08}
                             backgroundImageAttachment="fixed"
                             backgroundImageSize="cover"
-                            rounded="lg"
+                            rounded="no"
                             align="start"
                         >
                             <Card padding="md">
@@ -612,7 +746,7 @@ export default function Welcome({}: PageProps) {
                             backgroundImageAttachment="fixed"
                             backgroundImageSize="cover"
                             backgroundImagePosition="center"
-                            rounded="lg"
+                            rounded="no"
                             align="center"
                             className="min-h-[420px]"
                         >
@@ -662,7 +796,9 @@ export default function Welcome({}: PageProps) {
                                 layout="one"
                                 padding="lg"
                                 background="primary"
-                                backgroundImage={publicAsset("/images/avora-card-emerald.svg")}
+                                backgroundImage={publicAsset(
+                                    "/images/avora-card-emerald.svg",
+                                )}
                                 backgroundImageOpacity={0.2}
                                 backgroundImageSize="contain"
                                 backgroundImagePosition="center"
@@ -684,7 +820,9 @@ export default function Welcome({}: PageProps) {
                                 layout="one"
                                 padding="lg"
                                 background="muted"
-                                backgroundImage={publicAsset("/images/avora-card-blue.svg")}
+                                backgroundImage={publicAsset(
+                                    "/images/avora-card-blue.svg",
+                                )}
                                 backgroundImageOpacity={0.12}
                                 backgroundImageSize="180px"
                                 backgroundImageRepeat="repeat"
@@ -713,5 +851,3 @@ export default function Welcome({}: PageProps) {
         </>
     );
 }
-
-

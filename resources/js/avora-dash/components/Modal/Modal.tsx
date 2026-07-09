@@ -4,12 +4,12 @@ import {
     DialogDescription,
     DialogPanel,
     DialogTitle,
-} from '@headlessui/react';
-import type { ReactNode } from 'react';
-import { Button } from '../Button';
+} from "@headlessui/react";
+import type { ReactNode } from "react";
+import { Button } from "../Button";
 
-export type ModalBackdrop = 'blur' | 'solid' | 'none';
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
+export type ModalBackdrop = "blur" | "solid" | "none";
+export type ModalSize = "sm" | "md" | "lg" | "xl";
 
 export interface ModalProps {
     open: boolean;
@@ -26,15 +26,15 @@ export interface ModalProps {
 }
 
 const sizeClasses: Record<ModalSize, string> = {
-    sm: 'max-w-sm',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
+    sm: "max-w-sm",
+    md: "max-w-lg",
+    lg: "max-w-2xl",
+    xl: "max-w-4xl",
 };
 
-const backdropClasses: Record<Exclude<ModalBackdrop, 'none'>, string> = {
-    blur: 'bg-slate-950/40 backdrop-blur-sm',
-    solid: 'bg-slate-950/55',
+const backdropClasses: Record<Exclude<ModalBackdrop, "none">, string> = {
+    blur: "bg-slate-950/40 backdrop-blur-sm",
+    solid: "bg-slate-950/55",
 };
 
 export function Modal({
@@ -44,15 +44,15 @@ export function Modal({
     children,
     description,
     footer,
-    backdrop = 'blur',
-    size = 'md',
+    backdrop = "blur",
+    size = "md",
     showCloseButton = true,
-    closeLabel = 'إغلاق النافذة',
-    className = '',
+    closeLabel = "إغلاق النافذة",
+    className = "",
 }: ModalProps) {
     return (
         <Dialog open={open} onClose={onClose} className="relative z-[100]">
-            {backdrop !== 'none' && (
+            {backdrop !== "none" && (
                 <DialogBackdrop
                     transition
                     className={`fixed inset-0 transition-opacity duration-200 data-[closed]:opacity-0 ${backdropClasses[backdrop]}`}
@@ -81,7 +81,7 @@ export function Modal({
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                rounded="lg"
+                                rounded="no"
                                 onClick={onClose}
                                 aria-label={closeLabel}
                                 className="absolute end-4 top-4"

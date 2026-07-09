@@ -1,9 +1,9 @@
-import { Button } from '@/avora-dash/components/Button';
-import { FormField } from '@/avora-dash/components/forms/FormField';
-import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
-import type { PaymentGateway } from '@/types';
-import { useForm } from '@inertiajs/react';
-import { useState, type FormEventHandler } from 'react';
+import { Button } from "@/avora-dash/components/Button";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
+import type { PaymentGateway } from "@/types";
+import { useForm } from "@inertiajs/react";
+import { useState, type FormEventHandler } from "react";
 
 type PaymentGatewaysIncludeProps = {
     gateways: PaymentGateway[];
@@ -17,19 +17,27 @@ type GatewayForm = {
     secret_config: Record<string, string>;
 };
 
-const gatewayLook: Record<PaymentGateway['slug'], { logo: string; bg: string }> = {
-    stripe: { logo: '/images/payment-gateways/stripe.svg', bg: 'bg-[#635BFF]' },
-    paymob: { logo: '/images/payment-gateways/paymob.svg', bg: 'bg-sky-50' },
-    paytabs: { logo: '/images/payment-gateways/paytabs.svg', bg: 'bg-white' },
-    tap: { logo: '/images/payment-gateways/tap.svg', bg: 'bg-slate-950' },
-    moyasar: { logo: '/images/payment-gateways/moyasar.svg', bg: 'bg-emerald-50' },
+const gatewayLook: Record<
+    PaymentGateway["slug"],
+    { logo: string; bg: string }
+> = {
+    stripe: { logo: "/images/payment-gateways/stripe.svg", bg: "bg-[#635BFF]" },
+    paymob: { logo: "/images/payment-gateways/paymob.svg", bg: "bg-sky-50" },
+    paytabs: { logo: "/images/payment-gateways/paytabs.svg", bg: "bg-white" },
+    tap: { logo: "/images/payment-gateways/tap.svg", bg: "bg-slate-950" },
+    moyasar: {
+        logo: "/images/payment-gateways/moyasar.svg",
+        bg: "bg-emerald-50",
+    },
 };
 
-function gatewayLogo(gateway: PaymentGateway, className = 'h-14 w-20') {
+function gatewayLogo(gateway: PaymentGateway, className = "h-14 w-20") {
     const look = gatewayLook[gateway.slug];
 
     return (
-        <span className={`grid place-items-center overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-800 ${look.bg} ${className}`}>
+        <span
+            className={`grid place-items-center overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-800 ${look.bg} ${className}`}
+        >
             <img
                 src={look.logo}
                 alt={`${gateway.name} logo`}
@@ -41,7 +49,7 @@ function gatewayLogo(gateway: PaymentGateway, className = 'h-14 w-20') {
 }
 
 const gatewayFields: Record<
-    PaymentGateway['slug'],
+    PaymentGateway["slug"],
     {
         public: Array<{ key: string; label: string; placeholder?: string }>;
         secret: Array<{ key: string; label: string }>;
@@ -49,61 +57,61 @@ const gatewayFields: Record<
     }
 > = {
     stripe: {
-        public: [{ key: 'publishable_key', label: 'Publishable Key' }],
+        public: [{ key: "publishable_key", label: "Publishable Key" }],
         secret: [
-            { key: 'secret_key', label: 'Secret Key' },
-            { key: 'webhook_secret', label: 'Webhook Secret' },
+            { key: "secret_key", label: "Secret Key" },
+            { key: "webhook_secret", label: "Webhook Secret" },
         ],
         note: {
-            ar: 'مناسبة للمدفوعات العالمية والاشتراكات، وتعمل مباشرة مع Laravel Cashier.',
-            en: 'Good for global payments and subscriptions, with native Laravel Cashier support.',
+            ar: "مناسبة للمدفوعات العالمية والاشتراكات، وتعمل مباشرة مع Laravel Cashier.",
+            en: "Good for global payments and subscriptions, with native Laravel Cashier support.",
         },
     },
     paymob: {
         public: [
-            { key: 'iframe_id', label: 'Iframe ID' },
-            { key: 'integration_id', label: 'Integration ID' },
+            { key: "iframe_id", label: "Iframe ID" },
+            { key: "integration_id", label: "Integration ID" },
         ],
         secret: [
-            { key: 'api_key', label: 'API Key' },
-            { key: 'hmac_secret', label: 'HMAC Secret' },
+            { key: "api_key", label: "API Key" },
+            { key: "hmac_secret", label: "HMAC Secret" },
         ],
         note: {
-            ar: 'مناسبة جدًا لمصر، البطاقات، المحافظ، وخطوة iframe الخاصة بـ Paymob.',
-            en: 'A strong fit for Egypt cards, wallets, and Paymob iframe checkout.',
+            ar: "مناسبة جدًا لمصر، البطاقات، المحافظ، وخطوة iframe الخاصة بـ Paymob.",
+            en: "A strong fit for Egypt cards, wallets, and Paymob iframe checkout.",
         },
     },
     paytabs: {
-        public: [{ key: 'profile_id', label: 'Profile ID' }],
+        public: [{ key: "profile_id", label: "Profile ID" }],
         secret: [
-            { key: 'server_key', label: 'Server Key' },
-            { key: 'client_key', label: 'Client Key' },
+            { key: "server_key", label: "Server Key" },
+            { key: "client_key", label: "Client Key" },
         ],
         note: {
-            ar: 'منتشرة في مصر والخليج وتحتاج Adapter خاص عند تفعيلها للدفع الحقيقي.',
-            en: 'Common across Egypt and GCC; needs its own adapter for live checkout.',
+            ar: "منتشرة في مصر والخليج وتحتاج Adapter خاص عند تفعيلها للدفع الحقيقي.",
+            en: "Common across Egypt and GCC; needs its own adapter for live checkout.",
         },
     },
     tap: {
-        public: [{ key: 'public_key', label: 'Public Key' }],
+        public: [{ key: "public_key", label: "Public Key" }],
         secret: [
-            { key: 'secret_key', label: 'Secret Key' },
-            { key: 'webhook_secret', label: 'Webhook Secret' },
+            { key: "secret_key", label: "Secret Key" },
+            { key: "webhook_secret", label: "Webhook Secret" },
         ],
         note: {
-            ar: 'مناسبة للخليج، وتم توصيل إنشاء Charge والتحويل لصفحة الدفع.',
-            en: 'Good for GCC; charge creation and gateway redirect are wired.',
+            ar: "مناسبة للخليج، وتم توصيل إنشاء Charge والتحويل لصفحة الدفع.",
+            en: "Good for GCC; charge creation and gateway redirect are wired.",
         },
     },
     moyasar: {
-        public: [{ key: 'publishable_key', label: 'Publishable Key' }],
+        public: [{ key: "publishable_key", label: "Publishable Key" }],
         secret: [
-            { key: 'secret_key', label: 'Secret Key' },
-            { key: 'webhook_secret', label: 'Webhook Secret' },
+            { key: "secret_key", label: "Secret Key" },
+            { key: "webhook_secret", label: "Webhook Secret" },
         ],
         note: {
-            ar: 'مناسبة للسعودية ومدى، وتحتاج Adapter خاص عند تفعيلها للدفع الحقيقي.',
-            en: 'Useful for Saudi Arabia and Mada; needs its own adapter for live checkout.',
+            ar: "مناسبة للسعودية ومدى، وتحتاج Adapter خاص عند تفعيلها للدفع الحقيقي.",
+            en: "Useful for Saudi Arabia and Mada; needs its own adapter for live checkout.",
         },
     },
 };
@@ -111,24 +119,27 @@ const gatewayFields: Record<
 function gatewayStatus(gateway: PaymentGateway) {
     if (gateway.enabled) {
         return {
-            ar: 'أساسية',
-            en: 'Primary',
-            className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
+            ar: "أساسية",
+            en: "Primary",
+            className:
+                "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300",
         };
     }
 
     if (gateway.is_backup) {
         return {
-            ar: 'احتياطي',
-            en: 'Backup',
-            className: 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
+            ar: "احتياطي",
+            en: "Backup",
+            className:
+                "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300",
         };
     }
 
     return {
-        ar: 'متوقفة',
-        en: 'Disabled',
-        className: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
+        ar: "متوقفة",
+        en: "Disabled",
+        className:
+            "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
     };
 }
 
@@ -151,7 +162,7 @@ function PaymentGatewayPanel({
         public_config: Object.fromEntries(
             Object.entries(gateway.public_config ?? {}).map(([key, value]) => [
                 key,
-                typeof value === 'string' ? value : '',
+                typeof value === "string" ? value : "",
             ]),
         ),
         secret_config: {},
@@ -160,17 +171,17 @@ function PaymentGatewayPanel({
     const submit: FormEventHandler = (event) => {
         event.preventDefault();
 
-        form.put(route('dashboard.payment-gateways.update', gateway.id), {
+        form.put(route("dashboard.payment-gateways.update", gateway.id), {
             preserveScroll: true,
-            onSuccess: () => form.setData('secret_config', {}),
+            onSuccess: () => form.setData("secret_config", {}),
         });
     };
 
-    const setRole = (role: 'primary' | 'backup' | 'disabled') => {
+    const setRole = (role: "primary" | "backup" | "disabled") => {
         form.setData({
             ...form.data,
-            enabled: role === 'primary',
-            is_backup: role === 'backup',
+            enabled: role === "primary",
+            is_backup: role === "backup",
         });
     };
 
@@ -188,7 +199,9 @@ function PaymentGatewayPanel({
                             <h2 className="font-black text-slate-950 dark:text-white">
                                 {gateway.name}
                             </h2>
-                            <span className={`rounded-full px-2.5 py-1 text-xs font-black ${status.className}`}>
+                            <span
+                                className={`rounded-full px-2.5 py-1 text-xs font-black ${status.className}`}
+                            >
                                 {translate({ ar: status.ar, en: status.en })}
                             </span>
                         </div>
@@ -198,13 +211,18 @@ function PaymentGatewayPanel({
                     </div>
                 </div>
 
-                <span className={`grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-lg font-black text-slate-500 transition dark:bg-slate-900 ${open ? 'rotate-180' : ''}`}>
+                <span
+                    className={`grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-lg font-black text-slate-500 transition dark:bg-slate-900 ${open ? "rotate-180" : ""}`}
+                >
                     ⌄
                 </span>
             </button>
 
             {open && (
-                <form onSubmit={submit} className="border-t border-slate-200 p-5 dark:border-slate-800">
+                <form
+                    onSubmit={submit}
+                    className="border-t border-slate-200 p-5 dark:border-slate-800"
+                >
                     <div className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
                         <div className="space-y-4">
                             <div className="rounded-2xl bg-slate-50 p-4 text-sm leading-7 text-slate-600 dark:bg-slate-900/70 dark:text-slate-300">
@@ -213,37 +231,58 @@ function PaymentGatewayPanel({
 
                             <div className="grid gap-2">
                                 <p className="text-sm font-black text-slate-800 dark:text-slate-100">
-                                    {translate({ ar: 'حالة البوابة', en: 'Gateway role' })}
+                                    {translate({
+                                        ar: "حالة البوابة",
+                                        en: "Gateway role",
+                                    })}
                                 </p>
 
                                 {[
-                                    { role: 'primary' as const, ar: 'أساسية شغالة', en: 'Primary active' },
-                                    { role: 'backup' as const, ar: 'احتياطي', en: 'Backup' },
-                                    { role: 'disabled' as const, ar: 'متوقفة', en: 'Disabled' },
+                                    {
+                                        role: "primary" as const,
+                                        ar: "أساسية شغالة",
+                                        en: "Primary active",
+                                    },
+                                    {
+                                        role: "backup" as const,
+                                        ar: "احتياطي",
+                                        en: "Backup",
+                                    },
+                                    {
+                                        role: "disabled" as const,
+                                        ar: "متوقفة",
+                                        en: "Disabled",
+                                    },
                                 ].map((option) => {
                                     const checked =
-                                        option.role === 'primary'
+                                        option.role === "primary"
                                             ? form.data.enabled
-                                            : option.role === 'backup'
-                                                ? form.data.is_backup
-                                                : !form.data.enabled && !form.data.is_backup;
+                                            : option.role === "backup"
+                                              ? form.data.is_backup
+                                              : !form.data.enabled &&
+                                                !form.data.is_backup;
 
                                     return (
                                         <label
                                             key={option.role}
                                             className={`flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-bold transition ${
                                                 checked
-                                                    ? 'border-[var(--avora-primary)] bg-[var(--avora-primary)]/10 text-[var(--avora-primary)]'
-                                                    : 'border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900'
+                                                    ? "border-[var(--avora-primary)] bg-[var(--avora-primary)]/10 text-[var(--avora-primary)]"
+                                                    : "border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900"
                                             }`}
                                         >
                                             <input
                                                 type="radio"
                                                 checked={checked}
-                                                onChange={() => setRole(option.role)}
+                                                onChange={() =>
+                                                    setRole(option.role)
+                                                }
                                                 className="avora-radio"
                                             />
-                                            {translate({ ar: option.ar, en: option.en })}
+                                            {translate({
+                                                ar: option.ar,
+                                                en: option.en,
+                                            })}
                                         </label>
                                     );
                                 })}
@@ -251,17 +290,35 @@ function PaymentGatewayPanel({
 
                             <label className="block">
                                 <span className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">
-                                    {translate({ ar: 'بيئة التشغيل', en: 'Mode' })}
+                                    {translate({
+                                        ar: "بيئة التشغيل",
+                                        en: "Mode",
+                                    })}
                                 </span>
                                 <select
                                     className="avora-form-field w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-900"
-                                    value={form.data.test_mode ? 'test' : 'live'}
+                                    value={
+                                        form.data.test_mode ? "test" : "live"
+                                    }
                                     onChange={(event) =>
-                                        form.setData('test_mode', event.target.value === 'test')
+                                        form.setData(
+                                            "test_mode",
+                                            event.target.value === "test",
+                                        )
                                     }
                                 >
-                                    <option value="test">{translate({ ar: 'تجربة / Sandbox', en: 'Test / Sandbox' })}</option>
-                                    <option value="live">{translate({ ar: 'فعلي / Live', en: 'Live' })}</option>
+                                    <option value="test">
+                                        {translate({
+                                            ar: "تجربة / Sandbox",
+                                            en: "Test / Sandbox",
+                                        })}
+                                    </option>
+                                    <option value="live">
+                                        {translate({
+                                            ar: "فعلي / Live",
+                                            en: "Live",
+                                        })}
+                                    </option>
                                 </select>
                             </label>
 
@@ -272,7 +329,10 @@ function PaymentGatewayPanel({
                                     rel="noreferrer"
                                     className="inline-flex text-sm font-bold text-[var(--avora-primary)]"
                                 >
-                                    {translate({ ar: 'فتح موقع البوابة', en: 'Open gateway website' })}
+                                    {translate({
+                                        ar: "فتح موقع البوابة",
+                                        en: "Open gateway website",
+                                    })}
                                 </a>
                             )}
                         </div>
@@ -282,14 +342,20 @@ function PaymentGatewayPanel({
                                 <FormField
                                     key={field.key}
                                     label={field.label}
-                                    value={form.data.public_config[field.key] ?? ''}
+                                    value={
+                                        form.data.public_config[field.key] ?? ""
+                                    }
                                     onChange={(event) =>
-                                        form.setData('public_config', {
+                                        form.setData("public_config", {
                                             ...form.data.public_config,
                                             [field.key]: event.target.value,
                                         })
                                     }
-                                    error={form.errors[`public_config.${field.key}`]}
+                                    error={
+                                        form.errors[
+                                            `public_config.${field.key}`
+                                        ]
+                                    }
                                 />
                             ))}
 
@@ -298,13 +364,15 @@ function PaymentGatewayPanel({
                                     key={field.key}
                                     label={`${field.label}${
                                         gateway.secret_fields[field.key]
-                                            ? ` (${translate({ ar: 'محفوظ', en: 'saved' })})`
-                                            : ''
+                                            ? ` (${translate({ ar: "محفوظ", en: "saved" })})`
+                                            : ""
                                     }`}
                                     type="password"
-                                    value={form.data.secret_config[field.key] ?? ''}
+                                    value={
+                                        form.data.secret_config[field.key] ?? ""
+                                    }
                                     onChange={(event) =>
-                                        form.setData('secret_config', {
+                                        form.setData("secret_config", {
                                             ...form.data.secret_config,
                                             [field.key]: event.target.value,
                                         })
@@ -312,22 +380,32 @@ function PaymentGatewayPanel({
                                     placeholder={
                                         gateway.secret_fields[field.key]
                                             ? translate({
-                                                ar: 'اتركه فارغًا للاحتفاظ بالقيمة الحالية',
-                                                en: 'Leave empty to keep current value',
-                                            })
-                                            : ''
+                                                  ar: "اتركه فارغًا للاحتفاظ بالقيمة الحالية",
+                                                  en: "Leave empty to keep current value",
+                                              })
+                                            : ""
                                     }
-                                    error={form.errors[`secret_config.${field.key}`]}
+                                    error={
+                                        form.errors[
+                                            `secret_config.${field.key}`
+                                        ]
+                                    }
                                 />
                             ))}
                         </div>
                     </div>
 
                     <div className="mt-5 flex justify-end">
-                        <Button rounded="lg" disabled={form.processing}>
+                        <Button rounded="no" disabled={form.processing}>
                             {form.processing
-                                ? translate({ ar: 'جاري الحفظ...', en: 'Saving...' })
-                                : translate({ ar: 'حفظ إعدادات البوابة', en: 'Save gateway settings' })}
+                                ? translate({
+                                      ar: "جاري الحفظ...",
+                                      en: "Saving...",
+                                  })
+                                : translate({
+                                      ar: "حفظ إعدادات البوابة",
+                                      en: "Save gateway settings",
+                                  })}
                         </Button>
                     </div>
                 </form>
@@ -336,13 +414,15 @@ function PaymentGatewayPanel({
     );
 }
 
-export function PaymentGatewaysInclude({ gateways }: PaymentGatewaysIncludeProps) {
+export function PaymentGatewaysInclude({
+    gateways,
+}: PaymentGatewaysIncludeProps) {
     const { translate } = useLanguage();
     const primary = gateways.find((gateway) => gateway.enabled);
     const backup = gateways.find((gateway) => gateway.is_backup);
-    const [openGateway, setOpenGateway] = useState<PaymentGateway['slug'] | null>(
-        primary?.slug ?? gateways[0]?.slug ?? null,
-    );
+    const [openGateway, setOpenGateway] = useState<
+        PaymentGateway["slug"] | null
+    >(primary?.slug ?? gateways[0]?.slug ?? null);
 
     return (
         <div className="space-y-6">
@@ -351,30 +431,44 @@ export function PaymentGatewaysInclude({ gateways }: PaymentGatewaysIncludeProps
                     Payment Gateways
                 </p>
                 <h1 className="mt-2 text-2xl font-black text-slate-950 dark:text-white">
-                    {translate({ ar: 'نظام الدفع', en: 'Payment system' })}
+                    {translate({ ar: "نظام الدفع", en: "Payment system" })}
                 </h1>
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
                     {translate({
-                        ar: 'اختار بوابة واحدة أساسية للدفع، وبوابة واحدة احتياطي لو احتجتها. اضغط على أيقونة البوابة لعرض إعداداتها.',
-                        en: 'Choose one primary payment gateway and one backup gateway. Click a gateway icon to reveal its settings.',
+                        ar: "اختار بوابة واحدة أساسية للدفع، وبوابة واحدة احتياطي لو احتجتها. اضغط على أيقونة البوابة لعرض إعداداتها.",
+                        en: "Choose one primary payment gateway and one backup gateway. Click a gateway icon to reveal its settings.",
                     })}
                 </p>
 
                 <div className="mt-5 grid gap-3 md:grid-cols-2">
                     <div className="rounded-2xl bg-emerald-50 p-4 text-sm dark:bg-emerald-500/10">
                         <p className="font-black text-emerald-700 dark:text-emerald-300">
-                            {translate({ ar: 'البوابة الأساسية', en: 'Primary gateway' })}
+                            {translate({
+                                ar: "البوابة الأساسية",
+                                en: "Primary gateway",
+                            })}
                         </p>
                         <p className="mt-1 text-slate-600 dark:text-slate-300">
-                            {primary?.name ?? translate({ ar: 'لم يتم اختيار بوابة أساسية', en: 'No primary gateway selected' })}
+                            {primary?.name ??
+                                translate({
+                                    ar: "لم يتم اختيار بوابة أساسية",
+                                    en: "No primary gateway selected",
+                                })}
                         </p>
                     </div>
                     <div className="rounded-2xl bg-amber-50 p-4 text-sm dark:bg-amber-500/10">
                         <p className="font-black text-amber-700 dark:text-amber-300">
-                            {translate({ ar: 'البوابة الاحتياطي', en: 'Backup gateway' })}
+                            {translate({
+                                ar: "البوابة الاحتياطي",
+                                en: "Backup gateway",
+                            })}
                         </p>
                         <p className="mt-1 text-slate-600 dark:text-slate-300">
-                            {backup?.name ?? translate({ ar: 'لم يتم اختيار بوابة احتياطي', en: 'No backup gateway selected' })}
+                            {backup?.name ??
+                                translate({
+                                    ar: "لم يتم اختيار بوابة احتياطي",
+                                    en: "No backup gateway selected",
+                                })}
                         </p>
                     </div>
                 </div>
@@ -386,7 +480,13 @@ export function PaymentGatewaysInclude({ gateways }: PaymentGatewaysIncludeProps
                         key={gateway.id}
                         gateway={gateway}
                         open={openGateway === gateway.slug}
-                        onToggle={() => setOpenGateway(openGateway === gateway.slug ? null : gateway.slug)}
+                        onToggle={() =>
+                            setOpenGateway(
+                                openGateway === gateway.slug
+                                    ? null
+                                    : gateway.slug,
+                            )
+                        }
                     />
                 ))}
             </div>
