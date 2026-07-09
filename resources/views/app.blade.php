@@ -22,7 +22,9 @@ $assetUrl = fn(?string $path, string $fallback) => $path ? '/storage/' . $path :
         <!-- google fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:wght@400;500;700&family=Science+Gothic:slnt,wght@-3,400..900&display=swap" rel="stylesheet">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cairo:wght@323&family=Playfair+Display:ital,wght@0,616;1,616&family=Roboto:wdth,wght@83.9,158&family=Science+Gothic:slnt,wght@-3,100..900&display=swap"
+            rel="stylesheet">
         <!-- google fonts -->
 
 

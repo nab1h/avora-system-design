@@ -1,6 +1,12 @@
 import { Button } from "@/avora-dash/components/Button";
+import {
+    Card,
+    CardDescription,
+    CardMeta,
+    CardTitle,
+} from "@/avora-dash/components/Card";
 import { Container } from "@/avora-dash/components/Container/Container";
-import { Grid } from "@/avora-dash/components/Grid";
+import { Grid, GridItem } from "@/avora-dash/components/Grid";
 import { LanguageButton } from "@/avora-dash/components/LanguageButton";
 import {
     Navbar,
@@ -18,7 +24,11 @@ import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import ModeButton from "@/avora-dash/providers/ModeButton";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
+import { AddressPage } from "@/Components/AddressPage";
+import { BlogCard } from "@/Components/BlogCard";
+import { BlogCard2 } from "@/Components/BlogCard2";
 import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
+import { ProductCard } from "@/Components/ProductCard";
 import { PageProps } from "@/types";
 import { Head, router, usePage } from "@inertiajs/react";
 import { useState } from "react";
@@ -32,12 +42,19 @@ import {
     LuShoppingCart,
     LuUserRound,
 } from "react-icons/lu";
-
+const publicAsset = (path: string) => `${window.location.origin}${path}`;
 export default function Welcome({}: PageProps) {
     const { colors } = useTheme();
     const { translate, direction } = useLanguage();
     const appName = useAppName();
     const page = usePage<PageProps & { errors?: Record<string, string> }>();
+    const websiteCurrency = page.props.websiteSettings.currency ?? "EGP";
+    const enabledPaymentGateways = page.props.paymentGateways.filter(
+        (gateway) => gateway.enabled,
+    );
+    const checkoutGatewayError =
+        page.props.errors?.gateway_slug ?? page.props.errors?.product_id;
+    const activePaymentGateway = enabledPaymentGateways[0];
     const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
     const user = page.props.auth.user;
 
@@ -61,6 +78,66 @@ export default function Welcome({}: PageProps) {
         {
             href: "#backgrounds",
             name: translate({ ar: "الخلفيات", en: "Backgrounds" }),
+        },
+    ];
+
+    // products
+
+    const products = [
+        {
+            id: 1,
+            name: "Dior Sauvage",
+            desc: translate({
+                ar: "مكونات مرنة لبناء واجهات سريعة ومتناسقة.",
+                en: "Flexible components for fast and consistent interfaces.",
+            }),
+            price: "$120",
+            img: publicAsset("/images/product-colors.png"),
+            hoverImg: publicAsset("/images/product-ui-design.png"),
+        },
+        {
+            id: 2,
+            name: "Bleu de Chanel",
+            desc: translate({
+                ar: "مكونات مرنة لبناء واجهات سريعة ومتناسقة.",
+                en: "Flexible components for fast and consistent interfaces.",
+            }),
+            price: "$135",
+            img: publicAsset("/images/product-colors.png"),
+            hoverImg: publicAsset("/images/product-ui-design.png"),
+        },
+        {
+            id: 3,
+            name: "Tom Ford Oud Wood",
+            desc: translate({
+                ar: "مكونات مرنة لبناء واجهات سريعة ومتناسقة.",
+                en: "Flexible components for fast and consistent interfaces.",
+            }),
+            price: "$210",
+            img: publicAsset("/images/product-colors.png"),
+            hoverImg: publicAsset("/images/product-ui-design.png"),
+        },
+        {
+            id: 4,
+            name: "YSL Libre",
+            desc: translate({
+                ar: "مكونات مرنة لبناء واجهات سريعة ومتناسقة.",
+                en: "Flexible components for fast and consistent interfaces.",
+            }),
+            price: "$110",
+            img: publicAsset("/images/product-colors.png"),
+            hoverImg: publicAsset("/images/product-ui-design.png"),
+        },
+        {
+            id: 5,
+            name: "Creed Aventus",
+            desc: translate({
+                ar: "مكونات مرنة لبناء واجهات سريعة ومتناسقة.",
+                en: "Flexible components for fast and consistent interfaces.",
+            }),
+            price: "$320",
+            img: publicAsset("/images/product-colors.png"),
+            hoverImg: publicAsset("/images/product-ui-design.png"),
         },
     ];
 
@@ -203,9 +280,14 @@ export default function Welcome({}: PageProps) {
                         <LanguageButton />
                     </NavbarActions>
 
-                    <NavbarLinks className="row-start-2 hidden md:flex col-start-2 justify-self-center">
+                    <NavbarLinks
+                        className="row-start-2 hidden md:flex col-start-2 justify-self-center"
+                        dir={direction}
+                    >
                         {navbar.map((nav) => (
-                            <NavbarLink href={nav.href}>{nav.name}</NavbarLink>
+                            <NavbarLink key={nav.href} href={nav.href}>
+                                {nav.name}
+                            </NavbarLink>
                         ))}
                     </NavbarLinks>
 
@@ -361,19 +443,272 @@ export default function Welcome({}: PageProps) {
                 }}
             >
                 <Container
-                    width="content"
+                    width="wide"
                     gutter="none"
-                    paddingY="sm"
+                    paddingY="md"
                     className="space-y-14"
                 >
                     <Grid
-                        layout="two"
-                        gap="lg"
-                        padding="lg"
-                        background="gradient"
+                        layout="one"
+                        gap="sm"
+                        padding="none"
+                        background="transparent"
                         rounded="none"
-                        align="center"
-                    ></Grid>
+                        align="stretch"
+                        className="lg:h-[590px] lg:!grid-cols-[2.4fr_1fr_1fr]"
+                    >
+                        <GridItem dir={direction} className="min-h-[420px]">
+                            <div className="relative flex h-full items-center justify-center overflow-hidden bg-[#f3eee9] p-8 text-center text-slate-700">
+                                <img
+                                    src="/images/avora-campaign/avora-gold.png"
+                                    alt="AVORA perfume"
+                                    className="absolute inset-0 h-full w-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-white/15" />
+                                <div className="relative mt-20 bg-white/65 px-8 py-6 backdrop-blur-[2px]">
+                                    <h2 className="font-playfair text-4xl font-light uppercase tracking-wide lg:text-5xl">
+                                        {translate({
+                                            ar: "عطر يروي حكايتك",
+                                            en: "A scent that tells your story",
+                                        })}
+                                    </h2>
+                                    <p className="mt-6 text-xs uppercase tracking-[0.35em] text-slate-400">
+                                        {translate({
+                                            ar: "مجموعة أفورا الفاخرة",
+                                            en: "The AVORA luxury collection",
+                                        })}
+                                    </p>
+                                </div>
+                            </div>
+                        </GridItem>
+
+                        <GridItem className="grid min-h-[590px] grid-rows-[1fr_1.85fr] gap-3">
+                            <div className="relative flex items-center justify-center overflow-hidden bg-[#2f3033] p-6 text-center text-white">
+                                <img
+                                    src="/images/avora-campaign/avora-noir.png"
+                                    alt="AVORA Noir perfume"
+                                    className="absolute inset-0 h-full w-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/35" />
+                                <div className="relative">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.35em]">
+                                        {translate({
+                                            ar: "إصدار جديد",
+                                            en: "New fragrance",
+                                        })}
+                                    </p>
+                                    <h3 className="mt-6 text-2xl font-medium uppercase leading-tight tracking-[0.12em]">
+                                        {translate({
+                                            ar: "أفورا نوار",
+                                            en: "AVORA Noir",
+                                        })}
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div className="relative flex items-end justify-center overflow-hidden bg-[#f7f4ef] p-6 text-center text-slate-700">
+                                <img
+                                    src="/images/avora-campaign/avora-gold.png"
+                                    alt="AVORA Gold perfume"
+                                    className="absolute inset-0 h-full w-full object-cover"
+                                />
+                                <div className="relative mb-0 w-full bg-white/80 px-5 py-5 backdrop-blur-[2px]">
+                                    <p className="font-playfair text-sm italic">
+                                        {translate({
+                                            ar: "أناقة تدوم",
+                                            en: "Lasting elegance",
+                                        })}
+                                    </p>
+                                    <p className="mt-4 text-xs font-bold uppercase tracking-[0.3em]">
+                                        {translate({
+                                            ar: "اكتشف المجموعة",
+                                            en: "Discover the collection",
+                                        })}
+                                    </p>
+                                </div>
+                            </div>
+                        </GridItem>
+
+                        <GridItem className="grid min-h-[590px] grid-rows-[1.08fr_0.92fr] gap-3">
+                            <div className="relative flex items-center justify-center overflow-hidden bg-[#e8ddd9] p-5 text-center text-slate-700">
+                                <img
+                                    src="/images/avora-campaign/avora-rose.png"
+                                    alt="AVORA Rose perfume"
+                                    className="absolute inset-0 h-full w-full object-cover"
+                                />
+                                <div className="relative w-full bg-white/75 px-5 py-5 backdrop-blur-[2px]">
+                                    <p className="font-playfair text-sm italic">
+                                        {translate({
+                                            ar: "نفحات وردية ناعمة",
+                                            en: "Delicate floral notes",
+                                        })}
+                                    </p>
+                                    <p className="mt-4 text-xs font-bold uppercase tracking-[0.3em]">
+                                        {translate({
+                                            ar: "أفورا روز",
+                                            en: "AVORA Rose",
+                                        })}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="relative flex items-center justify-center overflow-hidden bg-[#d8c5bf] p-6 text-center text-white">
+                                <img
+                                    src="/images/avora-campaign/avora-noir.png"
+                                    alt="AVORA perfume delivery"
+                                    className="absolute inset-0 h-full w-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/45" />
+                                <div className="relative">
+                                    <p className="text-4xl font-bold uppercase">
+                                        {translate({ ar: "شحن", en: "Free" })}
+                                    </p>
+                                    <p className="mt-2 text-2xl uppercase tracking-[0.1em]">
+                                        {translate({
+                                            ar: "مجاني",
+                                            en: "Shipping",
+                                        })}
+                                    </p>
+                                </div>
+                            </div>
+                        </GridItem>
+                    </Grid>
+
+                    <section id="buy" className="scroll-mt-24 space-y-6">
+                        <AddressPage
+                            supAddress={translate({
+                                ar: "استمتع بتشكيلة مختارة من العطور الأصلية للرجال والنساء، تجمع بين الجودة والأناقة والثبات. اختر عطرك المفضل من أشهر العلامات التجارية واستمتع بتجربة تسوق سهلة، مع أسعار تنافسية وخدمة موثوقة.",
+                                en: "Explore our curated collection of authentic perfumes for men and women, featuring premium quality, elegant scents, and long-lasting performance. Shop from the world's leading brands and enjoy a seamless shopping experience with competitive prices and trusted service.",
+                            })}
+                            address={translate({
+                                ar: "اكتشف عالمًا من العطور الفاخرة",
+                                en: "Discover a World of Luxury Fragrances",
+                            })}
+                        />
+
+                        <Card
+                            variant="elevated"
+                            padding="lg"
+                            className="overflow-hidden"
+                        >
+                            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+                                <div className="space-y-4">
+                                    <CardMeta>
+                                        {translate({
+                                            ar: "طريقة الدفع",
+                                            en: "Checkout flow",
+                                        })}
+                                    </CardMeta>
+                                    <CardTitle>
+                                        {translate({
+                                            ar: "السعر بيتحدد من المنتج نفسه",
+                                            en: "Price comes from the selected product",
+                                        })}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        {translate({
+                                            ar: "العميل يضغط شراء من كارت المنتج. الموقع يبعت رقم المنتج فقط، والباك إند يجيب الاسم والسعر الحقيقيين من الكتالوج قبل ما يرسل العملية للبوابة.",
+                                            en: "The customer buys from a product card. The website sends only the product ID, then the backend resolves the real name and price before creating the gateway checkout.",
+                                        })}
+                                    </CardDescription>
+                                </div>
+
+                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900">
+                                        <span className="block font-semibold text-slate-700 dark:text-slate-200">
+                                            {translate({
+                                                ar: "عملة الموقع",
+                                                en: "Website currency",
+                                            })}
+                                        </span>
+                                        <span className="mt-1 block text-slate-500 dark:text-slate-400">
+                                            {websiteCurrency}
+                                        </span>
+                                    </div>
+
+                                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900">
+                                        <span className="block font-semibold text-slate-700 dark:text-slate-200">
+                                            {translate({
+                                                ar: "بوابة الدفع المفعلة",
+                                                en: "Active payment gateway",
+                                            })}
+                                        </span>
+                                        <span className="mt-1 block text-slate-500 dark:text-slate-400">
+                                            {activePaymentGateway
+                                                ? activePaymentGateway.name
+                                                : translate({
+                                                      ar: "لا توجد بوابة مفعلة",
+                                                      en: "No enabled gateway",
+                                                  })}
+                                        </span>
+                                        {checkoutGatewayError && (
+                                            <span className="mt-1 block text-xs text-red-500">
+                                                {checkoutGatewayError}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+                    </section>
+                    <section id="prodcts" className="scroll-mt-24 space-y-6">
+                        <Grid layout="cards" gap="md" width="full">
+                            {products.map((product) => (
+                                <GridItem key={product.id}>
+                                    <ProductCard
+                                        desc={product.desc}
+                                        price={product.price}
+                                        img={product.img}
+                                        hoverImg={product.hoverImg}
+                                    />
+                                </GridItem>
+                            ))}
+                        </Grid>
+                    </section>
+
+                    {/* section blog */}
+                    <section id="blog" className="scroll-mt-24 space-y-6">
+                        <Grid layout="two">
+                            <GridItem>
+                                <BlogCard
+                                    title={translate({
+                                        ar: "اكتشف سحر عطر أفورا جولد الفاخر.",
+                                        en: "Discover the charm of the luxurious AVORA Gold fragrance.",
+                                    })}
+                                    imageSrc="/images/avora-campaign/avora-gold.png"
+                                    imageAlt={translate({
+                                        ar: "عطر أفورا جولد",
+                                        en: "AVORA Gold perfume",
+                                    })}
+                                    buttonLabel={translate({
+                                        ar: "اقرأ المقال",
+                                        en: "READ POST",
+                                    })}
+
+                                />
+                            </GridItem>
+
+                            <GridItem>
+                                <BlogCard
+                                    title={translate({
+                                        ar: "اكتشف القصة وراء عطور أفورا المميزة.",
+                                        en: "Discover the story behind AVORA's signature fragrances.",
+                                    })}
+                                    imageSrc="/images/avora-campaign/avora-gold.png"
+                                    imageAlt={translate({
+                                        ar: "مجموعة عطور أفورا",
+                                        en: "AVORA fragrance collection",
+                                    })}
+                                    buttonLabel={translate({
+                                        ar: "اقرأ المقال",
+                                        en: "READ POST",
+                                    })}
+                                />
+                            </GridItem>
+                        </Grid>
+
+                        
+                    </section>
                 </Container>
             </main>
         </>

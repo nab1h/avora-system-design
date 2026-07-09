@@ -10,7 +10,7 @@ export const gridVariants = cva('grid', {
             cards: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
             dashboard: 'grid-cols-1 md:grid-cols-2 xl:grid-cols-4',
             editorial:
-                'grid-cols-1 auto-rows-[220px] md:grid-cols-4 md:auto-rows-[180px] xl:grid-cols-6 xl:auto-rows-[190px]',
+                'grid-cols-1 auto-rows-[220px] md:grid-cols-4 md:auto-rows-[180px] lg:grid-cols-6 lg:auto-rows-[190px]',
             sidebarStart:
                 'grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)]',
             sidebarEnd:

@@ -1,17 +1,26 @@
 import { CardMeta } from "@/avora-dash/components/Card";
+import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 
 interface IProps {
     supAddress: string;
     address: string;
 }
-export function AddressPage({supAddress,address}:IProps) {
+export function AddressPage({ supAddress, address }: IProps) {
+const { direction } = useLanguage();
+    
     return (
         <>
             <div>
-                <CardMeta>{supAddress}</CardMeta>
-                <h2 className="mt-1 text-2xl font-bold">
+                <h2
+                    className={`mt-1 text-2xl font-bold text-center ${
+                        direction === "ltr"
+                            ? "font-roboto"
+                            : " "
+                    }`}
+                >
                     {address}
                 </h2>
+                <CardMeta>{supAddress}</CardMeta>
             </div>
         </>
     );

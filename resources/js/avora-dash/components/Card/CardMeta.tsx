@@ -13,7 +13,7 @@ export function CardMeta({
 
     return (
         <span
-            className={`text-xs ${className}`}
+            className={`mt-5 block w-full text-center text-sm item-center ${className}`}
             style={{ color: colors.muted, ...style }}
             {...props}
         />
