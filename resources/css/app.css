@@ -139,6 +139,65 @@
         box-shadow: 0 0 0 0px color-mix(in srgb, var(--avora-primary) 10%, transparent);
     }
 
+    .avora-floating-field {
+        position: relative;
+        margin: 20px 0 32px;
+        width: 100%;
+    }
+
+    .avora-floating-field input {
+        display: block;
+        width: 100%;
+        border: 0;
+        border-bottom: 2px solid var(--avora-border);
+        background-color: transparent;
+        padding: 15px 0;
+        color: var(--avora-text);
+        font-size: 18px;
+        outline: 0;
+        transition: border-color 0.3s ease;
+    }
+
+    .avora-floating-field input::placeholder {
+        color: transparent;
+    }
+
+    .avora-floating-field input:focus,
+    .avora-floating-field input:not(:placeholder-shown),
+    .avora-floating-field input:valid {
+        border-bottom-color: var(--avora-primary);
+    }
+
+    .avora-floating-field label {
+        position: absolute;
+        top: 15px;
+        inset-inline-start: 0;
+        pointer-events: none;
+    }
+
+    .avora-floating-field label span {
+        display: inline-block;
+        min-width: 5px;
+        color: var(--avora-muted);
+        font-size: 18px;
+        transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .avora-floating-field input:focus + label span,
+    .avora-floating-field input:not(:placeholder-shown) + label span,
+    .avora-floating-field input:valid + label span {
+        color: var(--avora-primary);
+        transform: translateY(-30px);
+    }
+
+    .avora-floating-field .avora-floating-field-error {
+        border-bottom-color: var(--avora-danger);
+    }
+
+    .avora-floating-field .avora-floating-field-error + label span {
+        color: var(--avora-danger);
+    }
+
     .avora-checkbox {
         accent-color: var(--avora-primary);
     }
