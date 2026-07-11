@@ -6,3 +6,4 @@ export type {
     SliderPaginationType,
     SliderProps,
 } from "./Slider";
+
