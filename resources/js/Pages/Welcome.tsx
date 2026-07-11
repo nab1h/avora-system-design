@@ -707,7 +707,7 @@ export default function Welcome({}: PageProps) {
                             </GridItem>
                         </Grid>
 
-                        
+
                     </section>
                 </Container>
             </main>
