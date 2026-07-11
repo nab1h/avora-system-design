@@ -8,6 +8,7 @@ import {
 import { Container } from "@/avora-dash/components/Container/Container";
 import { Grid, GridItem } from "@/avora-dash/components/Grid";
 import { LanguageButton } from "@/avora-dash/components/LanguageButton";
+import { Slider } from "@/avora-dash/components/Slider";
 import {
     Navbar,
     NavbarActions,
@@ -668,46 +669,141 @@ export default function Welcome({}: PageProps) {
 
                     {/* section blog */}
                     <section id="blog" className="scroll-mt-24 space-y-6">
-                        <Grid layout="two">
-                            <GridItem>
-                                <BlogCard
-                                    title={translate({
-                                        ar: "اكتشف سحر عطر أفورا جولد الفاخر.",
-                                        en: "Discover the charm of the luxurious AVORA Gold fragrance.",
-                                    })}
-                                    imageSrc="/images/avora-campaign/avora-gold.png"
-                                    imageAlt={translate({
-                                        ar: "عطر أفورا جولد",
-                                        en: "AVORA Gold perfume",
-                                    })}
-                                    buttonLabel={translate({
-                                        ar: "اقرأ المقال",
-                                        en: "READ POST",
-                                    })}
-
-                                />
-                            </GridItem>
-
-                            <GridItem>
-                                <BlogCard
-                                    title={translate({
-                                        ar: "اكتشف القصة وراء عطور أفورا المميزة.",
-                                        en: "Discover the story behind AVORA's signature fragrances.",
-                                    })}
-                                    imageSrc="/images/avora-campaign/avora-gold.png"
-                                    imageAlt={translate({
-                                        ar: "مجموعة عطور أفورا",
-                                        en: "AVORA fragrance collection",
-                                    })}
-                                    buttonLabel={translate({
-                                        ar: "اقرأ المقال",
-                                        en: "READ POST",
-                                    })}
-                                />
-                            </GridItem>
-                        </Grid>
-
-
+                        <Slider
+                            ariaLabel={translate({
+                                ar: "مقالات أفورا",
+                                en: "AVORA articles",
+                            })}
+                            items={[
+                                {
+                                    id: "avora-gold",
+                                    content: (
+                                        <BlogCard
+                                            title={translate({
+                                                ar: "اكتشف سحر عطر أفورا جولد الفاخر.",
+                                                en: "Discover the charm of the luxurious AVORA Gold fragrance.",
+                                            })}
+                                            imageSrc="/images/avora-campaign/avora-gold.png"
+                                            imageAlt={translate({
+                                                ar: "عطر أفورا جولد",
+                                                en: "AVORA Gold perfume",
+                                            })}
+                                            buttonLabel={translate({
+                                                ar: "اقرأ المقال",
+                                                en: "READ POST",
+                                            })}
+                                        />
+                                    ),
+                                },
+                                {
+                                    id: "avora-signature",
+                                    content: (
+                                        <BlogCard
+                                            title={translate({
+                                                ar: "اكتشف القصة وراء عطور أفورا المميزة.",
+                                                en: "Discover the story behind AVORA's signature fragrances.",
+                                            })}
+                                            imageSrc="/images/avora-campaign/avora-gold.png"
+                                            imageAlt={translate({
+                                                ar: "مجموعة عطور أفورا",
+                                                en: "AVORA fragrance collection",
+                                            })}
+                                            buttonLabel={translate({
+                                                ar: "اقرأ المقال",
+                                                en: "READ POST",
+                                            })}
+                                        />
+                                    ),
+                                },
+                                {
+                                    id: "avora-gold",
+                                    content: (
+                                        <BlogCard
+                                            title={translate({
+                                                ar: "اكتشف سحر عطر أفورا جولد الفاخر.",
+                                                en: "Discover the charm of the luxurious AVORA Gold fragrance.",
+                                            })}
+                                            imageSrc="/images/avora-campaign/avora-gold.png"
+                                            imageAlt={translate({
+                                                ar: "عطر أفورا جولد",
+                                                en: "AVORA Gold perfume",
+                                            })}
+                                            buttonLabel={translate({
+                                                ar: "اقرأ المقال",
+                                                en: "READ POST",
+                                            })}
+                                        />
+                                    ),
+                                },
+                                {
+                                    id: "avora-signature",
+                                    content: (
+                                        <BlogCard
+                                            title={translate({
+                                                ar: "اكتشف القصة وراء عطور أفورا المميزة.",
+                                                en: "Discover the story behind AVORA's signature fragrances.",
+                                            })}
+                                            imageSrc="/images/avora-campaign/avora-gold.png"
+                                            imageAlt={translate({
+                                                ar: "مجموعة عطور أفورا",
+                                                en: "AVORA fragrance collection",
+                                            })}
+                                            buttonLabel={translate({
+                                                ar: "اقرأ المقال",
+                                                en: "READ POST",
+                                            })}
+                                        />
+                                    ),
+                                },
+                                {
+                                    id: "avora-gold",
+                                    content: (
+                                        <BlogCard
+                                            title={translate({
+                                                ar: "اكتشف سحر عطر أفورا جولد الفاخر.",
+                                                en: "Discover the charm of the luxurious AVORA Gold fragrance.",
+                                            })}
+                                            imageSrc="/images/avora-campaign/avora-gold.png"
+                                            imageAlt={translate({
+                                                ar: "عطر أفورا جولد",
+                                                en: "AVORA Gold perfume",
+                                            })}
+                                            buttonLabel={translate({
+                                                ar: "اقرأ المقال",
+                                                en: "READ POST",
+                                            })}
+                                        />
+                                    ),
+                                },
+                                {
+                                    id: "avora-signature",
+                                    content: (
+                                        <BlogCard
+                                            title={translate({
+                                                ar: "اكتشف القصة وراء عطور أفورا المميزة.",
+                                                en: "Discover the story behind AVORA's signature fragrances.",
+                                            })}
+                                            imageSrc="/images/avora-campaign/avora-gold.png"
+                                            imageAlt={translate({
+                                                ar: "مجموعة عطور أفورا",
+                                                en: "AVORA fragrance collection",
+                                            })}
+                                            buttonLabel={translate({
+                                                ar: "اقرأ المقال",
+                                                en: "READ POST",
+                                            })}
+                                        />
+                                    ),
+                                },
+                            ]}
+                            slidesPerView={1}
+                            spaceBetween={24}
+                            arrows
+                            pagination
+                            breakpoints={{
+                                768: { slidesPerView: 2 },
+                            }}
+                        />
                     </section>
                 </Container>
             </main>
