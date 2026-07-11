@@ -13,6 +13,7 @@ import {
 import { Container } from '@/avora-dash/components/Container';
 import { Grid, GridItem } from '@/avora-dash/components/Grid';
 import { LanguageButton } from '@/avora-dash/components/LanguageButton';
+import { Slider } from '@/avora-dash/components/Slider';
 import {
     Navbar,
     NavbarActions,
@@ -80,13 +81,7 @@ export default function Welcome({}: PageProps) {
                 })}
             />
 
-            <Navbar
-                position="sticky"
-                background="glass"
-                shadow="sm"
-                bordered
-
-            >
+            <Navbar position="sticky" background="glass" shadow="sm" bordered>
                 <NavbarContainer width="full" height="md">
                     <NavbarBrand>
                         <NavbarLogo
@@ -103,16 +98,22 @@ export default function Welcome({}: PageProps) {
                     <NavbarDesktop>
                         <NavbarLinks>
                             <NavbarLink href="#">
-                                {translate({ ar: 'الرئيسية', en: 'Home' })}
+                                {translate({ ar: "الرئيسية", en: "Home" })}
                             </NavbarLink>
                             <NavbarLink href="#cards">
-                                {translate({ ar: 'الكروت', en: 'Cards' })}
+                                {translate({ ar: "الكروت", en: "Cards" })}
                             </NavbarLink>
                             <NavbarLink href="#dashboard">
-                                {translate({ ar: 'الداشبورد', en: 'Dashboard' })}
+                                {translate({
+                                    ar: "الداشبورد",
+                                    en: "Dashboard",
+                                })}
                             </NavbarLink>
                             <NavbarLink href="#backgrounds">
-                                {translate({ ar: 'الخلفيات', en: 'Backgrounds' })}
+                                {translate({
+                                    ar: "الخلفيات",
+                                    en: "Backgrounds",
+                                })}
                             </NavbarLink>
                         </NavbarLinks>
 
@@ -120,7 +121,10 @@ export default function Welcome({}: PageProps) {
                             <ModeButton />
                             <LanguageButton />
                             <Button size="sm">
-                                {translate({ ar: 'ابدأ الآن', en: 'Get started' })}
+                                {translate({
+                                    ar: "ابدأ الآن",
+                                    en: "Get started",
+                                })}
                             </Button>
                         </NavbarActions>
                     </NavbarDesktop>
@@ -162,16 +166,16 @@ export default function Welcome({}: PageProps) {
                 >
                     <NavbarLinks className="flex-col items-stretch">
                         <NavbarLink href="#">
-                            {translate({ ar: 'الرئيسية', en: 'Home' })}
+                            {translate({ ar: "الرئيسية", en: "Home" })}
                         </NavbarLink>
                         <NavbarLink href="#cards">
-                            {translate({ ar: 'الكروت', en: 'Cards' })}
+                            {translate({ ar: "الكروت", en: "Cards" })}
                         </NavbarLink>
                         <NavbarLink href="#dashboard">
-                            {translate({ ar: 'الداشبورد', en: 'Dashboard' })}
+                            {translate({ ar: "الداشبورد", en: "Dashboard" })}
                         </NavbarLink>
                         <NavbarLink href="#backgrounds">
-                            {translate({ ar: 'الخلفيات', en: 'Backgrounds' })}
+                            {translate({ ar: "الخلفيات", en: "Backgrounds" })}
                         </NavbarLink>
                     </NavbarLinks>
 
@@ -179,7 +183,7 @@ export default function Welcome({}: PageProps) {
                         <ModeButton />
                         <LanguageButton />
                         <Button size="sm" fullWidth>
-                            {translate({ ar: 'ابدأ الآن', en: 'Get started' })}
+                            {translate({ ar: "ابدأ الآن", en: "Get started" })}
                         </Button>
                     </NavbarActions>
                 </NavbarMobileMenu>
@@ -211,14 +215,14 @@ export default function Welcome({}: PageProps) {
                         <div className="space-y-5">
                             <CardMeta>
                                 {translate({
-                                    ar: 'متجاوب • عربي وإنجليزي',
-                                    en: 'Responsive • Arabic & English',
+                                    ar: "متجاوب • عربي وإنجليزي",
+                                    en: "Responsive • Arabic & English",
                                 })}
                             </CardMeta>
                             <h2 className="max-w-2xl text-3xl font-bold leading-tight sm:text-5xl">
                                 {translate({
-                                    ar: 'ابنِ صفحات أنيقة بجريد واحد مرن.',
-                                    en: 'Build polished pages with one flexible grid.',
+                                    ar: "ابنِ صفحات أنيقة بجريد واحد مرن.",
+                                    en: "Build polished pages with one flexible grid.",
                                 })}
                             </h2>
                             <p
@@ -226,21 +230,21 @@ export default function Welcome({}: PageProps) {
                                 style={{ color: colors.muted }}
                             >
                                 {translate({
-                                    ar: 'غيّر حجم الشاشة لتشاهد الكروت والتقسيمات وهي تتجاوب تلقائيًا.',
-                                    en: 'Resize the screen to see cards and layouts adapt automatically.',
+                                    ar: "غيّر حجم الشاشة لتشاهد الكروت والتقسيمات وهي تتجاوب تلقائيًا.",
+                                    en: "Resize the screen to see cards and layouts adapt automatically.",
                                 })}
                             </p>
                             <div className="flex flex-wrap gap-3">
                                 <Button>
                                     {translate({
-                                        ar: 'ابدأ الآن',
-                                        en: 'Get started',
+                                        ar: "ابدأ الآن",
+                                        en: "Get started",
                                     })}
                                 </Button>
                                 <Button variant="outline">
                                     {translate({
-                                        ar: 'عرض الخيارات',
-                                        en: 'View options',
+                                        ar: "عرض الخيارات",
+                                        en: "View options",
                                     })}
                                 </Button>
                             </div>
@@ -249,12 +253,12 @@ export default function Welcome({}: PageProps) {
                         <Card variant="elevated" padding="lg">
                             <CardMeta>
                                 {translate({
-                                    ar: 'معاينة مباشرة',
-                                    en: 'Live preview',
+                                    ar: "معاينة مباشرة",
+                                    en: "Live preview",
                                 })}
                             </CardMeta>
                             <div className="mt-5 grid grid-cols-2 gap-3">
-                                {['01', '02', '03', '04'].map((number) => (
+                                {["01", "02", "03", "04"].map((number) => (
                                     <div
                                         key={number}
                                         className="rounded-xl p-5 text-center text-lg font-bold"
@@ -275,8 +279,8 @@ export default function Welcome({}: PageProps) {
                             <CardMeta>AUTO-FIT GRID</CardMeta>
                             <h2 className="mt-1 text-2xl font-bold">
                                 {translate({
-                                    ar: 'كروت متجاوبة تلقائيًا',
-                                    en: 'Automatically responsive cards',
+                                    ar: "كروت متجاوبة تلقائيًا",
+                                    en: "Automatically responsive cards",
                                 })}
                             </h2>
                         </div>
@@ -303,8 +307,8 @@ export default function Welcome({}: PageProps) {
                                         <CardPrice>{product.price}</CardPrice>
                                         <Button size="sm">
                                             {translate({
-                                                ar: 'التفاصيل',
-                                                en: 'Details',
+                                                ar: "التفاصيل",
+                                                en: "Details",
                                             })}
                                         </Button>
                                     </CardFooter>
@@ -318,8 +322,8 @@ export default function Welcome({}: PageProps) {
                             <CardMeta>DASHBOARD GRID</CardMeta>
                             <h2 className="mt-1 text-2xl font-bold">
                                 {translate({
-                                    ar: 'تقسيم داشبورد بأحجام مختلفة',
-                                    en: 'Dashboard with different item sizes',
+                                    ar: "تقسيم داشبورد بأحجام مختلفة",
+                                    en: "Dashboard with different item sizes",
                                 })}
                             </h2>
                         </div>
@@ -329,14 +333,14 @@ export default function Welcome({}: PageProps) {
                                 <Card variant="elevated" padding="lg">
                                     <CardMeta>
                                         {translate({
-                                            ar: 'إجمالي المبيعات',
-                                            en: 'Total sales',
+                                            ar: "إجمالي المبيعات",
+                                            en: "Total sales",
                                         })}
                                     </CardMeta>
                                     <p className="mt-3 text-3xl font-bold">
                                         {translate({
-                                            ar: '٤٨٬٢٠٠ ج.م',
-                                            en: 'EGP 48,200',
+                                            ar: "٤٨٬٢٠٠ ج.م",
+                                            en: "EGP 48,200",
                                         })}
                                     </p>
                                     <p
@@ -349,15 +353,15 @@ export default function Welcome({}: PageProps) {
                             </GridItem>
 
                             {[
-                                translate({ ar: '١٢٤ طلب', en: '124 orders' }),
-                                translate({ ar: '٨٩ عميل', en: '89 clients' }),
+                                translate({ ar: "١٢٤ طلب", en: "124 orders" }),
+                                translate({ ar: "٨٩ عميل", en: "89 clients" }),
                             ].map((value) => (
                                 <GridItem key={value}>
                                     <Card padding="lg" className="h-full">
                                         <CardMeta>
                                             {translate({
-                                                ar: 'هذا الشهر',
-                                                en: 'This month',
+                                                ar: "هذا الشهر",
+                                                en: "This month",
                                             })}
                                         </CardMeta>
                                         <p className="mt-3 text-2xl font-bold">
@@ -374,8 +378,8 @@ export default function Welcome({}: PageProps) {
                             <CardMeta>SIDEBAR GRID</CardMeta>
                             <h2 className="mt-1 text-2xl font-bold">
                                 {translate({
-                                    ar: 'تقسيم صفحة مع قائمة جانبية',
-                                    en: 'Page layout with a sidebar',
+                                    ar: "تقسيم صفحة مع قائمة جانبية",
+                                    en: "Page layout with a sidebar",
                                 })}
                             </h2>
                         </div>
@@ -394,13 +398,22 @@ export default function Welcome({}: PageProps) {
                         >
                             <Card padding="md">
                                 <CardTitle>
-                                    {translate({ ar: 'الفلاتر', en: 'Filters' })}
+                                    {translate({
+                                        ar: "الفلاتر",
+                                        en: "Filters",
+                                    })}
                                 </CardTitle>
                                 <div className="mt-4 space-y-2">
                                     {[
-                                        translate({ ar: 'الكل', en: 'All' }),
-                                        translate({ ar: 'تصميم', en: 'Design' }),
-                                        translate({ ar: 'تطوير', en: 'Development' }),
+                                        translate({ ar: "الكل", en: "All" }),
+                                        translate({
+                                            ar: "تصميم",
+                                            en: "Design",
+                                        }),
+                                        translate({
+                                            ar: "تطوير",
+                                            en: "Development",
+                                        }),
                                     ].map((item, index) => (
                                         <button
                                             key={item}
@@ -410,7 +423,7 @@ export default function Welcome({}: PageProps) {
                                                 backgroundColor:
                                                     index === 0
                                                         ? `${colors.primary}18`
-                                                        : 'transparent',
+                                                        : "transparent",
                                                 color:
                                                     index === 0
                                                         ? colors.primary
@@ -441,13 +454,16 @@ export default function Welcome({}: PageProps) {
                         </Grid>
                     </section>
 
-                    <section id="backgrounds" className="scroll-mt-24 space-y-6">
+                    <section
+                        id="backgrounds"
+                        className="scroll-mt-24 space-y-6"
+                    >
                         <div>
                             <CardMeta>BACKGROUND IMAGE OPTIONS</CardMeta>
                             <h2 className="mt-1 text-2xl font-bold">
                                 {translate({
-                                    ar: 'صور خلفية بطرق عرض مختلفة',
-                                    en: 'Background images in different modes',
+                                    ar: "صور خلفية بطرق عرض مختلفة",
+                                    en: "Background images in different modes",
                                 })}
                             </h2>
                             <p
@@ -455,8 +471,8 @@ export default function Welcome({}: PageProps) {
                                 style={{ color: colors.muted }}
                             >
                                 {translate({
-                                    ar: 'مرّر الصفحة لتلاحظ أن خلفية المثال الكبير ثابتة، بينما الأمثلة الصغيرة تتحرك بشكل طبيعي.',
-                                    en: 'Scroll the page to see the large background stay fixed while the small previews move normally.',
+                                    ar: "مرّر الصفحة لتلاحظ أن خلفية المثال الكبير ثابتة، بينما الأمثلة الصغيرة تتحرك بشكل طبيعي.",
+                                    en: "Scroll the page to see the large background stay fixed while the small previews move normally.",
                                 })}
                             </p>
                         </div>
@@ -479,8 +495,8 @@ export default function Welcome({}: PageProps) {
                                 <CardMeta>FIXED + COVER + 28% OPACITY</CardMeta>
                                 <h3 className="text-3xl font-bold leading-tight sm:text-4xl">
                                     {translate({
-                                        ar: 'خلفية ثابتة لا تؤثر على وضوح المحتوى.',
-                                        en: 'A fixed background that keeps content clear.',
+                                        ar: "خلفية ثابتة لا تؤثر على وضوح المحتوى.",
+                                        en: "A fixed background that keeps content clear.",
                                     })}
                                 </h3>
                                 <p
@@ -488,8 +504,8 @@ export default function Welcome({}: PageProps) {
                                     style={{ color: colors.muted }}
                                 >
                                     {translate({
-                                        ar: 'شفافية الصورة منفصلة عن العناصر، لذلك تظل النصوص والكروت بكامل وضوحها.',
-                                        en: 'Image opacity is separate from the elements, so text and cards remain fully visible.',
+                                        ar: "شفافية الصورة منفصلة عن العناصر، لذلك تظل النصوص والكروت بكامل وضوحها.",
+                                        en: "Image opacity is separate from the elements, so text and cards remain fully visible.",
                                     })}
                                 </p>
                             </div>
@@ -497,20 +513,20 @@ export default function Welcome({}: PageProps) {
                             <Card variant="elevated" padding="lg">
                                 <CardMeta>
                                     {translate({
-                                        ar: 'كارت فوق الخلفية',
-                                        en: 'Card over background',
+                                        ar: "كارت فوق الخلفية",
+                                        en: "Card over background",
                                     })}
                                 </CardMeta>
                                 <CardTitle className="mt-3 text-2xl">
                                     {translate({
-                                        ar: 'المحتوى مستقل',
-                                        en: 'Independent content',
+                                        ar: "المحتوى مستقل",
+                                        en: "Independent content",
                                     })}
                                 </CardTitle>
                                 <CardDescription className="mt-2">
                                     {translate({
-                                        ar: 'غيّر شفافية الصورة بدون تغيير شفافية هذا الكارت.',
-                                        en: 'Change the image opacity without changing this card opacity.',
+                                        ar: "غيّر شفافية الصورة بدون تغيير شفافية هذا الكارت.",
+                                        en: "Change the image opacity without changing this card opacity.",
                                     })}
                                 </CardDescription>
                             </Card>
@@ -532,8 +548,8 @@ export default function Welcome({}: PageProps) {
                                     <CardMeta>CONTAIN • OPACITY 20%</CardMeta>
                                     <CardTitle className="mt-2">
                                         {translate({
-                                            ar: 'الصورة كاملة داخل المساحة',
-                                            en: 'The full image fits inside',
+                                            ar: "الصورة كاملة داخل المساحة",
+                                            en: "The full image fits inside",
                                         })}
                                     </CardTitle>
                                 </Card>
@@ -554,13 +570,107 @@ export default function Welcome({}: PageProps) {
                                     <CardMeta>REPEAT • CUSTOM SIZE</CardMeta>
                                     <CardTitle className="mt-2">
                                         {translate({
-                                            ar: 'نمط صورة متكرر',
-                                            en: 'Repeating image pattern',
+                                            ar: "نمط صورة متكرر",
+                                            en: "Repeating image pattern",
                                         })}
                                     </CardTitle>
                                 </Card>
                             </Grid>
                         </Grid>
+                    </section>
+
+                    <section className="space-y-6 py-8">
+                        <div className="space-y-2 text-center">
+                            <h2 className="text-3xl font-bold">
+                                {translate({
+                                    ar: "أحدث المقالات",
+                                    en: "Latest articles",
+                                })}
+                            </h2>
+                            <p style={{ color: colors.muted }}>
+                                {translate({
+                                    ar: "تجربة مباشرة لمكوّن السلايدر من نظام التصميم.",
+                                    en: "A live preview of the design-system slider.",
+                                })}
+                            </p>
+                        </div>
+
+                        <Slider
+                            ariaLabel={translate({
+                                ar: "أحدث مقالات أفورا",
+                                en: "Latest AVORA articles",
+                            })}
+                            items={[
+                                {
+                                    id: 1,
+                                    content: (
+                                        <Card className="h-full overflow-hidden">
+                                            <CardImage
+                                                src="/images/avora-card-emerald.svg"
+                                                alt=""
+                                            />
+                                            <CardContent className="p-6">
+                                                <CardTitle>
+                                                    {translate({
+                                                        ar: "كيف تختار العطر المناسب لشخصيتك؟",
+                                                        en: "How do you choose the right fragrance for your personality?",
+                                                    })}
+                                                </CardTitle>
+                                            </CardContent>
+                                        </Card>
+                                    ),
+                                },
+                                {
+                                    id: 2,
+                                    content: (
+                                        <Card className="h-full overflow-hidden">
+                                            <CardImage
+                                                src="/images/avora-card-violet.svg"
+                                                alt=""
+                                            />
+                                            <CardContent className="p-6">
+                                                <CardTitle>
+                                                    {translate({
+                                                        ar: "نصائح للحفاظ على ثبات عطرك طوال اليوم.",
+                                                        en: "Tips to make your fragrance last all day.",
+                                                    })}
+                                                </CardTitle>
+                                            </CardContent>
+                                        </Card>
+                                    ),
+                                },
+                                {
+                                    id: 3,
+                                    content: (
+                                        <Card className="h-full overflow-hidden">
+                                            <CardImage
+                                                src="/images/avora-card-blue.svg"
+                                                alt=""
+                                            />
+                                            <CardContent className="p-6">
+                                                <CardTitle>
+                                                    {translate({
+                                                        ar: "اكتشف مكونات العطور التي تناسب كل موسم.",
+                                                        en: "Discover fragrance notes for every season.",
+                                                    })}
+                                                </CardTitle>
+                                            </CardContent>
+                                        </Card>
+                                    ),
+                                },
+                            ]}
+                            slidesPerView={1}
+                            spaceBetween={24}
+                            arrowsPosition="outside"
+                            pagination
+                            paginationPosition="outside"
+                            autoplay={1000}
+                            loop
+                            speed={400}
+                            breakpoints={{
+                                1024: { slidesPerView: 2 },
+                            }}
+                        />
                     </section>
                 </Container>
             </main>
