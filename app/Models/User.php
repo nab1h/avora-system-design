@@ -74,4 +74,16 @@ class User extends Authenticatable
 
         return $this->role?->permissions->pluck('slug')->all() ?? [];
     }
+
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favorites');
+    }
+
+    public function cartProducts()
+    {
+        return $this->belongsToMany(Product::class, 'carts')
+            ->withPivot('quantity')
+            ->withTimestamps();
+    }
 }
