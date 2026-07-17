@@ -109,3 +109,152 @@ export type PageProps<
         user: User;
     };
 };
+
+
+export type DashboardModuleIncludeProps = {
+    section: string;
+};
+
+export type RoleOption = {
+    id: number;
+    name: string;
+};
+
+export type UserRow = {
+    id: number;
+    name: string;
+    email: string;
+    role_id: number | null;
+    role_name: string | null;
+    created_at: string | null;
+};
+
+export type PermissionRow = {
+    id: number;
+    name_ar: string;
+    name_en: string;
+    slug: string;
+};
+
+export type PurchaseRow = {
+    uuid: string;
+    customer_name: string;
+    customer_email: string | null;
+    product_name: string;
+    amount_decimal: string;
+    currency: string;
+    status: string;
+    gateway_name: string | null;
+    gateway_reference: string | null;
+    created_at: string | null;
+};
+
+export type RoleRow = {
+    id: number;
+    name: string;
+    slug: string;
+    description: string | null;
+    users_count: number;
+    permission_ids: number[];
+    permissions: PermissionRow[];
+};
+
+export type AdminPageProps = {
+    users?: UserRow[];
+    roles?: RoleOption[] | RoleRow[];
+    permissions?: PermissionRow[];
+    websiteSettings?: WebsiteSettings;
+    paymentGateways?: PaymentGateway[];
+    purchases?: PurchaseRow[];
+};
+
+export type UserForm = {
+    name: string;
+    email: string;
+    password: string;
+    role_id: string;
+};
+
+export type RoleForm = {
+    name: string;
+    slug: string;
+    description: string;
+    permission_ids: number[];
+};
+
+export type PermissionForm = {
+    name_ar: string;
+    name_en: string;
+    slug: string;
+};
+
+export type SmtpTestForm = {
+    email: string;
+};
+
+export type WebsiteSettingForm = {
+    website_name: string;
+    logo: File | null;
+    favicon_96: File | null;
+    favicon_svg: File | null;
+    favicon_ico: File | null;
+    apple_touch_icon: File | null;
+    web_app_manifest_192: File | null;
+    web_app_manifest_512: File | null;
+    site_webmanifest: File | null;
+    contact_email: string;
+    phone: string;
+    whatsapp: string;
+    currency: string;
+    default_language: "auto" | "ar" | "en";
+    default_theme: "system" | "light" | "dark";
+    google_login_enabled: boolean;
+    google_client_id: string;
+    google_client_secret: string;
+    google_redirect_url: string;
+    facebook_login_enabled: boolean;
+    facebook_client_id: string;
+    facebook_client_secret: string;
+    facebook_redirect_url: string;
+    facebook_url: string;
+    instagram_url: string;
+    x_url: string;
+    linkedin_url: string;
+    youtube_url: string;
+    tiktok_url: string;
+    telegram_url: string;
+    snapchat_url: string;
+    pinterest_url: string;
+    github_url: string;
+    discord_url: string;
+    threads_url: string;
+    smtp_host: string;
+    smtp_port: string;
+    smtp_username: string;
+    smtp_password: string;
+    smtp_encryption: string;
+    smtp_from_address: string;
+    smtp_from_name: string;
+    _method: "put";
+};
+
+export interface Attribute {
+    id: number;
+    name: string;
+    unit: string;
+    name_en: string;
+    unit_en: string;
+    type: "text" | "number" | "select" | "boolean";
+}
+export interface AttributeForm {
+    id: string
+    name: string;
+    unit: string;
+    name_en: string;
+    unit_en: string;
+    type: "text" | "number" | "select" | "boolean";
+}
+
+
+
+

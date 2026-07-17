@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\PermissionPageController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserPageController;
+use App\Http\Controllers\Admin\ecommerce\AttributeController;
+use App\Http\Controllers\Admin\ecommerce\ProductsController;
 use App\Http\Controllers\Admin\WebsiteSettingController;
 use App\Http\Controllers\Admin\WebsiteSettingPageController;
 use App\Http\Controllers\Auth\CustomerAuthController;
@@ -151,5 +153,51 @@ Route::patch('/profile', [ProfileController::class, 'update'])
 Route::delete('/profile', [ProfileController::class, 'destroy'])
     ->middleware('auth')
     ->name('profile.destroy');
+
+
+
+// attribute ================
+Route::middleware(['auth', 'verified', 'dashboard.access'])
+    ->prefix('dashboard/attributes')
+    ->name('dashboard.attributes.')
+    ->group(function () {
+
+        Route::get('/', [AttributeController::class, 'index'])
+            ->name('index');
+
+        Route::post('/', [AttributeController::class, 'store'])
+            ->name('store');
+
+        Route::get('/{attribute}/edit', [AttributeController::class, 'edit'])
+            ->name('edit');
+
+        Route::put('/{attribute}', [AttributeController::class, 'update'])
+            ->name('update');
+
+        Route::delete('/{attribute}', [AttributeController::class, 'destroy'])
+            ->name('destroy');
+    });
+
+// Products ================
+Route::middleware(['auth', 'verified', 'dashboard.access'])
+    ->prefix('dashboard/products')
+    ->name('dashboard.products.')
+    ->group(function () {
+
+        Route::get('/', [ProductsController::class, 'index'])
+            ->name('index');
+
+        Route::post('/', [ProductsController::class, 'store'])
+            ->name('store');
+
+        Route::get('/{products}/edit', [ProductsController::class, 'edit'])
+            ->name('edit');
+
+        Route::put('/{products}', [ProductsController::class, 'update'])
+            ->name('update');
+
+        Route::delete('/{products}', [ProductsController::class, 'destroy'])
+            ->name('destroy');
+    });
 
 require __DIR__.'/auth.php';

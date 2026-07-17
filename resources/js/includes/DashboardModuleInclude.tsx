@@ -8,140 +8,19 @@ import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { PaymentGatewaysInclude } from "@/includes/PaymentGatewaysInclude";
 import { DashboardLayout } from "@/Layouts/DashboardLayout";
-import type { PageProps, PaymentGateway, WebsiteSettings } from "@/types";
+import type { AdminPageProps, Attribute, DashboardModuleIncludeProps, PageProps, PaymentGateway, PermissionForm, PermissionRow, RoleForm, RoleOption, RoleRow, SmtpTestForm, UserForm, UserRow, WebsiteSettingForm, WebsiteSettings } from "@/types";
 import { router, useForm, usePage } from "@inertiajs/react";
 import { useState, type FormEventHandler } from "react";
-
-type DashboardModuleIncludeProps = {
-    section: string;
-};
-
-type RoleOption = {
-    id: number;
-    name: string;
-};
-
-type UserRow = {
-    id: number;
-    name: string;
-    email: string;
-    role_id: number | null;
-    role_name: string | null;
-    created_at: string | null;
-};
-
-type PermissionRow = {
-    id: number;
-    name_ar: string;
-    name_en: string;
-    slug: string;
-};
-
-type PurchaseRow = {
-    uuid: string;
-    customer_name: string;
-    customer_email: string | null;
-    product_name: string;
-    amount_decimal: string;
-    currency: string;
-    status: string;
-    gateway_name: string | null;
-    gateway_reference: string | null;
-    created_at: string | null;
-};
-
-type RoleRow = {
-    id: number;
-    name: string;
-    slug: string;
-    description: string | null;
-    users_count: number;
-    permission_ids: number[];
-    permissions: PermissionRow[];
-};
-
-type AdminPageProps = {
-    users?: UserRow[];
-    roles?: RoleOption[] | RoleRow[];
-    permissions?: PermissionRow[];
-    websiteSettings?: WebsiteSettings;
-    paymentGateways?: PaymentGateway[];
-    purchases?: PurchaseRow[];
-};
-
-type UserForm = {
-    name: string;
-    email: string;
-    password: string;
-    role_id: string;
-};
-
-type RoleForm = {
-    name: string;
-    slug: string;
-    description: string;
-    permission_ids: number[];
-};
-
-type PermissionForm = {
-    name_ar: string;
-    name_en: string;
-    slug: string;
-};
-
-type SmtpTestForm = {
-    email: string;
-};
-
-type WebsiteSettingForm = {
-    website_name: string;
-    logo: File | null;
-    favicon_96: File | null;
-    favicon_svg: File | null;
-    favicon_ico: File | null;
-    apple_touch_icon: File | null;
-    web_app_manifest_192: File | null;
-    web_app_manifest_512: File | null;
-    site_webmanifest: File | null;
-    contact_email: string;
-    phone: string;
-    whatsapp: string;
-    currency: string;
-    default_language: "auto" | "ar" | "en";
-    default_theme: "system" | "light" | "dark";
-    google_login_enabled: boolean;
-    google_client_id: string;
-    google_client_secret: string;
-    google_redirect_url: string;
-    facebook_login_enabled: boolean;
-    facebook_client_id: string;
-    facebook_client_secret: string;
-    facebook_redirect_url: string;
-    facebook_url: string;
-    instagram_url: string;
-    x_url: string;
-    linkedin_url: string;
-    youtube_url: string;
-    tiktok_url: string;
-    telegram_url: string;
-    snapchat_url: string;
-    pinterest_url: string;
-    github_url: string;
-    discord_url: string;
-    threads_url: string;
-    smtp_host: string;
-    smtp_port: string;
-    smtp_username: string;
-    smtp_password: string;
-    smtp_encryption: string;
-    smtp_from_address: string;
-    smtp_from_name: string;
-    _method: "put";
-};
+import { Grid, GridItem } from "@/avora-dash/components/Grid";
+import { Card } from "@/avora-dash/components/Card/Card";
+import { CardTitle } from "@/avora-dash/components/Card/CardTitle";
+import { CardFooter } from "@/avora-dash/components/Card/CardFooter";
+import { AttrbutePage } from "@/Pages/ecommerce/AttrbutePage";
 
 const sectionTitles = {
     orders: { ar: "إدارة الطلبات", en: "Order management" },
     products: { ar: "إدارة المنتجات", en: "Product management" },
+    attributes: { ar: "إدارة المواصفات", en: "Properties management" },
     customers: { ar: "العملاء", en: "Customers" },
     users: { ar: "إدارة المستخدمين", en: "User management" },
     permissions: { ar: "إدارة الصلاحيات", en: "Permission management" },
@@ -207,6 +86,7 @@ export function DashboardModuleInclude({
     section,
 }: DashboardModuleIncludeProps) {
     const { language, translate } = useLanguage();
+
     const page = usePage<PageProps<AdminPageProps>>();
     const users = page.props.users ?? [];
     const roleOptions = ((page.props.roles ?? []) as RoleOption[]).filter(
@@ -468,22 +348,7 @@ export function DashboardModuleInclude({
                     })}
                 </p>
             </div>
-            {["users", "permissions"].includes(section) ? (
-                <Button type="button" rounded="no" onClick={openCreateAction}>
-                    +{" "}
-                    {section === "users"
-                        ? translate({ ar: "إضافة مستخدم", en: "Add user" })
-                        : translate({ ar: "إضافة دور", en: "Add role" })}
-                </Button>
-            ) : (
-                !["calendar", "reports", "ui-elements", "settings"].includes(
-                    section,
-                ) && (
-                    <Button rounded="no">
-                        + {translate({ ar: "إضافة جديد", en: "Add new" })}
-                    </Button>
-                )
-            )}
+            
         </header>
     );
 
@@ -2135,6 +2000,7 @@ export function DashboardModuleInclude({
         if (section === "orders" || section === "tables")
             return <RecentOrders />;
 
+        if (section === "attributes") return AttrbutePage();
         if (section === "reports")
             return (
                 <div className="space-y-6">

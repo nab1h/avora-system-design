@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Attribute;
 
 class DashboardController extends Controller
 {
@@ -22,8 +23,10 @@ class DashboardController extends Controller
 
     public function section(string $section): Response
     {
+        $attributes = Attribute::all();
         return Inertia::render('Dashboard', [
             'section' => $section,
+            'attributes' => $attributes,
         ]);
     }
 
@@ -58,6 +61,7 @@ class DashboardController extends Controller
             'purchases' => $purchases,
         ]);
     }
+
 
     private function dashboardStats(): array
     {

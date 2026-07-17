@@ -58,6 +58,14 @@ export const dashboardNavigation: DashboardNavItem[] = [
     },
 ];
 
+export const dashboardProperties: DashboardNavItem[] = [
+    {
+        label: { ar: "خصائص المنتجات", en: "Products Properties" },
+        icon: "orders",
+        href: "/dashboard/attributes",
+    },
+];
+
 export const dashboardAccountNavigation: DashboardNavItem[] = [
     {
         label: { ar: 'الملف الشخصي', en: 'Profile' },

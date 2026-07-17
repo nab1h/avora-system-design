@@ -30,7 +30,7 @@ export function SidebarLayoutInclude({ children }: SidebarLayoutIncludeProps) {
                 gap="lg"
                 padding="lg"
                 background="muted"
-                rounded="no"
+                rounded="none"
                 align="start"
             >
                 <Card padding="md">
