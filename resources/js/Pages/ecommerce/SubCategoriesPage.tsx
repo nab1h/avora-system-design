@@ -1,5 +1,7 @@
 import { Button } from "@/avora-dash/components/Button";
 import { FormField } from "@/avora-dash/components/forms/FormField";
+import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
+import { ImageSelect } from "@/avora-dash/components/forms/ImageSelect";
 import { Grid } from "@/avora-dash/components/Grid";
 import { GridItem } from "@/avora-dash/components/Grid/GridItem";
 import { Modal } from "@/avora-dash/components/Modal/Modal";
@@ -24,6 +26,7 @@ export const SubCategoriesPage = () => {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [deleteId, setDeleteId] = useState<number | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [editingImage, setEditingImage] = useState<string | null>(null);
 
     const subCatForm = useForm<Omit<SubCategory, "img"> & { img: File | null }>(
         {
@@ -42,6 +45,7 @@ export const SubCategoriesPage = () => {
 
     const editHandler = (subCat: SubCategory) => {
         setEditingId(subCat.id);
+        setEditingImage(subCat.img ? `/storage/${subCat.img}` : null);
         subCatForm.setData({
             id: subCat.id,
             categories_id: subCat.categories_id,
@@ -74,6 +78,7 @@ export const SubCategoriesPage = () => {
                         setOpenModal(false);
                         subCatForm.reset();
                         setEditingId(null);
+                        setEditingImage(null);
                     },
                 },
             );
@@ -88,6 +93,7 @@ export const SubCategoriesPage = () => {
                     setOpenModal(false);
                     subCatForm.reset();
                     setEditingId(null);
+                    setEditingImage(null);
                 },
             });
         }
@@ -115,6 +121,7 @@ export const SubCategoriesPage = () => {
     const handleCloseModal = () => {
         setOpenModal(false);
         setEditingId(null);
+        setEditingImage(null);
         subCatForm.clearErrors();
     };
 
@@ -149,6 +156,7 @@ export const SubCategoriesPage = () => {
                                 onClick={() => {
                                     subCatForm.reset();
                                     setEditingId(null);
+                                    setEditingImage(null);
                                     setOpenModal(true);
                                 }}
                             >
@@ -319,44 +327,29 @@ export const SubCategoriesPage = () => {
                     onSubmit={onSubmitHandler}
                 >
                     <GridItem>
-                        <label className="mb-2 block text-sm font-medium">
-                            {translate({
+                        <ImageSelect
+                            label={translate({
                                 ar: "الصنف الرئيسي",
                                 en: "Main Category",
                             })}
-                        </label>
-                        <select
-                            style={{
-                                backgroundColor: colors.surface,
-                                color: colors.text,
-                                borderColor: colors.border,
-                            }}
-                            className="w-full rounded-lg border p-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-                            value={subCatForm.data.categories_id}
-                            onChange={(e) =>
-                                subCatForm.setData(
-                                    "categories_id",
-                                    Number(e.target.value),
-                                )
+                            value={subCatForm.data.categories_id || null}
+                            placeholder={translate({
+                                ar: "اختر صنفًا رئيسيًا",
+                                en: "Select a category",
+                            })}
+                            options={categories.map((category) => ({
+                                value: category.id,
+                                label: `${category.name_ar} - ${category.name_en}`,
+                                image:
+                                    typeof category.img === "string"
+                                        ? `/storage/${category.img}`
+                                        : null,
+                            }))}
+                            onChange={(value) =>
+                                subCatForm.setData("categories_id", value)
                             }
-                        >
-                            <option value="0" disabled>
-                                {translate({
-                                    ar: "اختر صنف رئيسي",
-                                    en: "Select a category",
-                                })}
-                            </option>
-                            {categories.map((cat) => (
-                                <option key={cat.id} value={cat.id}>
-                                    {cat.name_ar} - {cat.name_en}
-                                </option>
-                            ))}
-                        </select>
-                        {subCatForm.errors.categories_id && (
-                            <p className="mt-1 text-sm text-red-500">
-                                {subCatForm.errors.categories_id}
-                            </p>
-                        )}
+                            error={subCatForm.errors.categories_id}
+                        />
                     </GridItem>
 
                     <Grid layout="two" gap="sm">
@@ -468,28 +461,18 @@ export const SubCategoriesPage = () => {
 
                     <Grid layout="two" gap="sm">
                         <GridItem>
-                            <label className="mb-2 block text-sm font-medium">
-                                {translate({
+                            <ImageInput
+                                label={translate({
                                     ar: "صورة الصنف الفرعي",
                                     en: "SubCategory Image",
                                 })}
-                            </label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                className="avora-input w-full"
-                                onChange={(event) => {
-                                    const file = event.target.files?.[0];
-                                    if (file) {
-                                        subCatForm.setData("img", file);
-                                    }
-                                }}
+                                value={subCatForm.data.img}
+                                currentImage={editingImage}
+                                onChange={(file) =>
+                                    subCatForm.setData("img", file)
+                                }
+                                error={subCatForm.errors.img}
                             />
-                            {subCatForm.errors.img && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {subCatForm.errors.img}
-                                </p>
-                            )}
                         </GridItem>
                         <GridItem>
                             <label className="mb-2 block text-sm font-medium">

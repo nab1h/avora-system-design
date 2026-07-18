@@ -1,5 +1,6 @@
 import { Button } from "@/avora-dash/components/Button";
 import { FormField } from "@/avora-dash/components/forms/FormField";
+import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
 import { Grid } from "@/avora-dash/components/Grid";
 import { GridItem } from "@/avora-dash/components/Grid/GridItem";
 import { Modal } from "@/avora-dash/components/Modal/Modal";
@@ -20,6 +21,7 @@ export const CategoriesPage = () => {
     const [editingId, setEditingId] = useState<number | null>(null);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [deleteId, setDeleteId] = useState<number | null>(null);
+    const [editingImage, setEditingImage] = useState<string | null>(null);
 
     const categoryForm = useForm<Category>({
         id: 0,
@@ -38,6 +40,11 @@ export const CategoriesPage = () => {
 
     const editHandler = (category: Category) => {
         setEditingId(category.id);
+        setEditingImage(
+            typeof category.img === "string"
+                ? `/storage/${category.img}`
+                : null,
+        );
         categoryForm.setData({
             id: category.id,
             img: null,
@@ -76,6 +83,7 @@ export const CategoriesPage = () => {
                 setOpenModal(false);
                 categoryForm.reset();
                 setEditingId(null);
+                setEditingImage(null);
             },
             onError: (errors: any) => {
                 console.log("Validation Errors:", errors);
@@ -142,6 +150,8 @@ export const CategoriesPage = () => {
                             <Button
                                 onClick={() => {
                                     categoryForm.reset();
+                                    setEditingId(null);
+                                    setEditingImage(null);
                                     setOpenModal(true);
                                 }}
                             >
@@ -305,7 +315,12 @@ export const CategoriesPage = () => {
 
             <Modal
                 open={openModal}
-                onClose={() => setOpenModal(false)}
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditingId(null);
+                    setEditingImage(null);
+                    categoryForm.clearErrors();
+                }}
                 title={translate({
                     ar: editingId !== null ? "تعديل صنف" : "إضافة صنف",
                     en: editingId !== null ? "Edit Category" : "Add Category",
@@ -427,30 +442,18 @@ export const CategoriesPage = () => {
                     {/* Image URL & Status */}
                     <Grid layout="two" gap="sm">
                         <GridItem>
-                            <label className="mb-2 block text-sm font-medium">
-                                {translate({
-                                    ar: "صورة القسم",
+                            <ImageInput
+                                label={translate({
+                                    ar: "صورة الصنف",
                                     en: "Category Image",
                                 })}
-                            </label>
-
-                            <input
-                                type="file"
-                                accept="image/*"
-                                className="avora-input w-full"
-                                onChange={(event) =>
-                                    categoryForm.setData(
-                                        "img",
-                                        event.target.files?.[0] ?? null,
-                                    )
+                                value={categoryForm.data.img}
+                                currentImage={editingImage}
+                                onChange={(file) =>
+                                    categoryForm.setData("img", file)
                                 }
+                                error={categoryForm.errors.img}
                             />
-
-                            {categoryForm.errors.img && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {categoryForm.errors.img}
-                                </p>
-                            )}
                         </GridItem>
                         <GridItem>
                             <label className="mb-2 block text-sm font-medium">
