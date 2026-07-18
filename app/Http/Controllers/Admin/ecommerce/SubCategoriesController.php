@@ -19,7 +19,12 @@ class SubCategoriesController extends Controller
         return Inertia::render('Dashboard', [
             'section' => 'subCategories',
             'subCategories' => SubCategory::with('category')->get(),
-            'categories' => Category::select('id', 'name_ar', 'name_en')->get(),
+            'categories' => Category::select(
+                'id',
+                'name_ar',
+                'name_en',
+                'img',
+            )->get(),
         ]);
     }
 

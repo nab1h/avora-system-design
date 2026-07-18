@@ -21,6 +21,8 @@ export type AlertProps = Omit<HTMLAttributes<HTMLDivElement>, 'title'> & {
     icon?: ReactNode | false;
     onDismiss?: () => void;
     dismissLabel?: string;
+    floating?: boolean;
+    placement?: 'top-start' | 'top-center' | 'top-end' | 'bottom-center';
 };
 
 const variants: Record<AlertVariant, string> = {
@@ -42,6 +44,15 @@ const icons: Record<AlertVariant, ReactNode> = {
     neutral: <FiInfo />,
 };
 
+const placements = {
+    'top-start': 'fixed start-4 top-4 z-[100] w-[calc(100%-2rem)] sm:w-96',
+    'top-center':
+        'fixed start-1/2 top-4 z-[100] w-[calc(100%-2rem)] -translate-x-1/2 sm:w-96',
+    'top-end': 'fixed end-4 top-4 z-[100] w-[calc(100%-2rem)] sm:w-96',
+    'bottom-center':
+        'fixed bottom-4 start-1/2 z-[100] w-[calc(100%-2rem)] -translate-x-1/2 sm:w-96',
+};
+
 export function Alert({
     variant = 'info',
     title,
@@ -49,6 +60,8 @@ export function Alert({
     icon,
     onDismiss,
     dismissLabel = 'Dismiss',
+    floating = false,
+    placement = 'top-end',
     className = '',
     ...props
 }: AlertProps) {
@@ -57,7 +70,11 @@ export function Alert({
     return (
         <div
             role={variant === 'danger' ? 'alert' : 'status'}
-            className={`flex gap-3 rounded-2xl border p-4 shadow-sm ${variants[variant]} ${className}`}
+            className={`flex gap-3 rounded-2xl border p-4 ${
+                floating
+                    ? `${placements[placement]} shadow-2xl motion-safe:animate-[alert-in_.25s_ease-out]`
+                    : 'shadow-sm'
+            } ${variants[variant]} ${className}`}
             {...props}
         >
             {displayedIcon && (

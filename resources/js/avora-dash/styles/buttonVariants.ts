@@ -14,7 +14,8 @@ export const buttonVariants = cva(
                 primary:
                     "avora-button-primary text-white shadow-sm focus-visible:ring-[var(--avora-primary)]",
 
-                danger: "border border-rose-700 bg-rose-600 text-white shadow-sm hover:bg-rose-700 focus-visible:ring-rose-500 dark:border-rose-500 dark:bg-rose-600 dark:hover:bg-rose-500",
+                danger:
+                    "!border-rose-700 !bg-rose-600 !text-white shadow-sm hover:!border-rose-800 hover:!bg-rose-700 focus-visible:ring-rose-500 dark:!border-rose-500 dark:!bg-rose-600 dark:hover:!bg-rose-500",
 
                 secondary:
                     "avora-button-secondary text-white shadow-sm focus-visible:ring-[var(--avora-secondary)]",

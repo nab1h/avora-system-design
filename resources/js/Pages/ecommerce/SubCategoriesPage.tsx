@@ -1,20 +1,23 @@
 import { Button } from "@/avora-dash/components/Button";
+import {
+    Alert,
+    type AlertVariant,
+} from "@/avora-dash/components/Alert";
 import { FormField } from "@/avora-dash/components/forms/FormField";
 import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
-import { ImageSelect } from "@/avora-dash/components/forms/ImageSelect";
+import { Select } from "@/avora-dash/components/forms/Select";
 import { Grid } from "@/avora-dash/components/Grid";
 import { GridItem } from "@/avora-dash/components/Grid/GridItem";
 import { Modal } from "@/avora-dash/components/Modal/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
-import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { Category, PageProps, SubCategory } from "@/types";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
 import { FormEventHandler, useState } from "react";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 export const SubCategoriesPage = () => {
     const { translate } = useLanguage();
     const page = usePage<PageProps>();
-    const { colors } = useTheme();
 
     const subCategories = page.props.subCategories as (SubCategory & {
         category?: Category;
@@ -27,6 +30,11 @@ export const SubCategoriesPage = () => {
     const [deleteId, setDeleteId] = useState<number | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [editingImage, setEditingImage] = useState<string | null>(null);
+    const [notification, setNotification] = useState<{
+        variant: AlertVariant;
+        title: string;
+        message: string;
+    } | null>(null);
 
     const subCatForm = useForm<Omit<SubCategory, "img"> & { img: File | null }>(
         {
@@ -79,7 +87,30 @@ export const SubCategoriesPage = () => {
                         subCatForm.reset();
                         setEditingId(null);
                         setEditingImage(null);
+                        setNotification({
+                            variant: "success",
+                            title: translate({
+                                ar: "تم تعديل الصنف الفرعي",
+                                en: "Subcategory updated",
+                            }),
+                            message: translate({
+                                ar: "تم حفظ التعديلات بنجاح.",
+                                en: "The changes were saved successfully.",
+                            }),
+                        });
                     },
+                    onError: () =>
+                        setNotification({
+                            variant: "danger",
+                            title: translate({
+                                ar: "تعذر تعديل الصنف الفرعي",
+                                en: "Subcategory could not be updated",
+                            }),
+                            message: translate({
+                                ar: "راجع البيانات المدخلة وحاول مرة أخرى.",
+                                en: "Review the entered data and try again.",
+                            }),
+                        }),
                 },
             );
         } else {
@@ -94,7 +125,30 @@ export const SubCategoriesPage = () => {
                     subCatForm.reset();
                     setEditingId(null);
                     setEditingImage(null);
+                    setNotification({
+                        variant: "success",
+                        title: translate({
+                            ar: "تمت إضافة الصنف الفرعي",
+                            en: "Subcategory created",
+                        }),
+                        message: translate({
+                            ar: "تم حفظ البيانات بنجاح.",
+                            en: "The data was saved successfully.",
+                        }),
+                    });
                 },
+                onError: () =>
+                    setNotification({
+                        variant: "danger",
+                        title: translate({
+                            ar: "تعذر إضافة الصنف الفرعي",
+                            en: "Subcategory could not be created",
+                        }),
+                        message: translate({
+                            ar: "راجع البيانات المدخلة وحاول مرة أخرى.",
+                            en: "Review the entered data and try again.",
+                        }),
+                    }),
             });
         }
     };
@@ -111,7 +165,30 @@ export const SubCategoriesPage = () => {
             onSuccess: () => {
                 setOpenDeleteModal(false);
                 setDeleteId(null);
+                setNotification({
+                    variant: "success",
+                    title: translate({
+                        ar: "تم حذف الصنف الفرعي",
+                        en: "Subcategory deleted",
+                    }),
+                    message: translate({
+                        ar: "تم الحذف بنجاح.",
+                        en: "The subcategory was deleted successfully.",
+                    }),
+                });
             },
+            onError: () =>
+                setNotification({
+                    variant: "danger",
+                    title: translate({
+                        ar: "تعذر حذف الصنف الفرعي",
+                        en: "Subcategory could not be deleted",
+                    }),
+                    message: translate({
+                        ar: "حاول مرة أخرى أو تأكد من عدم ارتباطه ببيانات أخرى.",
+                        en: "Try again or check whether it is linked to other data.",
+                    }),
+                }),
             onFinish: () => {
                 setIsDeleting(false);
             },
@@ -133,6 +210,19 @@ export const SubCategoriesPage = () => {
                     en: "SubCategories Management",
                 })}
             />
+
+            {notification && (
+                <Alert
+                    floating
+                    placement="top-end"
+                    variant={notification.variant}
+                    title={notification.title}
+                    onDismiss={() => setNotification(null)}
+                    dismissLabel={translate({ ar: "إغلاق", en: "Dismiss" })}
+                >
+                    {notification.message}
+                </Alert>
+            )}
 
             <div className="avora-surface avora-border overflow-hidden rounded-2xl border">
                 <div className="border-b border-slate-100 p-5 dark:border-slate-800">
@@ -259,32 +349,40 @@ export const SubCategoriesPage = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex justify-end gap-2">
-                                            <Button
+                                            <button
                                                 type="button"
-                                                variant="outline"
-                                                rounded="no"
+                                                className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 transition hover:bg-sky-50 hover:text-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500/30 dark:text-slate-400 dark:hover:bg-sky-950/40 dark:hover:text-sky-400"
                                                 onClick={() =>
                                                     editHandler(item)
                                                 }
-                                            >
-                                                {translate({
+                                                aria-label={translate({
+                                                    ar: "تعديل الصنف الفرعي",
+                                                    en: "Edit subcategory",
+                                                })}
+                                                title={translate({
                                                     ar: "تعديل",
                                                     en: "Edit",
                                                 })}
-                                            </Button>
-                                            <Button
+                                            >
+                                                <FiEdit2 aria-hidden="true" />
+                                            </button>
+                                            <button
                                                 type="button"
-                                                variant="danger"
-                                                rounded="no"
+                                                className="grid h-9 w-9 place-items-center rounded-lg text-rose-500 transition hover:bg-rose-50 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/30 dark:text-rose-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-300"
                                                 onClick={() =>
                                                     deleteHandler(item.id)
                                                 }
-                                            >
-                                                {translate({
+                                                aria-label={translate({
+                                                    ar: "حذف الصنف الفرعي",
+                                                    en: "Delete subcategory",
+                                                })}
+                                                title={translate({
                                                     ar: "حذف",
                                                     en: "Delete",
                                                 })}
-                                            </Button>
+                                            >
+                                                <FiTrash2 aria-hidden="true" />
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -326,8 +424,23 @@ export const SubCategoriesPage = () => {
                     className="space-y-4"
                     onSubmit={onSubmitHandler}
                 >
+                    {subCatForm.hasErrors && (
+                        <Alert
+                            variant="danger"
+                            title={translate({
+                                ar: "تعذر حفظ الصنف الفرعي",
+                                en: "Subcategory could not be saved",
+                            })}
+                        >
+                            {translate({
+                                ar: "راجع الحقول الموضحة أدناه ثم حاول مرة أخرى.",
+                                en: "Review the highlighted fields and try again.",
+                            })}
+                        </Alert>
+                    )}
+
                     <GridItem>
-                        <ImageSelect
+                        <Select<number>
                             label={translate({
                                 ar: "الصنف الرئيسي",
                                 en: "Main Category",
@@ -345,9 +458,11 @@ export const SubCategoriesPage = () => {
                                         ? `/storage/${category.img}`
                                         : null,
                             }))}
-                            onChange={(value) =>
-                                subCatForm.setData("categories_id", value)
-                            }
+                            onChange={(value) => {
+                                if (value !== null) {
+                                    subCatForm.setData("categories_id", value);
+                                }
+                            }}
                             error={subCatForm.errors.categories_id}
                         />
                     </GridItem>
@@ -475,31 +590,43 @@ export const SubCategoriesPage = () => {
                             />
                         </GridItem>
                         <GridItem>
-                            <label className="mb-2 block text-sm font-medium">
-                                {translate({ ar: "الحالة", en: "Status" })}
-                            </label>
-                            <select
-                                style={{
-                                    backgroundColor: colors.surface,
-                                    color: colors.text,
-                                    borderColor: colors.border,
-                                }}
-                                className="w-full rounded-lg border p-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-                                value={subCatForm.data.is_active ? "1" : "0"}
-                                onChange={(e) =>
+                            <Select<number>
+                                label={translate({
+                                    ar: "الحالة",
+                                    en: "Status",
+                                })}
+                                value={subCatForm.data.is_active ? 1 : 0}
+                                options={[
+                                    {
+                                        value: 1,
+                                        label: translate({
+                                            ar: "مفعل",
+                                            en: "Active",
+                                        }),
+                                        description: translate({
+                                            ar: "يظهر الصنف الفرعي للمستخدمين",
+                                            en: "Visible to users",
+                                        }),
+                                    },
+                                    {
+                                        value: 0,
+                                        label: translate({
+                                            ar: "معطل",
+                                            en: "Inactive",
+                                        }),
+                                        description: translate({
+                                            ar: "يظل الصنف الفرعي مخفيًا",
+                                            en: "Hidden from users",
+                                        }),
+                                    },
+                                ]}
+                                onChange={(value) =>
                                     subCatForm.setData(
                                         "is_active",
-                                        e.target.value === "1",
+                                        value === 1,
                                     )
                                 }
-                            >
-                                <option value="1">
-                                    {translate({ ar: "مفعل", en: "Active" })}
-                                </option>
-                                <option value="0">
-                                    {translate({ ar: "معطل", en: "Inactive" })}
-                                </option>
-                            </select>
+                            />
                         </GridItem>
                     </Grid>
 

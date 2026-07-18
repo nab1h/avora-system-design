@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes alert-in {
+    from {
+        opacity: 0;
+        translate: 0 -10px;
+        scale: 0.98;
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+        scale: 1;
+    }
+}
+
 @layer base {
     :root {
         --avora-font-roboto: "Roboto";

@@ -1,19 +1,23 @@
 import { Button } from "@/avora-dash/components/Button";
+import {
+    Alert,
+    type AlertVariant,
+} from "@/avora-dash/components/Alert";
 import { FormField } from "@/avora-dash/components/forms/FormField";
 import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
+import { Select } from "@/avora-dash/components/forms/Select";
 import { Grid } from "@/avora-dash/components/Grid";
 import { GridItem } from "@/avora-dash/components/Grid/GridItem";
 import { Modal } from "@/avora-dash/components/Modal/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
-import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { Category, PageProps, SubCategory } from "@/types";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
 import { FormEventHandler, useState } from "react";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 export const CategoriesPage = () => {
     const { translate } = useLanguage();
     const page = usePage<PageProps>();
-    const { colors } = useTheme();
     const categories = page.props.categories as (Category & {
         sub_categories: SubCategory[];
     })[];
@@ -22,6 +26,11 @@ export const CategoriesPage = () => {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [deleteId, setDeleteId] = useState<number | null>(null);
     const [editingImage, setEditingImage] = useState<string | null>(null);
+    const [notification, setNotification] = useState<{
+        variant: AlertVariant;
+        title: string;
+        message: string;
+    } | null>(null);
 
     const categoryForm = useForm<Category>({
         id: 0,
@@ -80,13 +89,38 @@ export const CategoriesPage = () => {
 
         const option = {
             onSuccess: () => {
+                const wasEditing = editingId !== null;
                 setOpenModal(false);
                 categoryForm.reset();
                 setEditingId(null);
                 setEditingImage(null);
+                setNotification({
+                    variant: "success" as AlertVariant,
+                    title: translate({
+                        ar: wasEditing ? "تم تعديل الصنف" : "تمت إضافة الصنف",
+                        en: wasEditing
+                            ? "Category updated"
+                            : "Category created",
+                    }),
+                    message: translate({
+                        ar: "تم حفظ البيانات بنجاح.",
+                        en: "The data was saved successfully.",
+                    }),
+                });
             },
             onError: (errors: any) => {
                 console.log("Validation Errors:", errors);
+                setNotification({
+                    variant: "danger" as AlertVariant,
+                    title: translate({
+                        ar: "تعذر حفظ الصنف",
+                        en: "Category could not be saved",
+                    }),
+                    message: translate({
+                        ar: "راجع البيانات المدخلة وحاول مرة أخرى.",
+                        en: "Review the entered data and try again.",
+                    }),
+                });
             },
         };
 
@@ -118,7 +152,30 @@ export const CategoriesPage = () => {
             onSuccess: () => {
                 setOpenDeleteModal(false);
                 setDeleteId(null);
+                setNotification({
+                    variant: "success",
+                    title: translate({
+                        ar: "تم حذف الصنف",
+                        en: "Category deleted",
+                    }),
+                    message: translate({
+                        ar: "تم حذف الصنف بنجاح.",
+                        en: "The category was deleted successfully.",
+                    }),
+                });
             },
+            onError: () =>
+                setNotification({
+                    variant: "danger",
+                    title: translate({
+                        ar: "تعذر حذف الصنف",
+                        en: "Category could not be deleted",
+                    }),
+                    message: translate({
+                        ar: "حاول مرة أخرى أو تأكد من عدم ارتباطه ببيانات أخرى.",
+                        en: "Try again or check whether it is linked to other data.",
+                    }),
+                }),
         });
     };
 
@@ -130,6 +187,19 @@ export const CategoriesPage = () => {
                     en: "Categories Mangement",
                 })}
             />
+
+            {notification && (
+                <Alert
+                    floating
+                    placement="top-end"
+                    variant={notification.variant}
+                    title={notification.title}
+                    onDismiss={() => setNotification(null)}
+                    dismissLabel={translate({ ar: "إغلاق", en: "Dismiss" })}
+                >
+                    {notification.message}
+                </Alert>
+            )}
 
             <div className="avora-surface avora-border overflow-hidden rounded-2xl border">
                 <div className="border-b border-slate-100 p-5 dark:border-slate-800">
@@ -266,30 +336,38 @@ export const CategoriesPage = () => {
 
                                 <td className="px-6 py-4">
                                     <div className="flex justify-end gap-2">
-                                        <Button
+                                        <button
                                             type="button"
-                                            variant="outline"
-                                            rounded="no"
+                                            className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 transition hover:bg-sky-50 hover:text-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500/30 dark:text-slate-400 dark:hover:bg-sky-950/40 dark:hover:text-sky-400"
                                             onClick={() => editHandler(item)}
-                                        >
-                                            {translate({
+                                            aria-label={translate({
+                                                ar: "تعديل الصنف",
+                                                en: "Edit category",
+                                            })}
+                                            title={translate({
                                                 ar: "تعديل",
                                                 en: "Edit",
                                             })}
-                                        </Button>
-                                        <Button
+                                        >
+                                            <FiEdit2 aria-hidden="true" />
+                                        </button>
+                                        <button
                                             type="button"
-                                            variant="danger"
-                                            rounded="no"
+                                            className="grid h-9 w-9 place-items-center rounded-lg text-rose-500 transition hover:bg-rose-50 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/30 dark:text-rose-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-300"
                                             onClick={() =>
                                                 deleteHandler(item.id)
                                             }
-                                        >
-                                            {translate({
+                                            aria-label={translate({
+                                                ar: "حذف الصنف",
+                                                en: "Delete category",
+                                            })}
+                                            title={translate({
                                                 ar: "حذف",
                                                 en: "Delete",
                                             })}
-                                        </Button>
+                                        >
+                                            <FiTrash2 aria-hidden="true" />
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -331,6 +409,21 @@ export const CategoriesPage = () => {
                     className="space-y-4"
                     onSubmit={onSubmitHandler}
                 >
+                    {categoryForm.hasErrors && (
+                        <Alert
+                            variant="danger"
+                            title={translate({
+                                ar: "تعذر حفظ الصنف",
+                                en: "Category could not be saved",
+                            })}
+                        >
+                            {translate({
+                                ar: "راجع الحقول الموضحة أدناه ثم حاول مرة أخرى.",
+                                en: "Review the highlighted fields and try again.",
+                            })}
+                        </Alert>
+                    )}
+
                     {/* Name arabic and english */}
                     <Grid layout="two" gap="sm">
                         <GridItem>
@@ -456,31 +549,40 @@ export const CategoriesPage = () => {
                             />
                         </GridItem>
                         <GridItem>
-                            <label className="mb-2 block text-sm font-medium">
-                                {translate({ ar: "الحالة", en: "Status" })}
-                            </label>
-                            <select
-                                style={{
-                                    backgroundColor: colors.surface,
-                                    color: colors.text,
-                                    borderColor: colors.border,
-                                }}
-                                className="w-full rounded-lg border p-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-                                value={categoryForm.data.status ? "1" : "0"}
-                                onChange={(e) =>
-                                    categoryForm.setData(
-                                        "status",
-                                        e.target.value === "1",
-                                    )
+                            <Select<number>
+                                label={translate({
+                                    ar: "الحالة",
+                                    en: "Status",
+                                })}
+                                value={categoryForm.data.status ? 1 : 0}
+                                options={[
+                                    {
+                                        value: 1,
+                                        label: translate({
+                                            ar: "مفعل",
+                                            en: "Active",
+                                        }),
+                                        description: translate({
+                                            ar: "يظهر الصنف للمستخدمين",
+                                            en: "Visible to users",
+                                        }),
+                                    },
+                                    {
+                                        value: 0,
+                                        label: translate({
+                                            ar: "معطل",
+                                            en: "Inactive",
+                                        }),
+                                        description: translate({
+                                            ar: "يظل الصنف مخفيًا",
+                                            en: "Hidden from users",
+                                        }),
+                                    },
+                                ]}
+                                onChange={(value) =>
+                                    categoryForm.setData("status", value === 1)
                                 }
-                            >
-                                <option value="1">
-                                    {translate({ ar: "مفعل", en: "Active" })}
-                                </option>
-                                <option value="0">
-                                    {translate({ ar: "معطل", en: "Inactive" })}
-                                </option>
-                            </select>
+                            />
                         </GridItem>
                     </Grid>
 
