@@ -256,5 +256,30 @@ export interface AttributeForm {
 }
 
 
+export interface Category {
+    id: number;
+    name_ar: string;
+    name_en: string;
+    desc_ar: string;
+    desc_en: string;
+    slug_ar: string;
+    slug_en: string;
+    img: File | null;
+    status: boolean;
+}
+
+export interface SubCategory {
+    id: number;
+    categories_id: number;
+    name_ar: string;
+    name_en: string;
+    desc_ar: string;
+    desc_en: string;
+    slug_ar: string;
+    slug_en: string;
+    is_active: boolean;
+    img: string | null;
+}
+
 
 

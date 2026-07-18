@@ -64,6 +64,16 @@ export const dashboardProperties: DashboardNavItem[] = [
         icon: "orders",
         href: "/dashboard/attributes",
     },
+    {
+        label: { ar: "الأصناف", en: "Categories" },
+        icon: "orders",
+        href: "/dashboard/categories",
+    },
+    {
+        label: { ar: "الأصناف الفرعية", en: "subCategories" },
+        icon: "orders",
+        href: "/dashboard/subcategories",
+    },
 ];
 
 export const dashboardAccountNavigation: DashboardNavItem[] = [

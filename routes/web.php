@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserPageController;
 use App\Http\Controllers\Admin\ecommerce\AttributeController;
 use App\Http\Controllers\Admin\ecommerce\ProductsController;
+use App\Http\Controllers\Admin\ecommerce\CategoriesController;
+use App\Http\Controllers\admin\ecommerce\SubCategoriesController;
 use App\Http\Controllers\Admin\WebsiteSettingController;
 use App\Http\Controllers\Admin\WebsiteSettingPageController;
 use App\Http\Controllers\Auth\CustomerAuthController;
@@ -178,26 +180,38 @@ Route::middleware(['auth', 'verified', 'dashboard.access'])
             ->name('destroy');
     });
 
-// Products ================
+// categories ================
 Route::middleware(['auth', 'verified', 'dashboard.access'])
-    ->prefix('dashboard/products')
-    ->name('dashboard.products.')
+    ->prefix('dashboard/categories')
+    ->name('dashboard.categories.')
     ->group(function () {
 
-        Route::get('/', [ProductsController::class, 'index'])
+        Route::get('/', [CategoriesController::class, 'index'])
             ->name('index');
 
-        Route::post('/', [ProductsController::class, 'store'])
+        Route::post('/', [CategoriesController::class, 'store'])
             ->name('store');
 
-        Route::get('/{products}/edit', [ProductsController::class, 'edit'])
+        Route::get('/{category}/edit', [CategoriesController::class, 'edit'])
             ->name('edit');
 
-        Route::put('/{products}', [ProductsController::class, 'update'])
+        Route::put('/{category}', [CategoriesController::class, 'update'])
             ->name('update');
 
-        Route::delete('/{products}', [ProductsController::class, 'destroy'])
+        Route::delete('/{category}', [CategoriesController::class, 'destroy'])
             ->name('destroy');
+    });
+
+
+// sub-categories ================
+Route::middleware(['auth', 'verified', 'dashboard.access'])
+    ->prefix('dashboard/subcategories')
+    ->name('dashboard.subcategories.')
+    ->group(function () {
+        Route::get('/', [SubCategoriesController::class, 'index'])->name('index');
+        Route::post('/', [SubCategoriesController::class, 'store'])->name('store');
+        Route::put('/{subcategory}', [SubCategoriesController::class, 'update'])->name('update');
+        Route::delete('/{subcategory}', [SubCategoriesController::class, 'destroy'])->name('destroy');
     });
 
 require __DIR__.'/auth.php';

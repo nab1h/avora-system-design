@@ -1,4 +1,5 @@
 import { forwardRef, type InputHTMLAttributes } from 'react';
+import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 
 type FormFieldProps = InputHTMLAttributes<HTMLInputElement> & {
     label: string;
@@ -10,6 +11,8 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
         { label, error, className = '', placeholder, ...props },
         ref,
     ) {
+        const { language } = useLanguage();
+
         return (
             <div className="avora-floating-field">
                 <input
@@ -19,14 +22,20 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
                     {...props}
                 />
                 <label>
-                    {[...label].map((character, index) => (
-                        <span
-                            key={`${character}-${index}`}
-                            style={{ transitionDelay: `${index * 50}ms` }}
-                        >
-                            {character === ' ' ? '\u00a0' : character}
-                        </span>
-                    ))}
+                    {language === 'ar' ? (
+                        <span>{label}</span>
+                    ) : (
+                        [...label].map((character, index) => (
+                            <span
+                                key={`${character}-${index}`}
+                                style={{
+                                    transitionDelay: `${index * 50}ms`,
+                                }}
+                            >
+                                {character === ' ' ? '\u00a0' : character}
+                            </span>
+                        ))
+                    )}
                 </label>
                 {error && (
                     <span className="mt-1.5 block text-xs font-medium text-rose-600">

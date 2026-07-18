@@ -12,15 +12,17 @@ import type { AdminPageProps, Attribute, DashboardModuleIncludeProps, PageProps,
 import { router, useForm, usePage } from "@inertiajs/react";
 import { useState, type FormEventHandler } from "react";
 import { Grid, GridItem } from "@/avora-dash/components/Grid";
-import { Card } from "@/avora-dash/components/Card/Card";
-import { CardTitle } from "@/avora-dash/components/Card/CardTitle";
-import { CardFooter } from "@/avora-dash/components/Card/CardFooter";
+
 import { AttrbutePage } from "@/Pages/ecommerce/AttrbutePage";
+import { CategoriesPage } from "@/Pages/ecommerce/CategoriesPage";
+import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";
 
 const sectionTitles = {
     orders: { ar: "إدارة الطلبات", en: "Order management" },
     products: { ar: "إدارة المنتجات", en: "Product management" },
     attributes: { ar: "إدارة المواصفات", en: "Properties management" },
+    categories: { ar: "إدارة الأصناف", en: "Categories management" },
+    subCategories: { ar: "إدارة الأصناف الفرعية", en: "Sub Categories management" },
     customers: { ar: "العملاء", en: "Customers" },
     users: { ar: "إدارة المستخدمين", en: "User management" },
     permissions: { ar: "إدارة الصلاحيات", en: "Permission management" },
@@ -348,7 +350,7 @@ export function DashboardModuleInclude({
                     })}
                 </p>
             </div>
-            
+
         </header>
     );
 
@@ -2000,7 +2002,9 @@ export function DashboardModuleInclude({
         if (section === "orders" || section === "tables")
             return <RecentOrders />;
 
+        if (section === "subCategories") return SubCategoriesPage();
         if (section === "attributes") return AttrbutePage();
+        if (section === "categories") return CategoriesPage();
         if (section === "reports")
             return (
                 <div className="space-y-6">
