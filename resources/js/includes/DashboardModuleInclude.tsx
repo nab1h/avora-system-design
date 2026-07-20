@@ -18,6 +18,7 @@ import { CategoriesPage } from "@/Pages/ecommerce/CategoriesPage";
 import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";
 import { ProductsPage } from "@/Pages/ecommerce/ProductsPage";
 import { ClassesPage } from "@/Pages/ecommerce/ClassesPage";
+import { OffersPage } from "@/Pages/ecommerce/OffersPage";
 
 const sectionTitles = {
     orders: { ar: "إدارة الطلبات", en: "Order management" },
@@ -2008,6 +2009,7 @@ export function DashboardModuleInclude({
         if (section === "attributes") return AttrbutePage();
         if (section === "categories") return CategoriesPage();
         if (section === "classes") return ClassesPage();
+        if (section === "offers") return OffersPage();
         if (section === "reports")
             return (
                 <div className="space-y-6">

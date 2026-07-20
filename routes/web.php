@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ecommerce\ProductsController;
 use App\Http\Controllers\Admin\ecommerce\CategoriesController;
 use App\Http\Controllers\admin\ecommerce\SubCategoriesController;
 use App\Http\Controllers\admin\ecommerce\ClassesController;
+use App\Http\Controllers\admin\ecommerce\OffersController;
 use App\Http\Controllers\Admin\WebsiteSettingController;
 use App\Http\Controllers\Admin\WebsiteSettingPageController;
 use App\Http\Controllers\Auth\CustomerAuthController;
@@ -234,5 +235,36 @@ Route::middleware(['auth', 'verified', 'dashboard.access'])
         Route::post('/', [ClassesController::class, 'store'])->name('store');
         Route::put('/{classes}', [ClassesController::class, 'update'])->name('update');
         Route::delete('/{classes}', [ClassesController::class, 'destroy'])->name('destroy');
+    });
+
+
+
+Route::middleware([
+    'auth',
+    'verified',
+    'dashboard.access',
+])
+    ->prefix('dashboard/offers')
+    ->name('dashboard.offers.')
+    ->group(function () {
+        Route::get(
+            '/',
+            [OffersController::class, 'index']
+        )->name('index');
+
+        Route::post(
+            '/',
+            [OffersController::class, 'store']
+        )->name('store');
+
+        Route::put(
+            '/{offer}',
+            [OffersController::class, 'update']
+        )->name('update');
+
+        Route::delete(
+            '/{offer}',
+            [OffersController::class, 'destroy']
+        )->name('destroy');
     });
 require __DIR__.'/auth.php';

@@ -79,6 +79,12 @@ export const dashboardProperties: DashboardNavItem[] = [
         icon: "orders",
         href: "/dashboard/classes",
     },
+
+    {
+        label: { ar: "العروض", en: "Offers" },
+        icon: "orders",
+        href: "/dashboard/offers",
+    },
 ];
 
 export const dashboardAccountNavigation: DashboardNavItem[] = [
