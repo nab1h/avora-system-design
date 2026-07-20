@@ -1,166 +1,93 @@
+import { Alert, AlertVariant } from "@/avora-dash/components/Alert";
 import { Button } from "@/avora-dash/components/Button";
-import {
-    Alert,
-    type AlertVariant,
-} from "@/avora-dash/components/Alert";
 import { FormField } from "@/avora-dash/components/forms/FormField";
 import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
 import { Select } from "@/avora-dash/components/forms/Select";
-import { Grid } from "@/avora-dash/components/Grid";
+import { Grid } from "@/avora-dash/components/Grid/Grid";
 import { GridItem } from "@/avora-dash/components/Grid/GridItem";
 import { Modal } from "@/avora-dash/components/Modal/Modal";
-import {
-    Tabs,
-    TabsList,
-    TabsTrigger,
-} from "@/avora-dash/components/Tabs";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
-import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";
-import { Category, PageProps, SubCategory } from "@/types";
+import { Classes, PageProps } from "@/types";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
 import { FormEventHandler, useState } from "react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
-const CategoriesContent = () => {
+export const ClassesPage = () => {
     const { translate } = useLanguage();
     const page = usePage<PageProps>();
-    const categories = page.props.categories as (Category & {
-        sub_categories: SubCategory[];
-    })[];
-    const [openModal, setOpenModal] = useState(false);
-    const [editingId, setEditingId] = useState<number | null>(null);
-    const [openDeleteModal, setOpenDeleteModal] = useState(false);
-    const [deleteId, setDeleteId] = useState<number | null>(null);
-    const [editingImage, setEditingImage] = useState<string | null>(null);
+    const classes = page.props.classes as Classes[];
     const [notification, setNotification] = useState<{
         variant: AlertVariant;
         title: string;
         message: string;
     } | null>(null);
 
-    const categoryForm = useForm<Category>({
+    const classesEmpty: Classes = {
         id: 0,
-        img: null,
         name_ar: "",
         name_en: "",
         desc_ar: "",
         desc_en: "",
         slug_ar: "",
         slug_en: "",
-        status: false,
-    });
-
-    // handler
-    // ==================================
-
-    const editHandler = (category: Category) => {
-        setEditingId(category.id);
-        setEditingImage(
-            typeof category.img === "string"
-                ? `/storage/${category.img}`
-                : null,
-        );
-        categoryForm.setData({
-            id: category.id,
-            img: null,
-            name_ar: category.name_ar,
-            name_en: category.name_en,
-            desc_ar: category.desc_ar,
-            desc_en: category.desc_en,
-            slug_ar: category.slug_ar,
-            slug_en: category.slug_en,
-            status: category.status,
-        });
-        setOpenModal(true);
-    }
-
-
-    const onSubmitHandler: FormEventHandler = (event) => {
-        event.preventDefault();
-        const formData = new FormData();
-        formData.append("name_ar", categoryForm.data.name_ar || "");
-        formData.append("name_en", categoryForm.data.name_en || "");
-        formData.append("desc_ar", categoryForm.data.desc_ar || "");
-        formData.append("desc_en", categoryForm.data.desc_en || "");
-        formData.append("slug_ar", categoryForm.data.slug_ar || "");
-        formData.append("slug_en", categoryForm.data.slug_en || "");
-        formData.append("status", categoryForm.data.status ? "1" : "0");
-
-        if (categoryForm.data.img instanceof File) {
-            formData.append("img", categoryForm.data.img);
-        }
-
-        const option = {
-            onSuccess: () => {
-                const wasEditing = editingId !== null;
-                setOpenModal(false);
-                categoryForm.reset();
-                setEditingId(null);
-                setEditingImage(null);
-                setNotification({
-                    variant: "success" as AlertVariant,
-                    title: translate({
-                        ar: wasEditing ? "تم تعديل الصنف" : "تمت إضافة الصنف",
-                        en: wasEditing
-                            ? "Category updated"
-                            : "Category created",
-                    }),
-                    message: translate({
-                        ar: "تم حفظ البيانات بنجاح.",
-                        en: "The data was saved successfully.",
-                    }),
-                });
-            },
-            onError: (errors: any) => {
-                console.log("Validation Errors:", errors);
-                setNotification({
-                    variant: "danger" as AlertVariant,
-                    title: translate({
-                        ar: "تعذر حفظ الصنف",
-                        en: "Category could not be saved",
-                    }),
-                    message: translate({
-                        ar: "راجع البيانات المدخلة وحاول مرة أخرى.",
-                        en: "Review the entered data and try again.",
-                    }),
-                });
-            },
-        };
-
-        if (editingId !== null) {
-            formData.append("_method", "PUT");
-            router.post(
-                route("dashboard.categories.update", editingId),
-                formData,
-                option,
-            );
-        } else {
-            router.post(route("dashboard.categories.store"), formData, option);
-        }
+        img: null,
+        status: true,
     };
 
+    const [openModal, setOpenModal] = useState(false);
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingImage, setEditingImage] = useState<string | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState<number | null>(null);
+
+    const classesForm = useForm<Classes>(classesEmpty);
+
+    // handler======================================
+    //
+    // Edit  =============================================
+
+  const editHandler = (item: Classes) => {
+      setEditingId(item.id);
+
+      const currentImage =
+          typeof item.img === "string" && item.img
+              ? item.img.startsWith("http") || item.img.startsWith("/")
+                  ? item.img
+                  : `/storage/${item.img}`
+              : null;
+
+      setEditingImage(currentImage);
+
+      classesForm.setData({
+          ...item,
+          img: null,
+      });
+
+      setOpenModal(true);
+  };
+    // Delete  ============================================
     const deleteHandler = (id: number) => {
         setDeleteId(id);
         setOpenDeleteModal(true);
     };
 
-
     const confirmDelete = () => {
         if (deleteId === null) return;
 
-        router.delete(route("dashboard.categories.destroy", deleteId), {
+        router.delete(route("dashboard.classes.destroy", deleteId), {
             onSuccess: () => {
                 setOpenDeleteModal(false);
                 setDeleteId(null);
                 setNotification({
                     variant: "success",
                     title: translate({
-                        ar: "تم حذف الصنف",
-                        en: "Category deleted",
+                        ar: "تم حذف الفئة",
+                        en: "Classes deleted",
                     }),
                     message: translate({
                         ar: "تم حذف الصنف بنجاح.",
-                        en: "The category was deleted successfully.",
+                        en: "The Classes was deleted successfully.",
                     }),
                 });
             },
@@ -168,8 +95,8 @@ const CategoriesContent = () => {
                 setNotification({
                     variant: "danger",
                     title: translate({
-                        ar: "تعذر حذف الصنف",
-                        en: "Category could not be deleted",
+                        ar: "تعذر حذف الفئة",
+                        en: "Classes could not be deleted",
                     }),
                     message: translate({
                         ar: "حاول مرة أخرى أو تأكد من عدم ارتباطه ببيانات أخرى.",
@@ -179,12 +106,71 @@ const CategoriesContent = () => {
         });
     };
 
+    // Store ============================================
+    const onSubmitHandler: FormEventHandler = (event) => {
+        event.preventDefault();
+
+        if (editingId !== null) {
+            classesForm.transform((data) => ({
+                ...data,
+                img: data.img instanceof File ? data.img : null,
+                _method: "put",
+            }));
+
+            classesForm.post(route("dashboard.classes.update", editingId), {
+                forceFormData: true,
+                preserveScroll: true,
+
+                onSuccess: () => {
+                    setOpenModal(false);
+                    setEditingId(null);
+                    setEditingImage(null);
+                    classesForm.reset();
+                    classesForm.clearErrors();
+                },
+            });
+
+            return;
+        }
+
+        classesForm.transform((data) => ({
+            ...data,
+            img: data.img instanceof File ? data.img : null,
+        }));
+
+        classesForm.post(route("dashboard.classes.store"), {
+            forceFormData: true,
+            preserveScroll: true,
+
+            onSuccess: () => {
+                setOpenModal(false);
+                setEditingId(null);
+                setEditingImage(null);
+                classesForm.reset();
+                classesForm.clearErrors();
+
+                setNotification({
+                    variant: "success",
+                    title: translate({
+                        ar: "تمت الإضافة",
+                        en: "Created",
+                    }),
+                    message: translate({
+                        ar: "تمت إضافة الفئة بنجاح.",
+                        en: "Category created successfully.",
+                    }),
+                });
+            },
+        });
+    };
+    // ============================================
+
     return (
         <>
             <Head
                 title={translate({
-                    ar: "أدارة الاصناف",
-                    en: "Categories Mangement",
+                    ar: "أدارة الفئات",
+                    en: "Classes Mangement",
                 })}
             />
 
@@ -206,12 +192,12 @@ const CategoriesContent = () => {
                     <div className="flex justify-between">
                         <div>
                             <h2 className="text-lg font-bold text-slate-950 dark:text-white">
-                                {translate({ ar: "الأصناف", en: "Categories" })}
+                                {translate({ ar: "الفئات", en: "Classes" })}
                             </h2>
                             <p className="mt-1 text-sm text-slate-500">
                                 {translate({
-                                    ar: "إضافة وتعديل وحذف الأصناف من قاعدة البيانات.",
-                                    en: "Create, edit, and delete real categories from the database.",
+                                    ar: "إضافة وتعديل وحذف الفئات من قاعدة البيانات.",
+                                    en: "Create, edit, and delete real classes from the database.",
                                 })}
                             </p>
                         </div>
@@ -219,21 +205,20 @@ const CategoriesContent = () => {
                         <div>
                             <Button
                                 onClick={() => {
-                                    categoryForm.reset();
+                                    classesForm.reset();
                                     setEditingId(null);
                                     setEditingImage(null);
                                     setOpenModal(true);
                                 }}
                             >
                                 {translate({
-                                    ar: "إضافة صنف جديد",
-                                    en: "Add New Category",
+                                    ar: "إضافة فئة جديدة",
+                                    en: "Add New Classes",
                                 })}
                             </Button>
                         </div>
                     </div>
                 </div>
-
                 <table className="w-full min-w-[760px] text-sm">
                     <thead className="avora-surface-muted avora-muted">
                         <tr>
@@ -263,12 +248,6 @@ const CategoriesContent = () => {
                             </th>
                             <th className="px-6 py-4 text-start">
                                 {translate({
-                                    ar: "الأصناف الفرعية",
-                                    en: "Subcategories",
-                                })}
-                            </th>
-                            <th className="px-6 py-4 text-start">
-                                {translate({
                                     ar: "الحالة",
                                     en: "status",
                                 })}
@@ -282,7 +261,7 @@ const CategoriesContent = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {categories.map((item) => (
+                        {classes.map((item) => (
                             <tr key={item.id} className="avora-border border-b">
                                 <td className="avora-muted px-6 py-4">
                                     {item.img && (
@@ -305,19 +284,7 @@ const CategoriesContent = () => {
                                     <p className="text-mute">{item.slug_ar}</p>
                                     <p className="text-mute">{item.slug_en}</p>
                                 </td>
-                                <td className="px-6 py-4">
-                                    {item.sub_categories.length > 0
-                                        ? item.sub_categories.map((subCategory) => (
-                                              <p
-                                                  key={subCategory.id}
-                                                  className="text-mute"
-                                              >
-                                                  {subCategory.name_ar} -{" "}
-                                                  {subCategory.name_en}
-                                              </p>
-                                          ))
-                                        : "-"}
-                                </td>
+
                                 <td className="avora-muted px-6 py-4">
                                     <span
                                         className={`px-2 py-1 rounded-full text-xs font-medium ${item.status ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300" : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"}`}
@@ -372,7 +339,7 @@ const CategoriesContent = () => {
                                 </td>
                             </tr>
                         ))}
-                        {categories.length === 0 && (
+                        {classes.length === 0 && (
                             <tr>
                                 <td
                                     colSpan={5}
@@ -389,15 +356,13 @@ const CategoriesContent = () => {
                 </table>
             </div>
 
-            {/* MODEL ADD / EDIT CATEGORIES */}
-
             <Modal
                 open={openModal}
                 onClose={() => {
                     setOpenModal(false);
                     setEditingId(null);
                     setEditingImage(null);
-                    categoryForm.clearErrors();
+                    classesForm.clearErrors();
                 }}
                 title={translate({
                     ar: editingId !== null ? "تعديل صنف" : "إضافة صنف",
@@ -409,12 +374,12 @@ const CategoriesContent = () => {
                     className="space-y-4"
                     onSubmit={onSubmitHandler}
                 >
-                    {categoryForm.hasErrors && (
+                    {classesForm.hasErrors && (
                         <Alert
                             variant="danger"
                             title={translate({
-                                ar: "تعذر حفظ الصنف",
-                                en: "Category could not be saved",
+                                ar: "تعذر حفظ الفئة",
+                                en: "Classes could not be saved",
                             })}
                         >
                             {translate({
@@ -429,33 +394,33 @@ const CategoriesContent = () => {
                         <GridItem>
                             <FormField
                                 label={translate({
-                                    ar: "اسم الصنف (عربي)",
-                                    en: "Category Name (arabic)",
+                                    ar: "اسم الفئة (عربي)",
+                                    en: "Classes Name (arabic)",
                                 })}
-                                value={categoryForm.data.name_ar}
+                                value={classesForm.data.name_ar}
                                 onChange={(event) =>
-                                    categoryForm.setData(
+                                    classesForm.setData(
                                         "name_ar",
                                         event.target.value,
                                     )
                                 }
-                                error={categoryForm.errors.name_ar}
+                                error={classesForm.errors.name_ar}
                             />
                         </GridItem>
                         <GridItem>
                             <FormField
                                 label={translate({
-                                    ar: "اسم الصنف (إنجليزي)",
-                                    en: "Category Name (english)",
+                                    ar: "اسم الفئة (إنجليزي)",
+                                    en: "Classes Name (english)",
                                 })}
-                                value={categoryForm.data.name_en}
+                                value={classesForm.data.name_en}
                                 onChange={(event) =>
-                                    categoryForm.setData(
+                                    classesForm.setData(
                                         "name_en",
                                         event.target.value,
                                     )
                                 }
-                                error={categoryForm.errors.name_en}
+                                error={classesForm.errors.name_en}
                             />
                         </GridItem>
                     </Grid>
@@ -468,14 +433,14 @@ const CategoriesContent = () => {
                                     ar: "المعرف (Slug عربي)",
                                     en: "Slug (arabic)",
                                 })}
-                                value={categoryForm.data.slug_ar}
+                                value={classesForm.data.slug_ar}
                                 onChange={(event) =>
-                                    categoryForm.setData(
+                                    classesForm.setData(
                                         "slug_ar",
                                         event.target.value,
                                     )
                                 }
-                                error={categoryForm.errors.slug_ar}
+                                error={classesForm.errors.slug_ar}
                             />
                         </GridItem>
                         <GridItem>
@@ -484,14 +449,14 @@ const CategoriesContent = () => {
                                     ar: "المعرف (Slug إنجليزي)",
                                     en: "Slug (english)",
                                 })}
-                                value={categoryForm.data.slug_en}
+                                value={classesForm.data.slug_en}
                                 onChange={(event) =>
-                                    categoryForm.setData(
+                                    classesForm.setData(
                                         "slug_en",
                                         event.target.value,
                                     )
                                 }
-                                error={categoryForm.errors.slug_en}
+                                error={classesForm.errors.slug_en}
                             />
                         </GridItem>
                     </Grid>
@@ -504,14 +469,14 @@ const CategoriesContent = () => {
                                     ar: "الوصف (عربي)",
                                     en: "Description (arabic)",
                                 })}
-                                value={categoryForm.data.desc_ar}
+                                value={classesForm.data.desc_ar}
                                 onChange={(event) =>
-                                    categoryForm.setData(
+                                    classesForm.setData(
                                         "desc_ar",
                                         event.target.value,
                                     )
                                 }
-                                error={categoryForm.errors.desc_ar}
+                                error={classesForm.errors.desc_ar}
                             />
                         </GridItem>
                         <GridItem>
@@ -520,14 +485,14 @@ const CategoriesContent = () => {
                                     ar: "الوصف (إنجليزي)",
                                     en: "Description (english)",
                                 })}
-                                value={categoryForm.data.desc_en}
+                                value={classesForm.data.desc_en}
                                 onChange={(event) =>
-                                    categoryForm.setData(
+                                    classesForm.setData(
                                         "desc_en",
                                         event.target.value,
                                     )
                                 }
-                                error={categoryForm.errors.desc_en}
+                                error={classesForm.errors.desc_en}
                             />
                         </GridItem>
                     </Grid>
@@ -540,12 +505,16 @@ const CategoriesContent = () => {
                                     ar: "صورة الصنف",
                                     en: "Category Image",
                                 })}
-                                value={categoryForm.data.img}
+                                value={
+                                    classesForm.data.img instanceof File
+                                        ? classesForm.data.img
+                                        : null
+                                }
                                 currentImage={editingImage}
                                 onChange={(file) =>
-                                    categoryForm.setData("img", file)
+                                    classesForm.setData("img", file)
                                 }
-                                error={categoryForm.errors.img}
+                                error={classesForm.errors.img}
                             />
                         </GridItem>
                         <GridItem>
@@ -554,7 +523,7 @@ const CategoriesContent = () => {
                                     ar: "الحالة",
                                     en: "Status",
                                 })}
-                                value={categoryForm.data.status ? 1 : 0}
+                                value={classesForm.data.status ? 1 : 0}
                                 options={[
                                     {
                                         value: 1,
@@ -580,7 +549,7 @@ const CategoriesContent = () => {
                                     },
                                 ]}
                                 onChange={(value) =>
-                                    categoryForm.setData("status", value === 1)
+                                    classesForm.setData("status", value === 1)
                                 }
                             />
                         </GridItem>
@@ -591,7 +560,7 @@ const CategoriesContent = () => {
                             <Button
                                 type="submit"
                                 form="add-cat"
-                                disabled={categoryForm.processing}
+                                disabled={classesForm.processing}
                                 fullWidth
                             >
                                 {translate({
@@ -655,41 +624,5 @@ const CategoriesContent = () => {
                 </Grid>
             </Modal>
         </>
-    );
-};
-
-export const CategoriesPage = () => {
-    const { translate } = useLanguage();
-    const [activeTab, setActiveTab] = useState(0);
-
-    return (
-        <div className="space-y-6">
-            <Tabs
-                variant="enclosed"
-                fullWidth
-                selectedIndex={activeTab}
-                onChange={setActiveTab}
-            >
-                <TabsList
-                    label={translate({
-                        ar: "التنقل بين الأصناف",
-                        en: "Categories navigation",
-                    })}
-                    className="max-w-md shadow-sm"
-                >
-                    <TabsTrigger>
-                        {translate({ ar: "الأصناف", en: "Categories" })}
-                    </TabsTrigger>
-                    <TabsTrigger>
-                        {translate({
-                            ar: "الأصناف الفرعية",
-                            en: "Subcategories",
-                        })}
-                    </TabsTrigger>
-                </TabsList>
-            </Tabs>
-
-            {activeTab === 0 ? <CategoriesContent /> : <SubCategoriesPage />}
-        </div>
     );
 };

@@ -3,10 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
+    protected $fillable = [
+        'category_id', 'sub_category_id', 'offer_id', 'name_ar', 'name_en',
+        'slug_ar', 'slug_en', 'desc_ar', 'desc_en', 'price', 'stock', 'is_active',
+        'class_id',
+    ];
 
+    protected $casts = [
+        'price' => 'decimal:2',
+        'is_active' => 'boolean',
+    ];
 
 // relation---------
     public function category()
@@ -14,6 +24,10 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function productClass(): BelongsTo
+    {
+        return $this->belongsTo(Classes::class, 'class_id');
+    }
     public function subCategory()
     {
         return $this->belongsTo(SubCategory::class);

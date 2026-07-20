@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ecommerce\AttributeController;
 use App\Http\Controllers\Admin\ecommerce\ProductsController;
 use App\Http\Controllers\Admin\ecommerce\CategoriesController;
 use App\Http\Controllers\admin\ecommerce\SubCategoriesController;
+use App\Http\Controllers\admin\ecommerce\ClassesController;
 use App\Http\Controllers\Admin\WebsiteSettingController;
 use App\Http\Controllers\Admin\WebsiteSettingPageController;
 use App\Http\Controllers\Auth\CustomerAuthController;
@@ -139,9 +140,19 @@ Route::post('/dashboard/notifications/read-all', [DashboardNotificationControlle
     ->name('dashboard.notifications.read-all');
 
 Route::get('/dashboard/{section}', [DashboardController::class, 'section'])
-    ->where('section', 'orders|products|customers|reports|calendar|forms|tables|ui-elements|payments|purchases')
+    ->where('section', 'orders|customers|reports|calendar|forms|tables|ui-elements|payments|purchases')
     ->middleware(['auth', 'verified', 'dashboard.access'])
     ->name('dashboard.section');
+
+Route::middleware(['auth', 'verified', 'dashboard.access'])
+    ->prefix('dashboard/products')
+    ->name('dashboard.products.')
+    ->group(function () {
+        Route::get('/', [ProductsController::class, 'index'])->name('index');
+        Route::post('/', [ProductsController::class, 'store'])->name('store');
+        Route::put('/{product}', [ProductsController::class, 'update'])->name('update');
+        Route::delete('/{product}', [ProductsController::class, 'destroy'])->name('destroy');
+    });
 
 // حساب المستخدم الحالي: تعديل البروفايل وحذف الحساب.
 Route::get('/profile', [ProfileController::class, 'edit'])
@@ -214,4 +225,14 @@ Route::middleware(['auth', 'verified', 'dashboard.access'])
         Route::delete('/{subcategory}', [SubCategoriesController::class, 'destroy'])->name('destroy');
     });
 
+// classes ================
+Route::middleware(['auth', 'verified', 'dashboard.access'])
+    ->prefix('dashboard/classes')
+    ->name('dashboard.classes.')
+    ->group(function () {
+        Route::get('/', [ClassesController::class, 'index'])->name('index');
+        Route::post('/', [ClassesController::class, 'store'])->name('store');
+        Route::put('/{classes}', [ClassesController::class, 'update'])->name('update');
+        Route::delete('/{classes}', [ClassesController::class, 'destroy'])->name('destroy');
+    });
 require __DIR__.'/auth.php';

@@ -12,6 +12,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
         ref,
     ) {
         const { language } = useLanguage();
+        const containsArabic = /[\u0600-\u06ff]/.test(label);
 
         return (
             <div className="avora-floating-field">
@@ -22,7 +23,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
                     {...props}
                 />
                 <label>
-                    {language === 'ar' ? (
+                    {language === 'ar' || containsArabic ? (
                         <span>{label}</span>
                     ) : (
                         [...label].map((character, index) => (

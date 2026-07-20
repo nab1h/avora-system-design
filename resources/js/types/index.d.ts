@@ -281,5 +281,17 @@ export interface SubCategory {
     img: string | null;
 }
 
+export interface Classes {
+    id: number;
+    name_ar: string;
+    name_en: string;
+    desc_ar: string;
+    desc_en: string;
+    slug_ar: string;
+    slug_en: string;
+    img: File | string | null;
+    status: boolean | number;
+}
+
 
 

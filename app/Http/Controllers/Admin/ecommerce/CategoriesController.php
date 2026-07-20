@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\ecommerce;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\SubCategory;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
@@ -18,6 +19,7 @@ class CategoriesController extends Controller
         return Inertia::render('Dashboard', [
             'section' => 'categories',
             'categories' => Category::with('subCategories')->get(),
+            'subCategories' => SubCategory::with('category')->get(),
         ]);
     }
 

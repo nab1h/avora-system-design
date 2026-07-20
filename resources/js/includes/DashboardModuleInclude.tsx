@@ -16,6 +16,8 @@ import { Grid, GridItem } from "@/avora-dash/components/Grid";
 import { AttrbutePage } from "@/Pages/ecommerce/AttrbutePage";
 import { CategoriesPage } from "@/Pages/ecommerce/CategoriesPage";
 import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";
+import { ProductsPage } from "@/Pages/ecommerce/ProductsPage";
+import { ClassesPage } from "@/Pages/ecommerce/ClassesPage";
 
 const sectionTitles = {
     orders: { ar: "إدارة الطلبات", en: "Order management" },
@@ -2005,6 +2007,7 @@ export function DashboardModuleInclude({
         if (section === "subCategories") return SubCategoriesPage();
         if (section === "attributes") return AttrbutePage();
         if (section === "categories") return CategoriesPage();
+        if (section === "classes") return ClassesPage();
         if (section === "reports")
             return (
                 <div className="space-y-6">
@@ -2042,57 +2045,7 @@ export function DashboardModuleInclude({
                 </div>
             );
 
-        if (section === "products")
-            return (
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                    {products.map((product) => (
-                        <article
-                            key={product.name.en}
-                            className="avora-surface avora-border overflow-hidden rounded-2xl border"
-                        >
-                            <div
-                                className={`grid h-40 place-items-center ${product.color}`}
-                            >
-                                <DashboardIcon
-                                    name="products"
-                                    className="h-14 w-14 text-white/90"
-                                />
-                            </div>
-                            <div className="p-5">
-                                <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                        <h2 className="font-bold">
-                                            {translate(product.name)}
-                                        </h2>
-                                        <p className="mt-1 text-sm text-slate-500">
-                                            {product.sales}{" "}
-                                            {translate({
-                                                ar: "عملية بيع",
-                                                en: "sales",
-                                            })}
-                                        </p>
-                                    </div>
-                                    <strong className="avora-text-primary">
-                                        {product.price}
-                                    </strong>
-                                </div>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    fullWidth
-                                    rounded="no"
-                                    className="mt-5"
-                                >
-                                    {translate({
-                                        ar: "تعديل المنتج",
-                                        en: "Edit product",
-                                    })}
-                                </Button>
-                            </div>
-                        </article>
-                    ))}
-                </div>
-            );
+        if (section === "products") return <ProductsPage />;
 
         if (section === "customers")
             return (

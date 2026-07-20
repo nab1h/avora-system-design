@@ -31,17 +31,29 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
-            if (! in_array($response->getStatusCode(), [403, 404, 500], true)) {
-                return $response;
-            }
+    $exceptions->respond(function (
+        Response $response,
+        Throwable $exception,
+        Request $request
+    ) {
+ 
+        if (app()->environment('local') || config('app.debug')) {
+            return $response;
+        }
 
-            if ($request->expectsJson()) {
-                return $response;
-            }
+        if (! in_array($response->getStatusCode(), [403, 404, 500], true)) {
+            return $response;
+        }
 
-            return Inertia::render('Error', [
-                'status' => $response->getStatusCode(),
-            ])->toResponse($request)->setStatusCode($response->getStatusCode());
-        });
+        if ($request->expectsJson()) {
+            return $response;
+        }
+
+        return Inertia::render('Error', [
+            'status' => $response->getStatusCode(),
+        ])
+            ->toResponse($request)
+            ->setStatusCode($response->getStatusCode());
+    });
+
     })->create();
