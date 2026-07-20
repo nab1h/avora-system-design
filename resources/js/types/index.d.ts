@@ -294,4 +294,44 @@ export interface Classes {
 }
 
 
+export type CartProduct = {
+    id: number;
+    name_ar: string;
+    name_en: string;
+    price: string;
+    images: {
+        id: number;
+        image: string;
+        type: string;
+    }[];
+
+    pivot: {
+        user_id: number;
+        product_id: number;
+        quantity: number;
+        created_at: string;
+        updated_at: string;
+    };
+};
+
+export type FavoriteProduct = {
+    id: number;
+    name_ar: string;
+    name_en: string;
+    price: string;
+    images: {
+        id: number;
+        image: string;
+        type: string;
+    }[];
+
+    pivot: {
+        user_id: number;
+        product_id: number;
+        created_at: string;
+        updated_at: string;
+    };
+};
+
+
 

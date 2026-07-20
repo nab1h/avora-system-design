@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 
@@ -75,14 +76,24 @@ class User extends Authenticatable
         return $this->role?->permissions->pluck('slug')->all() ?? [];
     }
 
-    public function favoriteProducts()
+    public function favoriteProducts(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'favorites');
+        return $this->belongsToMany(
+            Product::class,
+            'favorites',
+            'user_id',
+            'product_id'
+        )->withTimestamps();
     }
 
-    public function cartProducts()
+    public function cartProducts(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'carts')
+        return $this->belongsToMany(
+            Product::class,
+            'carts',
+            'user_id',
+            'product_id'
+        )
             ->withPivot('quantity')
             ->withTimestamps();
     }

@@ -663,7 +663,7 @@ export default function Welcome({}: PageProps) {
                             backgroundImageOpacity={0.08}
                             backgroundImageAttachment="fixed"
                             backgroundImageSize="cover"
-                            rounded="no"
+                            rounded="none"
                             align="start"
                         >
                             <Card padding="md">
@@ -746,7 +746,7 @@ export default function Welcome({}: PageProps) {
                             backgroundImageAttachment="fixed"
                             backgroundImageSize="cover"
                             backgroundImagePosition="center"
-                            rounded="no"
+                            rounded="none"
                             align="center"
                             className="min-h-[420px]"
                         >
