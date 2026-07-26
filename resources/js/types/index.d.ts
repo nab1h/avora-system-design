@@ -343,4 +343,14 @@ export type StoreProduct = {
     images: CartProduct['images'];
 };
 
+export type ArticlePreview = {
+    id: number;
+    title_ar: string;
+    title_en: string;
+    excerpt_ar: string | null;
+    excerpt_en: string | null;
+    slug_ar: string;
+    slug_en: string;
+    image: string | null;
+};
 

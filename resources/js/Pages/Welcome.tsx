@@ -31,7 +31,7 @@ import { BlogCard } from "@/Components/BlogCard";
 import { BlogCard2 } from "@/Components/BlogCard2";
 import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
 import { ProductCard } from "@/Components/ProductCard";
-import { CartProduct, PageProps, StoreProduct } from "@/types";
+import { ArticlePreview, CartProduct, PageProps, StoreProduct } from "@/types";
 import { Head, router, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import { CgMenuRight } from "react-icons/cg";
@@ -51,12 +51,14 @@ import { Drawer } from "@/avora-dash/components/Drawer/Drawer";
 const publicAsset = (path: string) => `${window.location.origin}${path}`;
 type WelcomeProps = PageProps<{
     products: StoreProduct[];
+    articles: ArticlePreview[];
     cartProducts: CartProduct[];
     cartCount: number;
 }>;
 
 export default function Welcome({
     products: storeProducts,
+    articles,
     cartProducts,
     cartCount,
 }: WelcomeProps) {
@@ -764,6 +766,45 @@ export default function Welcome({
 
                     {/* section blog */}
                     <section id="blog" className="scroll-mt-24 space-y-6">
+                        {articles.length > 0 && (
+                            <Grid layout="cards" gap="md" width="full">
+                                {articles.map((article) => (
+                                    <GridItem key={article.id}>
+                                        <BlogCard
+                                            title={
+                                                direction === "rtl"
+                                                    ? article.title_ar
+                                                    : article.title_en
+                                            }
+                                            imageSrc={
+                                                article.image
+                                                    ? `/storage/${article.image}`
+                                                    : "/images/article-samples/morning-fragrance-triptych.png"
+                                            }
+                                            imageAlt={
+                                                direction === "rtl"
+                                                    ? article.title_ar
+                                                    : article.title_en
+                                            }
+                                            buttonLabel={translate({
+                                                ar: "اقرأ المقال",
+                                                en: "Read article",
+                                            })}
+                                            onReadPost={() =>
+                                                router.visit(
+                                                    route(
+                                                        "articles.show",
+                                                        direction === "rtl"
+                                                            ? article.slug_ar
+                                                            : article.slug_en,
+                                                    ),
+                                                )
+                                            }
+                                        />
+                                    </GridItem>
+                                ))}
+                            </Grid>
+                        )}
                         <Slider
                             ariaLabel={translate({
                                 ar: "مقالات أفورا",

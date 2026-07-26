@@ -19,6 +19,7 @@ import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";
 import { ProductsPage } from "@/Pages/ecommerce/ProductsPage";
 import { ClassesPage } from "@/Pages/ecommerce/ClassesPage";
 import { OffersPage } from "@/Pages/ecommerce/OffersPage";
+import { ArticlesPage } from "@/Pages/ecommerce/ArticlesPage";
 
 const sectionTitles = {
     orders: { ar: "إدارة الطلبات", en: "Order management" },
@@ -37,6 +38,7 @@ const sectionTitles = {
     settings: { ar: "إعدادات النظام", en: "System settings" },
     payments: { ar: "المدفوعات", en: "Payments" },
     purchases: { ar: "المشتريات", en: "Purchases" },
+    articles: { ar: "المقالات", en: "Articles" },
 } as const;
 
 const customers = [
@@ -2010,6 +2012,7 @@ export function DashboardModuleInclude({
         if (section === "categories") return CategoriesPage();
         if (section === "classes") return ClassesPage();
         if (section === "offers") return OffersPage();
+        if (section === "articles") return <ArticlesPage />;
         if (section === "reports")
             return (
                 <div className="space-y-6">

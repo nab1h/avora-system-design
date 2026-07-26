@@ -22,6 +22,11 @@ export const dashboardNavigation: DashboardNavItem[] = [
         href: '/dashboard/carts',
     },
     {
+        label: { ar: 'المقالات', en: 'Articles' },
+        icon: 'reports',
+        href: '/dashboard/articles',
+    },
+    {
         label: { ar: 'المنتجات', en: 'Products' },
         icon: 'products',
         href: '/dashboard/products',

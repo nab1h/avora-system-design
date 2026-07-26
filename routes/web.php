@@ -14,12 +14,14 @@ use App\Http\Controllers\admin\ecommerce\ClassesController;
 use App\Http\Controllers\admin\ecommerce\OffersController;
 use App\Http\Controllers\Admin\WebsiteSettingController;
 use App\Http\Controllers\Admin\WebsiteSettingPageController;
+use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardNotificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ArticleShowController;
 use App\Http\Controllers\PaymentCheckoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiteManifestController;
@@ -27,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/articles/{slug}', [ArticleShowController::class, 'show'])->name('articles.show');
 
 Route::post('/cart', [CartController::class, 'store'])
     ->middleware('auth')
@@ -146,6 +149,13 @@ Route::get('/dashboard/payments', [DashboardController::class, 'payments'])
 Route::get('/dashboard/purchases', [DashboardController::class, 'purchases'])
     ->middleware(['auth', 'verified', 'dashboard.access'])
     ->name('dashboard.purchases');
+
+Route::middleware(['auth', 'verified', 'dashboard.access'])->prefix('dashboard/articles')->name('dashboard.articles.')->group(function () {
+    Route::get('/', [ArticleController::class, 'index'])->name('index');
+    Route::post('/', [ArticleController::class, 'store'])->name('store');
+    Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
+    Route::delete('/{article}', [ArticleController::class, 'destroy'])->name('destroy');
+});
 
 Route::get('/dashboard/carts', [DashboardController::class, 'carts'])
     ->middleware(['auth', 'verified', 'dashboard.access'])
