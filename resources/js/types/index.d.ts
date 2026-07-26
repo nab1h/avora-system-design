@@ -333,5 +333,14 @@ export type FavoriteProduct = {
     };
 };
 
+export type StoreProduct = {
+    id: number;
+    name_ar: string;
+    name_en: string;
+    desc_ar: string | null;
+    desc_en: string | null;
+    price: string;
+    images: CartProduct['images'];
+};
 
 

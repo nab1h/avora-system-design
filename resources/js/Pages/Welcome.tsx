@@ -1,4 +1,5 @@
 import { Button } from "@/avora-dash/components/Button";
+import { Alert } from "@/avora-dash/components/Alert";
 import {
     Card,
     CardDescription,
@@ -30,21 +31,35 @@ import { BlogCard } from "@/Components/BlogCard";
 import { BlogCard2 } from "@/Components/BlogCard2";
 import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
 import { ProductCard } from "@/Components/ProductCard";
-import { PageProps } from "@/types";
+import { CartProduct, PageProps, StoreProduct } from "@/types";
 import { Head, router, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import { CgMenuRight } from "react-icons/cg";
 import {
     LuHeart,
     LuLogOut,
+    LuMinus,
     LuPackage,
+    LuPlus,
     LuSearch,
     LuSettings,
     LuShoppingCart,
+    LuTrash2,
     LuUserRound,
 } from "react-icons/lu";
+import { Drawer } from "@/avora-dash/components/Drawer/Drawer";
 const publicAsset = (path: string) => `${window.location.origin}${path}`;
-export default function Welcome({}: PageProps) {
+type WelcomeProps = PageProps<{
+    products: StoreProduct[];
+    cartProducts: CartProduct[];
+    cartCount: number;
+}>;
+
+export default function Welcome({
+    products: storeProducts,
+    cartProducts,
+    cartCount,
+}: WelcomeProps) {
     const { colors } = useTheme();
     const { translate, direction } = useLanguage();
     const appName = useAppName();
@@ -57,7 +72,43 @@ export default function Welcome({}: PageProps) {
         page.props.errors?.gateway_slug ?? page.props.errors?.product_id;
     const activePaymentGateway = enabledPaymentGateways[0];
     const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [cartSuccess, setCartSuccess] = useState(false);
     const user = page.props.auth.user;
+    const cartTotal = cartProducts.reduce(
+        (total, product) => total + Number(product.price) * Number(product.pivot.quantity),
+        0,
+    );
+    const addToCart = (productId: number) => {
+        if (!user) {
+            setCustomerAuthOpen(true);
+            return;
+        }
+
+        router.post(
+            route("cart.store"),
+            { product_id: productId },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setCartSuccess(true);
+                    window.setTimeout(() => setCartSuccess(false), 3500);
+                },
+            },
+        );
+    };
+    const removeFromCart = (productId: number) => {
+        router.delete(route("cart.destroy", productId), {
+            preserveScroll: true,
+        });
+    };
+    const changeCartQuantity = (productId: number, delta: 1 | -1) => {
+        router.patch(
+            route("cart.update", productId),
+            { delta },
+            { preserveScroll: true },
+        );
+    };
 
     const navbar = [
         {
@@ -150,6 +201,19 @@ export default function Welcome({}: PageProps) {
                     en: `${appName} Showcase`,
                 })}
             />
+
+            {cartSuccess && (
+                <Alert
+                    variant="success"
+                    title="تمت الإضافة"
+                    floating
+                    placement="bottom-center"
+                    onDismiss={() => setCartSuccess(false)}
+                    dismissLabel="إغلاق"
+                >
+                    تم إضافة المنتج إلى عربة التسوق.
+                </Alert>
+            )}
 
             <Navbar position="sticky" background="surface">
                 <NavbarContainer
@@ -265,6 +329,7 @@ export default function Welcome({}: PageProps) {
                             variant="ghost"
                             rounded="full"
                             type="button"
+                            onClick={() => setIsOpen(true)}
                             aria-label={translate({
                                 ar: "عربة التسوق",
                                 en: "Cart",
@@ -411,6 +476,7 @@ export default function Welcome({}: PageProps) {
                             variant="ghost"
                             rounded="full"
                             type="button"
+                            onClick={() => setIsOpen(true)}
                             aria-label={translate({
                                 ar: "عربة التسوق",
                                 en: "Cart",
@@ -654,16 +720,45 @@ export default function Welcome({}: PageProps) {
                     </section>
                     <section id="prodcts" className="scroll-mt-24 space-y-6">
                         <Grid layout="cards" gap="md" width="full">
-                            {products.map((product) => (
-                                <GridItem key={product.id}>
-                                    <ProductCard
-                                        desc={product.desc}
-                                        price={product.price}
-                                        img={product.img}
-                                        hoverImg={product.hoverImg}
-                                    />
-                                </GridItem>
-                            ))}
+                            {storeProducts.map((product) => {
+                                const image =
+                                    product.images.find(
+                                        (item) => item.type === "main",
+                                    ) ?? product.images[0];
+
+                                return (
+                                    <GridItem key={product.id}>
+                                        <ProductCard
+                                            desc={
+                                                direction === "rtl"
+                                                    ? (product.desc_ar ?? "")
+                                                    : (product.desc_en ?? "")
+                                            }
+                                            price={`${product.price} ${websiteCurrency}`}
+                                            img={
+                                                image
+                                                    ? `/storage/${image.image}`
+                                                    : publicAsset(
+                                                          "/images/product-colors.png",
+                                                      )
+                                            }
+                                            hoverImg={
+                                                product.images[1]
+                                                    ? `/storage/${product.images[1].image}`
+                                                    : undefined
+                                            }
+                                            onAddToCart={() =>
+                                                addToCart(product.id)
+                                            }
+                                            onView={() =>
+                                                router.visit(
+                                                    route("products.show", product.id),
+                                                )
+                                            }
+                                        />
+                                    </GridItem>
+                                );
+                            })}
                         </Grid>
                     </section>
 
@@ -806,6 +901,168 @@ export default function Welcome({}: PageProps) {
                         />
                     </section>
                 </Container>
+
+                <Drawer
+                    open={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    title={translate({
+                        ar: "عربة التسوق",
+                        en: "Shopping cart",
+                    })}
+                    description={translate({
+                        ar: "المنتجات التي أضفتها إلى السلة.",
+                        en: "Products you added to your cart.",
+                    })}
+                    side="right"
+                    size="lg"
+                    backdrop="blur"
+                    footer={
+                        <>
+                            <Button
+                                variant="ghost"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                إلغاء
+                            </Button>
+
+                            <Button
+                                type="button"
+                                disabled={!cartProducts.length}
+                            >
+                                {translate({
+                                    ar: "إتمام الطلب",
+                                    en: "Checkout",
+                                })}
+                            </Button>
+                        </>
+                    }
+                >
+                    {cartProducts.length ? (
+                        <div className="space-y-4" dir={direction}>
+                            {cartProducts.map((product) => {
+                                const image =
+                                    product.images.find(
+                                        (item) => item.type === "main",
+                                    ) ?? product.images[0];
+                                const quantity = Number(product.pivot.quantity);
+
+                                return (
+                                    <article
+                                        key={product.id}
+                                        className="flex gap-3 rounded-2xl border border-slate-200 p-3 dark:border-slate-700"
+                                    >
+                                        {image ? (
+                                            <img
+                                                src={`/storage/${image.image}`}
+                                                alt={
+                                                    direction === "rtl"
+                                                        ? product.name_ar
+                                                        : product.name_en
+                                                }
+                                                className="h-20 w-20 rounded-xl object-cover"
+                                            />
+                                        ) : (
+                                            <div className="h-20 w-20 rounded-xl bg-slate-100 dark:bg-slate-800" />
+                                        )}
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="truncate font-semibold">
+                                                {direction === "rtl"
+                                                    ? product.name_ar
+                                                    : product.name_en}
+                                            </h3>
+                                            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                                                {translate({
+                                                    ar: "الكمية",
+                                                    en: "Quantity",
+                                                })}
+                                                : {quantity}
+                                            </p>
+                                            <div className="mt-3 flex items-center gap-2">
+                                                <Button
+                                                    size="icon"
+                                                    variant="outline"
+                                                    type="button"
+                                                    aria-label={translate({
+                                                        ar: "تقليل الكمية",
+                                                        en: "Decrease quantity",
+                                                    })}
+                                                    onClick={() =>
+                                                        changeCartQuantity(
+                                                            product.id,
+                                                            -1,
+                                                        )
+                                                    }
+                                                >
+                                                    <LuMinus className="h-4 w-4" />
+                                                </Button>
+                                                <span className="min-w-8 text-center text-sm font-bold">
+                                                    {quantity}
+                                                </span>
+                                                <Button
+                                                    size="icon"
+                                                    variant="outline"
+                                                    type="button"
+                                                    aria-label={translate({
+                                                        ar: "زيادة الكمية",
+                                                        en: "Increase quantity",
+                                                    })}
+                                                    onClick={() =>
+                                                        changeCartQuantity(
+                                                            product.id,
+                                                            1,
+                                                        )
+                                                    }
+                                                >
+                                                    <LuPlus className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                            <p className="mt-2 font-medium">
+                                                {(
+                                                    Number(product.price) *
+                                                    quantity
+                                                ).toFixed(2)}{" "}
+                                                {websiteCurrency}
+                                            </p>
+                                        </div>
+                                        <Button
+                                            size="icon"
+                                            variant="danger"
+                                            type="button"
+                                            aria-label={translate({
+                                                ar: "حذف المنتج من السلة",
+                                                en: "Remove product from cart",
+                                            })}
+                                            title={translate({
+                                                ar: "حذف",
+                                                en: "Remove",
+                                            })}
+                                            onClick={() =>
+                                                removeFromCart(product.id)
+                                            }
+                                        >
+                                            <LuTrash2 className="h-4 w-4" />
+                                        </Button>
+                                    </article>
+                                );
+                            })}
+                            <div className="flex items-center justify-between border-t border-slate-200 pt-4 font-bold dark:border-slate-700">
+                                <span>
+                                    {translate({ ar: "الإجمالي", en: "Total" })}
+                                </span>
+                                <span>
+                                    {cartTotal.toFixed(2)} {websiteCurrency}
+                                </span>
+                            </div>
+                        </div>
+                    ) : (
+                        <p className="py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+                            {translate({
+                                ar: "عربة التسوق فارغة حالياً.",
+                                en: "Your shopping cart is empty.",
+                            })}
+                        </p>
+                    )}
+                </Drawer>
             </main>
         </>
     );

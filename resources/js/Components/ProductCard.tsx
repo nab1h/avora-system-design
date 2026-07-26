@@ -7,7 +7,7 @@ import {
 } from "@/avora-dash/components/Card";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { cardVariants } from "@/avora-dash/styles/cardVariants";
-import { CSSProperties } from "react";
+import { CSSProperties, KeyboardEvent } from "react";
 import { LuHeart, LuSearch, LuShoppingCart } from "react-icons/lu";
 
 interface IProps extends CardProps {
@@ -15,6 +15,8 @@ interface IProps extends CardProps {
     price: string;
     img: string;
     hoverImg?: string;
+    onAddToCart?: () => void;
+    onView?: () => void;
     className?: string;
     style?: CSSProperties;
 }
@@ -27,12 +29,23 @@ export function ProductCard({
     rounded,
     className,
     hoverImg,
+    onAddToCart,
+    onView,
     ...style
 }: IProps) {
     const { colors } = useTheme();
     return (
         <>
             <article
+                onClick={onView}
+                onKeyDown={(event: KeyboardEvent<HTMLElement>) => {
+                    if (onView && (event.key === "Enter" || event.key === " ")) {
+                        event.preventDefault();
+                        onView();
+                    }
+                }}
+                role={onView ? "button" : undefined}
+                tabIndex={onView ? 0 : undefined}
                 className={cardVariants({
                     variant,
                     padding,
@@ -53,6 +66,10 @@ export function ProductCard({
                     <div className="absolute inset-x-0 bottom-5 z-10 flex translate-y-3 items-center justify-center gap-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                         <button
                             type="button"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onView?.();
+                            }}
                             aria-label="بحث عن المنتج"
                             title="بحث"
                             className="grid h-10 w-10 place-items-center rounded-full bg-white text-slate-800 shadow-md transition hover:bg-slate-900 hover:text-white"
@@ -61,6 +78,10 @@ export function ProductCard({
                         </button>
                         <button
                             type="button"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onAddToCart?.();
+                            }}
                             aria-label="إضافة إلى عربة التسوق"
                             title="إضافة إلى السلة"
                             className="grid h-10 w-10 place-items-center rounded-full bg-white text-slate-800 shadow-md transition hover:bg-slate-900 hover:text-white"

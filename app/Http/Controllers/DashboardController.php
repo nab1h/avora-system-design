@@ -9,7 +9,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\Request;
 use App\Models\Attribute;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -59,6 +61,92 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'section' => 'purchases',
             'purchases' => $purchases,
+        ]);
+    }
+
+    public function carts(Request $request): Response
+    {
+        $validated = $request->validate([
+            'period' => ['nullable', 'in:today,week,month,custom,all'],
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date'],
+        ]);
+        $period = $validated['period'] ?? 'today';
+        $from = null;
+        $to = null;
+
+        if ($period === 'today') {
+            $from = now()->startOfDay();
+            $to = now()->endOfDay();
+        } elseif ($period === 'week') {
+            $from = now()->startOfWeek();
+            $to = now()->endOfWeek();
+        } elseif ($period === 'month') {
+            $from = now()->startOfMonth();
+            $to = now()->endOfMonth();
+        } elseif ($period === 'custom') {
+            $from = isset($validated['from']) ? Carbon::parse($validated['from'])->startOfDay() : null;
+            $to = isset($validated['to']) ? Carbon::parse($validated['to'])->endOfDay() : null;
+        }
+
+        $filterByPeriod = function ($query) use ($from, $to) {
+            if ($from) $query->where('carts.updated_at', '>=', $from);
+            if ($to) $query->where('carts.updated_at', '<=', $to);
+            return $query;
+        };
+
+        $cartQuery = $filterByPeriod(DB::table('carts'));
+
+        $topProducts = $filterByPeriod(DB::table('carts'))
+            ->join('products', 'products.id', '=', 'carts.product_id')
+            ->leftJoin('product_images as images', function ($join) {
+                $join->on('images.product_id', '=', 'products.id')->where('images.type', 'main');
+            })
+            ->select(
+                'products.id',
+                'products.name_ar',
+                'products.name_en',
+                'images.image',
+                DB::raw('SUM(carts.quantity) as total_quantity'),
+                DB::raw('COUNT(DISTINCT carts.user_id) as customers_count'),
+            )
+            ->groupBy('products.id', 'products.name_ar', 'products.name_en', 'images.image')
+            ->orderByDesc('total_quantity')
+            ->limit(8)
+            ->get();
+
+        $cartItems = $filterByPeriod(DB::table('carts'))
+            ->join('users', 'users.id', '=', 'carts.user_id')
+            ->join('products', 'products.id', '=', 'carts.product_id')
+            ->leftJoin('product_images as images', function ($join) {
+                $join->on('images.product_id', '=', 'products.id')->where('images.type', 'main');
+            })
+            ->select(
+                'carts.id',
+                'carts.quantity',
+                'carts.updated_at',
+                'users.name as customer_name',
+                'users.email as customer_email',
+                'products.name_ar',
+                'products.name_en',
+                'products.price',
+                'images.image',
+            )
+            ->latest('carts.updated_at')
+            ->limit(100)
+            ->get();
+
+        return Inertia::render('Dashboard', [
+            'section' => 'carts',
+            'cartAnalytics' => [
+                'total_items' => $cartQuery->count(),
+                'total_quantity' => (int) $cartQuery->sum('quantity'),
+                'customers_count' => DB::table('carts')->distinct('user_id')->count('user_id'),
+                'products_count' => (clone $cartQuery)->distinct('product_id')->count('product_id'),
+                'top_products' => $topProducts,
+                'items' => $cartItems,
+                'filters' => ['period' => $period, 'from' => $from?->toDateString(), 'to' => $to?->toDateString()],
+            ],
         ]);
     }
 

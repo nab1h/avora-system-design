@@ -18,12 +18,27 @@ use App\Http\Controllers\Auth\CustomerAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardNotificationController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PaymentCheckoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiteManifestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+Route::post('/cart', [CartController::class, 'store'])
+    ->middleware('auth')
+    ->name('cart.store');
+
+Route::delete('/cart/{product}', [CartController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('cart.destroy');
+
+Route::patch('/cart/{product}', [CartController::class, 'update'])
+    ->middleware('auth')
+    ->name('cart.update');
 
 Route::middleware('guest')->group(function () {
     Route::post('/customer/login', [CustomerAuthController::class, 'login'])
@@ -131,6 +146,10 @@ Route::get('/dashboard/payments', [DashboardController::class, 'payments'])
 Route::get('/dashboard/purchases', [DashboardController::class, 'purchases'])
     ->middleware(['auth', 'verified', 'dashboard.access'])
     ->name('dashboard.purchases');
+
+Route::get('/dashboard/carts', [DashboardController::class, 'carts'])
+    ->middleware(['auth', 'verified', 'dashboard.access'])
+    ->name('dashboard.carts');
 
 Route::get('/dashboard/notifications/{notification}', [DashboardNotificationController::class, 'read'])
     ->middleware(['auth', 'verified', 'dashboard.access'])

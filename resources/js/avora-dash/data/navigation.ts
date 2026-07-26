@@ -17,6 +17,11 @@ export const dashboardNavigation: DashboardNavItem[] = [
         href: '/dashboard/purchases',
     },
     {
+        label: { ar: 'عربات التسوق', en: 'Carts' },
+        icon: 'purchases',
+        href: '/dashboard/carts',
+    },
+    {
         label: { ar: 'المنتجات', en: 'Products' },
         icon: 'products',
         href: '/dashboard/products',

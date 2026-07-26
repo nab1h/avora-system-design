@@ -134,35 +134,6 @@ export function DashboardSidebar({ open, desktopOpen, onClose }: DashboardSideba
                         {renderItems(dashboardAccountNavigation)}
                     </ul>
                 </nav>
-
-                <div className="avora-brand-gradient m-4 rounded-2xl p-4 text-white">
-                    <p className="text-sm font-semibold">
-                        {translate({
-                            ar: "تحتاج مساعدة؟",
-                            en: "Need some help?",
-                        })}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-white/70">
-                        {translate({
-                            ar: "فريق الدعم جاهز لمساعدتك في أي وقت.",
-                            en: "Our support team is ready whenever you need us.",
-                        })}
-                    </p>
-                    {websiteSettings?.contact_email && (
-                        <p className="mt-2 break-all text-xs font-semibold text-white/80">
-                            {websiteSettings.contact_email}
-                        </p>
-                    )}
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        rounded="no"
-                        className="mt-3 bg-white/15 text-white hover:bg-white/25 hover:text-white"
-                    >
-                        {translate({ ar: "تواصل معنا", en: "Contact us" })}
-                    </Button>
-                </div>
             </aside>
         </>
     );

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
@@ -40,6 +41,11 @@ class HomeController extends Controller
         }
 
         return Inertia::render('Welcome', [
+            'products' => Product::query()
+                ->where('is_active', true)
+                ->with('images:id,product_id,image,type')
+                ->latest()
+                ->get(['id', 'name_ar', 'name_en', 'desc_ar', 'desc_en', 'price']),
             'cartProducts' => $cartProducts,
             'favoriteProducts' => $favoriteProducts,
 
@@ -52,4 +58,5 @@ class HomeController extends Controller
             'favoritesCount' => $favoriteProducts->count(),
         ]);
     }
+
 }
