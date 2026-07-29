@@ -3,6 +3,7 @@ import { BrandsSlider, type StoreBrand } from '@/Components/BrandsSlider';
 import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import { useTheme } from '@/avora-dash/providers/ThemeProvider';
 import { StoreNavbar } from '@/Components/StoreNavbar';
+import { StoreFooter } from '@/Components/StoreFooter';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -23,6 +24,7 @@ export default function Brands({ brands }: { brands: StoreBrand[] }) {
                     <BrandsSlider brands={brands} />
                 </Container>
             </main>
+            <StoreFooter />
         </>
     );
 }

@@ -14,6 +14,7 @@ import { StoreHero } from "./StoreHero";
 import { SectionTitle } from "@/avora-dash/components/SectionTitle";
 import { BrandsSlider, type StoreBrand } from '@/Components/BrandsSlider';
 import { ShoppingBenefits } from '@/Components/ShoppingBenefits';
+import { StoreFooter } from '@/Components/StoreFooter';
 type WelcomeProps = PageProps<{
     products: StoreProduct[];
     articles: ArticlePreview[];
@@ -88,6 +89,7 @@ export default function Welcome({
                     cartProducts={cartProducts}
                 />
             </main>
+            <StoreFooter />
         </>
     );
 }

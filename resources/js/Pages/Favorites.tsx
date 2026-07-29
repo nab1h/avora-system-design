@@ -3,6 +3,7 @@ import { SectionTitle } from '@/avora-dash/components/SectionTitle';
 import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import { useTheme } from '@/avora-dash/providers/ThemeProvider';
 import { StoreNavbar } from '@/Components/StoreNavbar';
+import { StoreFooter } from '@/Components/StoreFooter';
 import { ProductsPage } from '@/Pages/ProductsPage';
 import type { StoreProduct } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -27,6 +28,7 @@ export default function Favorites({ products, favoriteProductIds }: { products: 
                     )}
                 </Container>
             </main>
+            <StoreFooter />
         </>
     );
 }

@@ -30,7 +30,7 @@ interface IProps {
 export function StoreNavbar({setIsOpen}:IProps) {
     const { colors } = useTheme();
     const { translate, direction } = useLanguage();
-    const page = usePage<PageProps<{ cartProducts?: CartProduct[] }> & { errors?: Record<string, string> }>();
+    const page = usePage<PageProps<{ cartProducts?: CartProduct[]; favoritesCount?: number }> & { errors?: Record<string, string> }>();
     const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
     const user = page.props.auth.user;
     const appName = useAppName();
@@ -38,6 +38,7 @@ export function StoreNavbar({setIsOpen}:IProps) {
         (total, product) => total + Number(product.pivot.quantity),
         0,
     );
+    const favoritesCount = page.props.favoritesCount ?? 0;
 
     const navbar = [
         {
@@ -185,6 +186,35 @@ export function StoreNavbar({setIsOpen}:IProps) {
                             variant="ghost"
                             rounded="full"
                             type="button"
+                            onClick={() =>
+                                user
+                                    ? router.visit(route("favorites.index"))
+                                    : setCustomerAuthOpen(true)
+                            }
+                            aria-label={translate({
+                                ar: "المفضلة",
+                                en: "Favorites",
+                            })}
+                            title={translate({
+                                ar: "المفضلة",
+                                en: "Favorites",
+                            })}
+                        >
+                            <span className="relative">
+                                <LuHeart className="h-5 w-5" />
+                                {favoritesCount > 0 && (
+                                    <span className="absolute -end-2 -top-2 grid min-h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[9px] font-bold leading-4 text-white">
+                                        {favoritesCount > 99 ? "99+" : favoritesCount}
+                                    </span>
+                                )}
+                            </span>
+                        </Button>
+
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                            rounded="full"
+                            type="button"
                             onClick={() => setIsOpen(true)}
                             aria-label={translate({
                                 ar: "عربة التسوق",
@@ -306,6 +336,35 @@ export function StoreNavbar({setIsOpen}:IProps) {
                             })}
                         >
                             <LuPackage className="h-5 w-5" />
+                        </Button>
+
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                            rounded="full"
+                            type="button"
+                            onClick={() =>
+                                user
+                                    ? router.visit(route("favorites.index"))
+                                    : setCustomerAuthOpen(true)
+                            }
+                            aria-label={translate({
+                                ar: "المفضلة",
+                                en: "Favorites",
+                            })}
+                            title={translate({
+                                ar: "المفضلة",
+                                en: "Favorites",
+                            })}
+                        >
+                            <span className="relative">
+                                <LuHeart className="h-5 w-5" />
+                                {favoritesCount > 0 && (
+                                    <span className="absolute -end-2 -top-2 grid min-h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[9px] font-bold leading-4 text-white">
+                                        {favoritesCount > 99 ? "99+" : favoritesCount}
+                                    </span>
+                                )}
+                            </span>
                         </Button>
 
                         <Button

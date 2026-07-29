@@ -1,5 +1,6 @@
 import { StoreDrawer } from "@/Components/StoreDrawer";
 import { StoreNavbar } from "@/Components/StoreNavbar";
+import { StoreFooter } from "@/Components/StoreFooter";
 import type { CartProduct } from "@/types";
 import type { PageProps } from "@/types";
 import { usePage } from "@inertiajs/react";
@@ -23,6 +24,8 @@ export function StoreLayout({ children, cartProducts = [] }: StoreLayoutProps) {
             <StoreNavbar setIsOpen={setIsOpen} />
 
             <main>{children}</main>
+
+            <StoreFooter />
 
             <StoreDrawer
                 isOpen={isOpen}

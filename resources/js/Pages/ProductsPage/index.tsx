@@ -104,7 +104,7 @@ export function ProductsPage({ products: storeProducts, favoriteProductIds = [] 
             >
                 <TabsList
                     label={translate({ ar: 'تصنيفات المنتجات', en: 'Product categories' })}
-                    className="!mx-auto !w-auto justify-center !border-b-0"
+                    className="!mx-auto !w-auto !max-w-full justify-center !overflow-x-auto !overflow-y-hidden !border-b-0"
                 >
                     <TabsTrigger className="!min-h-8 !px-3 !text-sm !font-normal italic data-[selected]:!text-[var(--avora-text)]">
                         {translate({ ar: 'الكل', en: 'All' })}

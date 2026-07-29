@@ -88,6 +88,9 @@ class HandleInertiaRequests extends Middleware
                     ->with(['images', 'category', 'subCategory', 'productClass', 'offer'])
                     ->get()
                 : [],
+            'favoritesCount' => fn () => $request->user()
+                ? $request->user()->favoriteProducts()->count()
+                : 0,
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),

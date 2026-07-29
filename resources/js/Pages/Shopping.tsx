@@ -3,6 +3,7 @@ import { ShoppingBenefits } from '@/Components/ShoppingBenefits';
 import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import { useTheme } from '@/avora-dash/providers/ThemeProvider';
 import { StoreNavbar } from '@/Components/StoreNavbar';
+import { StoreFooter } from '@/Components/StoreFooter';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 export default function Shopping() {
@@ -19,6 +20,7 @@ export default function Shopping() {
                     <ShoppingBenefits />
                 </Container>
             </main>
+            <StoreFooter />
         </>
     );
 }
