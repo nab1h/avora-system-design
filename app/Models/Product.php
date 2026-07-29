@@ -10,7 +10,7 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'sub_category_id', 'offer_id', 'name_ar', 'name_en',
         'slug_ar', 'slug_en', 'desc_ar', 'desc_en', 'price', 'stock', 'is_active',
-        'class_id',
+        'class_id', 'brand_id',
     ];
 
     protected $casts = [
@@ -31,6 +31,11 @@ class Product extends Model
     public function subCategory()
     {
         return $this->belongsTo(SubCategory::class);
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
     }
     public function offer()
     {

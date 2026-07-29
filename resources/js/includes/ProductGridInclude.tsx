@@ -1,6 +1,7 @@
 import { CardMeta } from '@/avora-dash/components/Card';
 import { Container } from '@/avora-dash/components/Container';
 import { Grid } from '@/avora-dash/components/Grid';
+import { SectionTitle } from '@/avora-dash/components/SectionTitle';
 import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import { ProductCardInclude } from './ProductCardInclude';
 
@@ -56,9 +57,10 @@ export function ProductGridInclude() {
             <div className="mb-8">
                 <CardMeta>PRODUCTS</CardMeta>
                 {/* Change this section title. */}
-                <h2 className="mt-2 text-3xl font-bold">
-                    {translate({ ar: 'منتجاتنا', en: 'Our products' })}
-                </h2>
+                <SectionTitle
+                    className="mt-2"
+                    text={{ ar: 'منتجاتنا', en: 'Our products' }}
+                />
             </div>
 
             {/* Change minItemWidth to control the minimum card width. */}

@@ -82,6 +82,12 @@ class HandleInertiaRequests extends Middleware
                     ]
                     : null,
             ],
+            'cartProducts' => fn () => $request->user()
+                ? $request->user()
+                    ->cartProducts()
+                    ->with(['images', 'category', 'subCategory', 'productClass', 'offer'])
+                    ->get()
+                : [],
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),

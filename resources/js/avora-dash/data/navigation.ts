@@ -22,6 +22,11 @@ export const dashboardNavigation: DashboardNavItem[] = [
         href: '/dashboard/carts',
     },
     {
+        label: { ar: 'المفضلة', en: 'Favorites' },
+        icon: 'products',
+        href: '/dashboard/favorites',
+    },
+    {
         label: { ar: 'المقالات', en: 'Articles' },
         icon: 'reports',
         href: '/dashboard/articles',
@@ -78,6 +83,11 @@ export const dashboardProperties: DashboardNavItem[] = [
         label: { ar: "الأصناف", en: "Categories" },
         icon: "orders",
         href: "/dashboard/categories",
+    },
+    {
+        label: { ar: "البراندات", en: "Brands" },
+        icon: "products",
+        href: "/dashboard/brands",
     },
     {
         label: { ar: "الأصناف الفرعية", en: "subCategories" },

@@ -9,12 +9,14 @@ import { useMemo, useState, type FormEventHandler } from "react";
 import { FiEdit2, FiImage, FiPlus, FiTrash2, FiX } from "react-icons/fi";
 
 type Named = { id: number; name_ar: string; name_en: string };
+type Brand = Named & { image: string | null };
 type SubCategory = Named & { categories_id: number };
 type Offer = Named & { type: "fixed" | "percent"; value: string };
 type Attribute = { id: number; name: string; name_en: string };
 type Product = {
     id: number;
     category_id: number;
+    brand_id: number | null;
     class_id: number;
     sub_category_id: number;
     offer_id: number | null;
@@ -40,6 +42,7 @@ type Product = {
 type ProductForm = {
     _method: "post" | "put";
     category_id: number | null;
+    brand_id: number | null;
     class_id: number | null;
     sub_category_id: number | null;
     offer_id: number | null;
@@ -61,6 +64,7 @@ type ProductForm = {
 const emptyForm: ProductForm = {
     _method: "post",
     category_id: null,
+    brand_id: null,
     class_id: null,
     sub_category_id: null,
     offer_id: null,
@@ -85,6 +89,7 @@ export function ProductsPage() {
     const { props } = usePage<PageProps>();
     const products = (props.products ?? []) as Product[];
     const categories = (props.categories ?? []) as Named[];
+    const brands = (props.brands ?? []) as Brand[];
     const classes = (props.classes ?? []) as Named[];
     const subCategories = (props.subCategories ?? []) as SubCategory[];
     const offers = (props.offers ?? []) as Offer[];
@@ -112,6 +117,7 @@ export function ProductsPage() {
         form.setData({
             _method: "put",
             category_id: product.category_id,
+            brand_id: product.brand_id,
             class_id: product.class_id,
             sub_category_id: product.sub_category_id,
             offer_id: product.offer_id,
@@ -371,6 +377,20 @@ export function ProductsPage() {
                                 form.setData("sub_category_id", null);
                             }}
                             error={form.errors.category_id}
+                        />
+                        <Select
+                            label={translate({ ar: "البراند", en: "Brand" })}
+                            required
+                            value={form.data.brand_id}
+                            options={brands.map((item) => ({
+                                value: item.id,
+                                label: `${item.name_ar} — ${item.name_en}`,
+                                image: item.image
+                                    ? `/storage/${item.image}`
+                                    : null,
+                            }))}
+                            onChange={(value) => form.setData("brand_id", value)}
+                            error={form.errors.brand_id}
                         />
                         <Select
                             label="الصنف الفرعي"

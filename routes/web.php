@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserPageController;
 use App\Http\Controllers\Admin\ecommerce\AttributeController;
+use App\Http\Controllers\Admin\ecommerce\BrandController;
 use App\Http\Controllers\Admin\ecommerce\ProductsController;
 use App\Http\Controllers\Admin\ecommerce\CategoriesController;
 use App\Http\Controllers\admin\ecommerce\SubCategoriesController;
@@ -20,16 +21,21 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardNotificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ArticleShowController;
+use App\Http\Controllers\BrandPageController;
 use App\Http\Controllers\PaymentCheckoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiteManifestController;
+use App\Http\Controllers\ShoppingPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/articles/{slug}', [ArticleShowController::class, 'show'])->name('articles.show');
+Route::get('/brands', [BrandPageController::class, 'index'])->name('brands.index');
+Route::get('/shopping', [ShoppingPageController::class, 'index'])->name('shopping.index');
 
 Route::post('/cart', [CartController::class, 'store'])
     ->middleware('auth')
@@ -38,6 +44,14 @@ Route::post('/cart', [CartController::class, 'store'])
 Route::delete('/cart/{product}', [CartController::class, 'destroy'])
     ->middleware('auth')
     ->name('cart.destroy');
+
+Route::get('/favorites', [FavoriteController::class, 'index'])
+    ->middleware('auth')
+    ->name('favorites.index');
+
+Route::post('/favorites/{product}/toggle', [FavoriteController::class, 'toggle'])
+    ->middleware('auth')
+    ->name('favorites.toggle');
 
 Route::patch('/cart/{product}', [CartController::class, 'update'])
     ->middleware('auth')
@@ -161,6 +175,10 @@ Route::get('/dashboard/carts', [DashboardController::class, 'carts'])
     ->middleware(['auth', 'verified', 'dashboard.access'])
     ->name('dashboard.carts');
 
+Route::get('/dashboard/favorites', [DashboardController::class, 'favorites'])
+    ->middleware(['auth', 'verified', 'dashboard.access'])
+    ->name('dashboard.favorites');
+
 Route::get('/dashboard/notifications/{notification}', [DashboardNotificationController::class, 'read'])
     ->middleware(['auth', 'verified', 'dashboard.access'])
     ->name('dashboard.notifications.read');
@@ -182,6 +200,16 @@ Route::middleware(['auth', 'verified', 'dashboard.access'])
         Route::post('/', [ProductsController::class, 'store'])->name('store');
         Route::put('/{product}', [ProductsController::class, 'update'])->name('update');
         Route::delete('/{product}', [ProductsController::class, 'destroy'])->name('destroy');
+    });
+
+Route::middleware(['auth', 'verified', 'dashboard.access'])
+    ->prefix('dashboard/brands')
+    ->name('dashboard.brands.')
+    ->group(function () {
+        Route::get('/', [BrandController::class, 'index'])->name('index');
+        Route::post('/', [BrandController::class, 'store'])->name('store');
+        Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
+        Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
     });
 
 // حساب المستخدم الحالي: تعديل البروفايل وحذف الحساب.

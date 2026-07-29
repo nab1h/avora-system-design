@@ -150,6 +150,74 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function favorites(Request $request): Response
+    {
+        $validated = $request->validate([
+            'period' => ['nullable', 'in:today,week,month,custom,all'],
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date'],
+        ]);
+        $period = $validated['period'] ?? 'today';
+        $from = null;
+        $to = null;
+
+        if ($period === 'today') {
+            $from = now()->startOfDay();
+            $to = now()->endOfDay();
+        } elseif ($period === 'week') {
+            $from = now()->startOfWeek();
+            $to = now()->endOfWeek();
+        } elseif ($period === 'month') {
+            $from = now()->startOfMonth();
+            $to = now()->endOfMonth();
+        } elseif ($period === 'custom') {
+            $from = isset($validated['from']) ? Carbon::parse($validated['from'])->startOfDay() : null;
+            $to = isset($validated['to']) ? Carbon::parse($validated['to'])->endOfDay() : null;
+        }
+
+        $filterByPeriod = function ($query) use ($from, $to) {
+            if ($from) $query->where('favorites.created_at', '>=', $from);
+            if ($to) $query->where('favorites.created_at', '<=', $to);
+            return $query;
+        };
+
+        $favoritesQuery = $filterByPeriod(DB::table('favorites'));
+
+        $topProducts = $filterByPeriod(DB::table('favorites'))
+            ->join('products', 'products.id', '=', 'favorites.product_id')
+            ->leftJoin('product_images as images', function ($join) {
+                $join->on('images.product_id', '=', 'products.id')->where('images.type', 'main');
+            })
+            ->select('products.id', 'products.name_ar', 'products.name_en', 'images.image', DB::raw('COUNT(favorites.id) as favorites_count'), DB::raw('COUNT(DISTINCT favorites.user_id) as customers_count'))
+            ->groupBy('products.id', 'products.name_ar', 'products.name_en', 'images.image')
+            ->orderByDesc('favorites_count')
+            ->limit(8)
+            ->get();
+
+        $items = $filterByPeriod(DB::table('favorites'))
+            ->join('users', 'users.id', '=', 'favorites.user_id')
+            ->join('products', 'products.id', '=', 'favorites.product_id')
+            ->leftJoin('product_images as images', function ($join) {
+                $join->on('images.product_id', '=', 'products.id')->where('images.type', 'main');
+            })
+            ->select('favorites.id', 'favorites.created_at', 'users.name as customer_name', 'users.email as customer_email', 'products.name_ar', 'products.name_en', 'products.price', 'images.image')
+            ->latest('favorites.created_at')
+            ->limit(100)
+            ->get();
+
+        return Inertia::render('Dashboard', [
+            'section' => 'favorites',
+            'favoriteAnalytics' => [
+                'total_items' => $favoritesQuery->count(),
+                'customers_count' => (clone $favoritesQuery)->distinct('user_id')->count('user_id'),
+                'products_count' => (clone $favoritesQuery)->distinct('product_id')->count('product_id'),
+                'top_products' => $topProducts,
+                'items' => $items,
+                'filters' => ['period' => $period, 'from' => $from?->toDateString(), 'to' => $to?->toDateString()],
+            ],
+        ]);
+    }
+
 
     private function dashboardStats(): array
     {

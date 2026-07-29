@@ -20,8 +20,10 @@ import { ProductsPage } from "@/Pages/ecommerce/ProductsPage";
 import { ClassesPage } from "@/Pages/ecommerce/ClassesPage";
 import { OffersPage } from "@/Pages/ecommerce/OffersPage";
 import { ArticlesPage } from "@/Pages/ecommerce/ArticlesPage";
+import { BrandsPage } from "@/Pages/ecommerce/BrandsPage";
 
 const sectionTitles = {
+    brands: { ar: "إدارة البراندات", en: "Brands management" },
     orders: { ar: "إدارة الطلبات", en: "Order management" },
     products: { ar: "إدارة المنتجات", en: "Product management" },
     attributes: { ar: "إدارة المواصفات", en: "Properties management" },
@@ -2010,6 +2012,7 @@ export function DashboardModuleInclude({
         if (section === "subCategories") return SubCategoriesPage();
         if (section === "attributes") return AttrbutePage();
         if (section === "categories") return CategoriesPage();
+        if (section === "brands") return <BrandsPage />;
         if (section === "classes") return ClassesPage();
         if (section === "offers") return OffersPage();
         if (section === "articles") return <ArticlesPage />;

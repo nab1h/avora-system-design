@@ -340,6 +340,7 @@ export type StoreProduct = {
     desc_ar: string | null;
     desc_en: string | null;
     price: string;
+    favorited_by_users_count?: number;
     images: CartProduct['images'];
 };
 
@@ -353,4 +354,3 @@ export type ArticlePreview = {
     slug_en: string;
     image: string | null;
 };
-

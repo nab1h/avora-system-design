@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\ecommerce;
 use App\Http\Controllers\Controller;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Classes;
 use App\Models\Offer;
@@ -27,6 +28,7 @@ class ProductsController extends Controller
 
             'products' => Product::with([
                 'category:id,name_ar,name_en',
+                'brand:id,name_ar,name_en',
 
                 // فئة الرجال والنساء والأطفال
                 'productClass:id,name_ar,name_en',
@@ -44,6 +46,11 @@ class ProductsController extends Controller
 
             'categories' => Category::query()
                 ->select('id', 'name_ar', 'name_en')
+                ->orderBy('name_ar')
+                ->get(),
+
+            'brands' => Brand::query()
+                ->select('id', 'name_ar', 'name_en', 'image')
                 ->orderBy('name_ar')
                 ->get(),
 
@@ -171,6 +178,12 @@ class ProductsController extends Controller
                 'required',
                 'integer',
                 'exists:categories,id',
+            ],
+
+            'brand_id' => [
+                'required',
+                'integer',
+                'exists:brands,id',
             ],
 
             // العلاقة الجديدة مع جدول classes
@@ -335,6 +348,7 @@ class ProductsController extends Controller
     {
         return collect($data)->only([
             'category_id',
+            'brand_id',
             'class_id',
             'sub_category_id',
             'offer_id',
