@@ -15,10 +15,14 @@ class FavoriteController extends Controller
         $products = $request->user()
             ->favoriteProducts()
             ->where('products.is_active', true)
-            ->with('images:id,product_id,image,type')
+            ->with([
+                'images:id,product_id,image,type',
+                'category:id,name_ar,name_en',
+                'subCategory:id,categories_id,name_ar,name_en',
+            ])
             ->withCount('favoritedByUsers')
             ->latest('favorites.created_at')
-            ->get(['products.id', 'name_ar', 'name_en', 'desc_ar', 'desc_en', 'price']);
+            ->get(['products.id', 'products.category_id', 'products.sub_category_id', 'name_ar', 'name_en', 'desc_ar', 'desc_en', 'price', 'products.created_at']);
 
         return Inertia::render('Favorites', [
             'products' => $products,

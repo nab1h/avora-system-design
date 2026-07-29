@@ -1,5 +1,7 @@
 import { Button } from "@/avora-dash/components/Button";
 import { FormField } from "@/avora-dash/components/forms/FormField";
+import { GalleryImageInput } from "@/avora-dash/components/forms/GalleryImageInput";
+import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
 import { Select } from "@/avora-dash/components/forms/Select";
 import { Modal } from "@/avora-dash/components/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
@@ -534,38 +536,19 @@ export function ProductsPage() {
                         </label>
                     </div>
                     <div className="grid gap-4 md:grid-cols-2">
-                        <label className="text-sm font-semibold">
-                            الصورة الرئيسية{!editing && " *"}
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) =>
-                                    form.setData(
-                                        "main_image",
-                                        e.target.files?.[0] ?? null,
-                                    )
-                                }
-                                className="mt-2 block w-full rounded-xl border p-3"
-                            />
-                            <span className="text-xs text-rose-600">
-                                {form.errors.main_image}
-                            </span>
-                        </label>
-                        <label className="text-sm font-semibold">
-                            صور المعرض
-                            <input
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                onChange={(e) =>
-                                    form.setData(
-                                        "gallery_images",
-                                        Array.from(e.target.files ?? []),
-                                    )
-                                }
-                                className="mt-2 block w-full rounded-xl border p-3"
-                            />
-                        </label>
+                        <ImageInput
+                            label={`الصورة الرئيسية${!editing ? ' *' : ''}`}
+                            value={form.data.main_image}
+                            currentImage={editing?.images.find((image) => image.type === 'main')?.image ? `/storage/${editing.images.find((image) => image.type === 'main')?.image}` : null}
+                            onChange={(image) => form.setData('main_image', image)}
+                            error={form.errors.main_image}
+                        />
+                        <GalleryImageInput
+                            label="صور المعرض"
+                            value={form.data.gallery_images}
+                            onChange={(images) => form.setData('gallery_images', images)}
+                            error={form.errors.gallery_images}
+                        />
                     </div>
                     <div>
                         <div className="mb-3 flex justify-between">

@@ -24,7 +24,7 @@ export function ProductCard({
     hoverImg,
     favoriteCount = 0,
     isFavorite = false,
-    badge = 'NEW',
+    badge,
     onAddToCart,
     onToggleFavorite,
     onView,

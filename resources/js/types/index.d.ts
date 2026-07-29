@@ -335,12 +335,17 @@ export type FavoriteProduct = {
 
 export type StoreProduct = {
     id: number;
+    category_id: number;
+    sub_category_id: number;
     name_ar: string;
     name_en: string;
     desc_ar: string | null;
     desc_en: string | null;
     price: string;
+    created_at?: string;
     favorited_by_users_count?: number;
+    category?: { id: number; name_ar: string; name_en: string };
+    sub_category?: { id: number; name_ar: string; name_en: string };
     images: CartProduct['images'];
 };
 
