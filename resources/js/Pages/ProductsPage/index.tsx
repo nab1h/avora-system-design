@@ -1,6 +1,7 @@
 import { CustomerAuthModal } from '@/Components/CustomerAuthModal';
 import { ProductCard } from '@/Components/ProductCard';
 import { Grid, GridItem } from '@/avora-dash/components/Grid';
+import { Pagination } from '@/avora-dash/components/Pagination';
 import { Tabs, TabsList, TabsPanel, TabsPanels, TabsTrigger } from '@/avora-dash/components/Tabs';
 import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import type { PageProps, StoreProduct } from '@/types';
@@ -16,8 +17,11 @@ export function ProductsPage({ products: storeProducts, favoriteProductIds = [] 
     const page = usePage<PageProps & { errors?: Record<string, string> }>();
     const { direction, translate } = useLanguage();
     const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const websiteCurrency = page.props.websiteSettings.currency ?? 'EGP';
     const user = page.props.auth.user;
+    const itemsPerPage = 8;
     const categories = Array.from(
         new Map(
             storeProducts
@@ -34,10 +38,19 @@ export function ProductsPage({ products: storeProducts, favoriteProductIds = [] 
         action();
     };
 
-    const renderProducts = (products: StoreProduct[]) => (
+    const renderProducts = (products: StoreProduct[]) => {
+        const totalPages = Math.max(1, Math.ceil(products.length / itemsPerPage));
+        const safePage = Math.min(currentPage, totalPages);
+        const visibleProducts = products.slice(
+            (safePage - 1) * itemsPerPage,
+            safePage * itemsPerPage,
+        );
+
+        return (
         products.length ? (
-            <Grid layout="cards" gap="md" width="full">
-                {products.map((product) => {
+            <>
+                <Grid layout="cards" gap="md" width="full">
+                {visibleProducts.map((product) => {
                     const image = product.images.find((item) => item.type === 'main') ?? product.images[0];
                     const isNew = product.created_at
                         ? Date.now() - new Date(product.created_at).getTime() <= 3 * 24 * 60 * 60 * 1000
@@ -60,20 +73,35 @@ export function ProductsPage({ products: storeProducts, favoriteProductIds = [] 
                         </GridItem>
                     );
                 })}
-            </Grid>
+                </Grid>
+                <Pagination
+                    currentPage={safePage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    className="mt-10"
+                />
+            </>
         ) : (
             <p className="avora-muted py-10 text-center text-sm">
                 {translate({ ar: 'لا توجد منتجات في هذا القسم حاليًا.', en: 'There are no products in this category yet.' })}
             </p>
-        )
-    );
+        ));
+    };
 
     return (
         <section id="products" className="scroll-mt-24 space-y-6">
             <h2 className="text-center text-sm font-medium uppercase tracking-[0.22em]">
                 {translate({ ar: 'وصل حديثًا', en: 'NEW ARRIVALS' })}
             </h2>
-            <Tabs variant="line" size="sm">
+            <Tabs
+                variant="line"
+                size="sm"
+                selectedIndex={activeTab}
+                onChange={(index) => {
+                    setActiveTab(index);
+                    setCurrentPage(1);
+                }}
+            >
                 <TabsList
                     label={translate({ ar: 'تصنيفات المنتجات', en: 'Product categories' })}
                     className="!mx-auto !w-auto justify-center !border-b-0"
