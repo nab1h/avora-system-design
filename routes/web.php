@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserPageController;
 use App\Http\Controllers\Admin\ecommerce\AttributeController;
 use App\Http\Controllers\Admin\ecommerce\BrandController;
+use App\Http\Controllers\Admin\ecommerce\ColorController;
 use App\Http\Controllers\Admin\ecommerce\ProductsController;
 use App\Http\Controllers\Admin\ecommerce\CategoriesController;
 use App\Http\Controllers\admin\ecommerce\SubCategoriesController;
@@ -210,6 +211,16 @@ Route::middleware(['auth', 'verified', 'dashboard.access'])
         Route::post('/', [BrandController::class, 'store'])->name('store');
         Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
         Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
+    });
+
+Route::middleware(['auth', 'verified', 'dashboard.access'])
+    ->prefix('dashboard/colors')
+    ->name('dashboard.colors.')
+    ->group(function () {
+        Route::get('/', [ColorController::class, 'index'])->name('index');
+        Route::post('/', [ColorController::class, 'store'])->name('store');
+        Route::put('/{color}', [ColorController::class, 'update'])->name('update');
+        Route::delete('/{color}', [ColorController::class, 'destroy'])->name('destroy');
     });
 
 // حساب المستخدم الحالي: تعديل البروفايل وحذف الحساب.

@@ -15,6 +15,7 @@ type Brand = Named & { image: string | null };
 type SubCategory = Named & { categories_id: number };
 type Offer = Named & { type: "fixed" | "percent"; value: string };
 type Attribute = { id: number; name: string; name_en: string };
+type Color = { id: number; name_ar: string; name_en: string; hex: string };
 type Product = {
     id: number;
     category_id: number;
@@ -30,6 +31,7 @@ type Product = {
     desc_en: string | null;
     price: string;
     stock: number;
+    has_custom_color_stock: boolean;
     is_active: boolean;
     category?: Named;
     sub_category?: Named;
@@ -40,6 +42,7 @@ type Product = {
         id: number;
         value?: { attribute_id: number; value: string };
     }[];
+    colors: (Color & { pivot: { stock: number | null } })[];
 };
 type ProductForm = {
     _method: "post" | "put";
@@ -56,6 +59,8 @@ type ProductForm = {
     desc_en: string;
     price: string;
     stock: string;
+    has_custom_color_stock: boolean;
+    colors: { id: number; stock: string }[];
     is_active: boolean;
     features: string[];
     attributes: { attribute_id: number | null; value: string }[];
@@ -78,6 +83,8 @@ const emptyForm: ProductForm = {
     desc_en: "",
     price: "",
     stock: "0",
+    has_custom_color_stock: false,
+    colors: [],
     is_active: true,
     features: [""],
     attributes: [],
@@ -96,6 +103,7 @@ export function ProductsPage() {
     const subCategories = (props.subCategories ?? []) as SubCategory[];
     const offers = (props.offers ?? []) as Offer[];
     const attributes = (props.attributes ?? []) as Attribute[];
+    const colors = (props.colors ?? []) as Color[];
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState<Product | null>(null);
     const [deleting, setDeleting] = useState<Product | null>(null);
@@ -131,6 +139,11 @@ export function ProductsPage() {
             desc_en: product.desc_en ?? "",
             price: product.price,
             stock: String(product.stock),
+            has_custom_color_stock: product.has_custom_color_stock,
+            colors: product.colors.map((color) => ({
+                id: color.id,
+                stock: color.pivot.stock === null ? "" : String(color.pivot.stock),
+            })),
             is_active: product.is_active,
             features: product.features.length
                 ? product.features.map((item) => item.feature)
@@ -173,6 +186,21 @@ export function ProductsPage() {
         const rows = [...form.data.attributes];
         rows[index] = { ...rows[index], [field]: value };
         form.setData("attributes", rows);
+    };
+
+    const toggleColor = (colorId: number) => {
+        const selected = form.data.colors.find((color) => color.id === colorId);
+        if (selected) {
+            form.setData("colors", form.data.colors.filter((color) => color.id !== colorId));
+            return;
+        }
+        const count = form.data.colors.length + 1;
+        const stock = Math.floor(Number(form.data.stock || 0) / count);
+        form.setData("colors", [...form.data.colors.map((color) => ({ ...color, stock: String(stock) })), { id: colorId, stock: String(stock) }]);
+    };
+
+    const updateColorStock = (colorId: number, stock: string) => {
+        form.setData("colors", form.data.colors.map((color) => color.id === colorId ? { ...color, stock } : color));
     };
 
     return (
@@ -459,6 +487,57 @@ export function ProductsPage() {
                                 }
                                 error={form.errors.stock}
                             />
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                <div>
+                                    <p className="font-semibold">ألوان المنتج</p>
+                                    <p className="mt-1 text-xs text-slate-500">اختر الألوان المتاحة لهذا المنتج.</p>
+                                </div>
+                                <label className="flex items-center gap-2 text-sm font-medium">
+                                    <input
+                                        type="checkbox"
+                                        checked={form.data.has_custom_color_stock}
+                                        onChange={(event) => form.setData("has_custom_color_stock", event.target.checked)}
+                                    />
+                                    مخزون مخصص لكل لون
+                                </label>
+                            </div>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                                {colors.map((color) => {
+                                    const selected = form.data.colors.some((item) => item.id === color.id);
+                                    return <button
+                                        key={color.id}
+                                        type="button"
+                                        onClick={() => toggleColor(color.id)}
+                                        className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${selected ? "border-sky-500 bg-sky-50 dark:bg-sky-950/30" : "border-slate-200 dark:border-slate-700"}`}
+                                    >
+                                        <span className="h-4 w-4 rounded-full border border-slate-300" style={{ backgroundColor: color.hex }} />
+                                        {color.name_ar}
+                                    </button>;
+                                })}
+                            </div>
+                            {!colors.length && <p className="mt-3 text-sm text-slate-500">أضف الألوان أولًا من جدول إدارة الألوان.</p>}
+                            {form.data.has_custom_color_stock && form.data.colors.length > 0 && (
+                                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                    {form.data.colors.map((selected) => {
+                                        const color = colors.find((item) => item.id === selected.id);
+                                        if (!color) return null;
+                                        return <FormField
+                                            key={color.id}
+                                            type="number"
+                                            min="0"
+                                            label={`مخزون ${color.name_ar}`}
+                                            value={selected.stock}
+                                            onChange={(event) => updateColorStock(color.id, event.target.value)}
+                                        />;
+                                    })}
+                                </div>
+                            )}
+                            {form.data.has_custom_color_stock && form.data.colors.length > 0 && (
+                                <p className="mt-3 text-xs text-slate-500">الإجمالي المحدد للألوان: {form.data.colors.reduce((total, color) => total + Number(color.stock || 0), 0)} قطعة.</p>
+                            )}
                         </div>
                     </div>
                     {editing && !!editing.images.length && (

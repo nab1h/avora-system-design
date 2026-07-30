@@ -21,6 +21,7 @@ import { ClassesPage } from "@/Pages/ecommerce/ClassesPage";
 import { OffersPage } from "@/Pages/ecommerce/OffersPage";
 import { ArticlesPage } from "@/Pages/ecommerce/ArticlesPage";
 import { BrandsPage } from "@/Pages/ecommerce/BrandsPage";
+import { ColorsPage } from "@/Pages/ecommerce/ColorsPage";
 
 const sectionTitles = {
     brands: { ar: "إدارة البراندات", en: "Brands management" },
@@ -2013,6 +2014,7 @@ export function DashboardModuleInclude({
         if (section === "attributes") return AttrbutePage();
         if (section === "categories") return CategoriesPage();
         if (section === "brands") return <BrandsPage />;
+        if (section === "colors") return <ColorsPage />;
         if (section === "classes") return ClassesPage();
         if (section === "offers") return OffersPage();
         if (section === "articles") return <ArticlesPage />;

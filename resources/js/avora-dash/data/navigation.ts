@@ -75,6 +75,11 @@ export const dashboardNavigation: DashboardNavItem[] = [
 
 export const dashboardProperties: DashboardNavItem[] = [
     {
+        label: { ar: "إدارة الألوان", en: "Colors" },
+        icon: "products",
+        href: "/dashboard/colors",
+    },
+    {
         label: { ar: "خصائص المنتجات", en: "Products Properties" },
         icon: "orders",
         href: "/dashboard/attributes",

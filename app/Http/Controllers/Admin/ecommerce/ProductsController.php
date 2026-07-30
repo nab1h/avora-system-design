@@ -8,6 +8,7 @@ use App\Models\AttributeValue;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Classes;
+use App\Models\Color;
 use App\Models\Offer;
 use App\Models\Product;
 use App\Models\SubCategory;
@@ -40,6 +41,7 @@ class ProductsController extends Controller
                 'attributes:id,product_id,attribute_value_id',
                 'attributes.value:id,attribute_id,value',
                 'attributes.value.attribute:id,name,name_en',
+                'colors:id,name_ar,name_en,hex',
             ])
                 ->latest()
                 ->get(),
@@ -84,6 +86,8 @@ class ProductsController extends Controller
             'attributes' => Attribute::with([
                 'values:id,attribute_id,value',
             ])->get(),
+
+            'colors' => Color::query()->select('id', 'name_ar', 'name_en', 'hex')->orderBy('name_ar')->get(),
         ]);
     }
 
@@ -270,6 +274,12 @@ class ProductsController extends Controller
                 'min:0',
             ],
 
+            'has_custom_color_stock' => ['required', 'boolean'],
+
+            'colors' => ['nullable', 'array'],
+            'colors.*.id' => ['required', 'integer', 'distinct', 'exists:colors,id'],
+            'colors.*.stock' => ['nullable', 'integer', 'min:0'],
+
             'is_active' => [
                 'required',
                 'boolean',
@@ -360,6 +370,7 @@ class ProductsController extends Controller
             'desc_en',
             'price',
             'stock',
+            'has_custom_color_stock',
             'is_active',
         ])->all();
     }
@@ -439,6 +450,23 @@ class ProductsController extends Controller
         $product
             ->attributes()
             ->createMany($attributeRows);
+
+        $colors = collect($data['colors'] ?? [])->values();
+        if ($colors->isEmpty()) {
+            $product->colors()->detach();
+        } else {
+            $customStock = (bool) $data['has_custom_color_stock'];
+            $product->colors()->sync(
+                $colors->mapWithKeys(function (array $color) use ($customStock) {
+                    return [$color['id'] => [
+                        'stock' => $customStock
+                            ? (int) ($color['stock'] ?? 0)
+                            : null,
+                    ]];
+                })->all()
+            );
+
+        }
 
         if ($request->hasFile('main_image')) {
             if ($updating) {

@@ -9,13 +9,14 @@ class Product extends Model
 {
     protected $fillable = [
         'category_id', 'sub_category_id', 'offer_id', 'name_ar', 'name_en',
-        'slug_ar', 'slug_en', 'desc_ar', 'desc_en', 'price', 'stock', 'is_active',
+        'slug_ar', 'slug_en', 'desc_ar', 'desc_en', 'price', 'stock', 'has_custom_color_stock', 'is_active',
         'class_id', 'brand_id',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'is_active' => 'boolean',
+        'has_custom_color_stock' => 'boolean',
     ];
 
 // relation---------
@@ -66,5 +67,10 @@ class Product extends Model
     public function attributes()
     {
         return $this->hasMany(ProductAttribute::class);
+    }
+
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class)->withPivot('stock')->withTimestamps();
     }
 }
