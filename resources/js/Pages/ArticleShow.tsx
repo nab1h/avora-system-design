@@ -12,6 +12,7 @@ interface ArticleImage {
 }
 
 interface Article {
+    id: number;
     title_ar: string;
     title_en: string;
     excerpt_ar: string | null;
@@ -23,14 +24,29 @@ interface Article {
     images: ArticleImage[];
 }
 
+type ArticlePreview = Pick<
+    Article,
+    | "id"
+    | "title_ar"
+    | "title_en"
+    | "excerpt_ar"
+    | "excerpt_en"
+    | "image"
+    | "published_at"
+> & {
+    slug_ar: string;
+    slug_en: string;
+};
+
 interface ArticleShowPageProps extends PageProps {
     article: Article;
+    relatedArticles: ArticlePreview[];
 }
 
 export default function ArticleShow() {
     const { translate, direction } = useLanguage();
 
-    const { article } = usePage<ArticleShowPageProps>().props;
+    const { article, relatedArticles } = usePage<ArticleShowPageProps>().props;
 
     const title = direction === "rtl" ? article.title_ar : article.title_en;
 
@@ -73,7 +89,8 @@ export default function ArticleShow() {
                         })}
                     </Link>
 
-                    <article className="mx-auto max-w-3xl">
+                    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start">
+                    <article className="max-w-3xl">
                         {publishedDate && (
                             <p className="text-sm text-slate-500 dark:text-slate-400">
                                 {publishedDate}
@@ -118,6 +135,49 @@ export default function ArticleShow() {
                             </div>
                         )}
                     </article>
+
+                    {relatedArticles.length > 0 && (
+                        <aside className="avora-surface avora-border order-first border p-5 lg:order-none lg:sticky lg:top-6" aria-label={translate({ ar: "مقالات أخرى", en: "More articles" })}>
+                            <h2 className="border-b pb-3 text-sm font-semibold uppercase tracking-[0.18em]" style={{ borderColor: "var(--avora-muted)" }}>
+                                {translate({ ar: "مقالات أخرى", en: "More articles" })}
+                            </h2>
+                            <div className="mt-4 space-y-4">
+                                {relatedArticles.map((relatedArticle) => {
+                                    const relatedTitle = direction === "rtl" ? relatedArticle.title_ar : relatedArticle.title_en;
+                                    const relatedExcerpt = direction === "rtl" ? relatedArticle.excerpt_ar : relatedArticle.excerpt_en;
+
+                                    return (
+                                        <Link
+                                            key={relatedArticle.id}
+                                            href={route("articles.show", direction === "rtl" ? relatedArticle.slug_ar : relatedArticle.slug_en)}
+                                            className="group flex gap-3 text-start"
+                                        >
+                                            {relatedArticle.image ? (
+                                                <img
+                                                    src={`/storage/${relatedArticle.image}`}
+                                                    alt=""
+                                                    className="h-16 w-20 shrink-0 object-cover"
+                                                />
+                                            ) : (
+                                                <div className="avora-surface-muted h-16 w-20 shrink-0" />
+                                            )}
+                                            <div className="min-w-0">
+                                                <h3 className="line-clamp-2 text-sm font-semibold leading-6 transition group-hover:text-[var(--avora-primary)]">
+                                                    {relatedTitle}
+                                                </h3>
+                                                {relatedExcerpt && (
+                                                    <p className="avora-muted mt-1 line-clamp-1 text-xs">
+                                                        {relatedExcerpt}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </aside>
+                    )}
+                    </div>
                 </Container>
             </main>
         </>

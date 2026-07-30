@@ -16,6 +16,20 @@ class ArticleShowController extends Controller
             ->where(fn ($query) => $query->whereNull('published_at')->orWhere('published_at', '<=', now()))
             ->firstOrFail();
 
-        return Inertia::render('ArticleShow', ['article' => $article]);
+        $relatedArticles = Article::query()
+            ->where('is_published', true)
+            ->whereKeyNot($article->id)
+            ->where(fn ($query) => $query->whereNull('published_at')->orWhere('published_at', '<=', now()))
+            ->latest('published_at')
+            ->limit(6)
+            ->get([
+                'id', 'title_ar', 'title_en', 'slug_ar', 'slug_en',
+                'excerpt_ar', 'excerpt_en', 'image', 'published_at',
+            ]);
+
+        return Inertia::render('ArticleShow', [
+            'article' => $article,
+            'relatedArticles' => $relatedArticles,
+        ]);
     }
 }

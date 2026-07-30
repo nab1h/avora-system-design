@@ -19,11 +19,11 @@ export function SocialAuthButtons({ className = '' }: SocialAuthButtonsProps) {
     }
 
     return (
-        <div className={`space-y-3 ${className}`}>
+        <div className={`grid grid-cols-2 gap-3 ${className}`}>
             {hasGoogle && (
                 <a
                     href={route('social.redirect', 'google')}
-                    className="group flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-700 shadow-sm shadow-slate-900/5 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-lg hover:shadow-slate-900/10 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
+                    className="avora-surface avora-border group flex w-full items-center justify-center gap-2 border px-3 py-3.5 text-sm font-semibold transition hover:border-[var(--avora-primary)] hover:text-[var(--avora-primary)]"
                 >
                     <span className="grid h-8 w-8 place-items-center rounded-full bg-white shadow-sm ring-1 ring-slate-200 transition group-hover:scale-110">
                         <FcGoogle className="h-5 w-5" />
@@ -38,9 +38,9 @@ export function SocialAuthButtons({ className = '' }: SocialAuthButtonsProps) {
             {hasFacebook && (
                 <a
                     href={route('social.redirect', 'facebook')}
-                    className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1877f2] px-4 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-[#166fe5] hover:shadow-blue-600/30"
+                    className="avora-surface avora-border group flex w-full items-center justify-center gap-2 border px-3 py-3.5 text-sm font-semibold transition hover:border-[var(--avora-primary)] hover:text-[var(--avora-primary)]"
                 >
-                    <span className="grid h-8 w-8 place-items-center rounded-full bg-white/95 text-[#1877f2] transition group-hover:scale-110">
+                    <span className="grid h-8 w-8 place-items-center rounded-full bg-[#1877f2] text-white transition group-hover:scale-110">
                         <FaFacebookF className="h-4 w-4" />
                     </span>
                     {translate({

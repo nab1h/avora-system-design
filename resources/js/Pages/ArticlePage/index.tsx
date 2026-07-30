@@ -2,6 +2,7 @@ import { ArticlePreview } from "@/types";
 import { Slider } from "@/avora-dash/components/Slider/Slider";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { BlogCard } from "@/Components/BlogCard";
+import { router } from "@inertiajs/react";
 
 
 interface IProps{
@@ -38,6 +39,16 @@ const { translate, direction } = useLanguage();
                             ar: "اقرأ المقال",
                             en: "READ POST",
                         })}
+                        onReadPost={() =>
+                            router.visit(
+                                route(
+                                    "articles.show",
+                                    direction === "rtl"
+                                        ? article.slug_ar
+                                        : article.slug_en,
+                                ),
+                            )
+                        }
                     />
                 ),
             }))}

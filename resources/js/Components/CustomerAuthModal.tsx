@@ -2,6 +2,7 @@ import { Button } from '@/avora-dash/components/Button';
 import { FormField } from '@/avora-dash/components/forms/FormField';
 import { Modal } from '@/avora-dash/components/Modal';
 import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
+import { useTheme } from '@/avora-dash/providers/ThemeProvider';
 import { useForm } from '@inertiajs/react';
 import { useState, type FormEventHandler } from 'react';
 import { SocialAuthButtons } from './SocialAuthButtons';
@@ -26,6 +27,7 @@ type RegisterForm = {
 
 export function CustomerAuthModal({ open, onClose }: CustomerAuthModalProps) {
     const { translate } = useLanguage();
+    const { colors } = useTheme();
     const [mode, setMode] = useState<'login' | 'register'>('login');
     const loginForm = useForm<LoginForm>({
         email: '',
@@ -76,28 +78,30 @@ export function CustomerAuthModal({ open, onClose }: CustomerAuthModalProps) {
                 en: 'Sign in as a customer. The dashboard is only available for users with permissions.',
             })}
             showCloseButton
-            className="bg-white/95 backdrop-blur-xl dark:bg-slate-950/95"
+            className="backdrop-blur-xl"
         >
-            <div className="mb-5 grid grid-cols-2 rounded-2xl bg-slate-100 p-1.5 dark:bg-slate-900">
+            <div className="avora-surface-muted avora-border mb-7 grid grid-cols-2 border p-1">
                 <button
                     type="button"
                     onClick={() => setMode('login')}
-                    className={`rounded-xl px-4 py-3 text-sm font-black transition ${
+                    className="px-4 py-3 text-sm font-semibold transition"
+                    style={
                         !isRegister
-                            ? 'bg-white text-slate-950 shadow-sm dark:bg-slate-800 dark:text-white'
-                            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                    }`}
+                            ? { backgroundColor: colors.primary, color: '#fff' }
+                            : { color: colors.muted }
+                    }
                 >
                     {translate({ ar: 'تسجيل دخول', en: 'Sign in' })}
                 </button>
                 <button
                     type="button"
                     onClick={() => setMode('register')}
-                    className={`rounded-xl px-4 py-3 text-sm font-black transition ${
+                    className="px-4 py-3 text-sm font-semibold transition"
+                    style={
                         isRegister
-                            ? 'bg-white text-slate-950 shadow-sm dark:bg-slate-800 dark:text-white'
-                            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                    }`}
+                            ? { backgroundColor: colors.primary, color: '#fff' }
+                            : { color: colors.muted }
+                    }
                 >
                     {translate({ ar: 'حساب جديد', en: 'New account' })}
                 </button>
@@ -105,13 +109,13 @@ export function CustomerAuthModal({ open, onClose }: CustomerAuthModalProps) {
 
             <SocialAuthButtons />
 
-            <div className="my-5 flex items-center gap-3 text-xs font-bold text-slate-400">
-                <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+            <div className="avora-muted my-7 flex items-center gap-3 text-xs font-semibold">
+                <span className="avora-border h-px flex-1 border-t" />
                 {translate({
                     ar: 'أو استخدم البريد الإلكتروني',
                     en: 'or use email',
                 })}
-                <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+                <span className="avora-border h-px flex-1 border-t" />
             </div>
 
             {isRegister ? (
@@ -179,8 +183,9 @@ export function CustomerAuthModal({ open, onClose }: CustomerAuthModalProps) {
                     <Button
                         type="submit"
                         fullWidth
+                        rounded="no"
                         disabled={registerForm.processing}
-                        className="py-3.5 text-sm font-black"
+                        className="py-3.5 text-sm font-semibold"
                     >
                         {registerForm.processing
                             ? translate({
@@ -223,7 +228,7 @@ export function CustomerAuthModal({ open, onClose }: CustomerAuthModalProps) {
                         autoComplete="current-password"
                         required
                     />
-                    <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                    <label className="avora-muted flex items-center gap-2 text-sm">
                         <input
                             type="checkbox"
                             checked={loginForm.data.remember}
@@ -240,8 +245,9 @@ export function CustomerAuthModal({ open, onClose }: CustomerAuthModalProps) {
                     <Button
                         type="submit"
                         fullWidth
+                        rounded="no"
                         disabled={loginForm.processing}
-                        className="py-3.5 text-sm font-black"
+                        className="py-3.5 text-sm font-semibold"
                     >
                         {loginForm.processing
                             ? translate({

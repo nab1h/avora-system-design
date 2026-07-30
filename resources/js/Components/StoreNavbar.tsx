@@ -22,7 +22,21 @@ import { router, usePage } from "@inertiajs/react";
 import { CgMenuRight } from "react-icons/cg";
 import { LuHeart, LuLogOut, LuPackage, LuSearch, LuSettings, LuShoppingCart, LuUserRound } from "react-icons/lu";
 import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
-import { useState } from "react";
+import { useRef, useState } from "react";
+
+type StoreCategory = {
+    id: number;
+    name_ar: string;
+    name_en: string;
+    slug_ar: string | null;
+    slug_en: string | null;
+    img: string | null;
+    sub_categories: {
+        id: number;
+        name_ar: string;
+        name_en: string;
+    }[];
+};
 
 interface IProps {
     setIsOpen: (open: boolean) => void;
@@ -30,8 +44,10 @@ interface IProps {
 export function StoreNavbar({setIsOpen}:IProps) {
     const { colors } = useTheme();
     const { translate, direction } = useLanguage();
-    const page = usePage<PageProps<{ cartProducts?: CartProduct[]; favoritesCount?: number }> & { errors?: Record<string, string> }>();
+    const page = usePage<PageProps<{ cartProducts?: CartProduct[]; favoritesCount?: number; storeCategories?: StoreCategory[] }> & { errors?: Record<string, string> }>();
     const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
+    const [shopOpen, setShopOpen] = useState(false);
+    const shopCloseTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
     const user = page.props.auth.user;
     const appName = useAppName();
     const cartItemsCount = (page.props.cartProducts ?? []).reduce(
@@ -39,6 +55,16 @@ export function StoreNavbar({setIsOpen}:IProps) {
         0,
     );
     const favoritesCount = page.props.favoritesCount ?? 0;
+    const storeCategories = page.props.storeCategories ?? [];
+    const openShopMenu = () => {
+        if (shopCloseTimeout.current) {
+            clearTimeout(shopCloseTimeout.current);
+        }
+        setShopOpen(true);
+    };
+    const closeShopMenu = () => {
+        shopCloseTimeout.current = setTimeout(() => setShopOpen(false), 220);
+    };
 
     const navbar = [
         {
@@ -72,7 +98,7 @@ export function StoreNavbar({setIsOpen}:IProps) {
     ];
     return (
         <>
-            <Navbar position="sticky" background="surface">
+            <Navbar position="sticky" background="surface" className="relative">
                 <NavbarContainer
                     width="full"
                     className="min-h-24 my-10  grid grid-cols-[2.5rem_1fr_2.5rem] md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
@@ -243,6 +269,26 @@ export function StoreNavbar({setIsOpen}:IProps) {
                         className="row-start-2 hidden md:flex col-start-2 justify-self-center"
                         dir={direction}
                     >
+                        <div
+                            className="relative"
+                            onMouseEnter={openShopMenu}
+                            onMouseLeave={closeShopMenu}
+                            onFocus={openShopMenu}
+                            onBlur={(event) => {
+                                if (!event.currentTarget.contains(event.relatedTarget)) {
+                                    closeShopMenu();
+                                }
+                            }}
+                        >
+                            <NavbarLink
+                                href={`${route("home")}#cards`}
+                                className="block"
+                                aria-haspopup="true"
+                                aria-expanded={shopOpen}
+                            >
+                                {translate({ ar: "تسوّق", en: "Shop" })}
+                            </NavbarLink>
+                        </div>
                         {navbar.map((nav) => (
                             <NavbarLink key={nav.href} href={nav.href}>
                                 {nav.name}
@@ -307,12 +353,59 @@ export function StoreNavbar({setIsOpen}:IProps) {
                     />
                 </NavbarContainer>
 
+                <div
+                    className={`absolute inset-x-0 top-[calc(100%-2.5rem)] hidden border-t shadow-xl transition md:block ${shopOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-2 opacity-0"}`}
+                    style={{
+                        backgroundColor: colors.background,
+                        borderColor: colors.border,
+                    }}
+                    onMouseEnter={openShopMenu}
+                    onMouseLeave={closeShopMenu}
+                >
+                    <div className="mx-auto grid max-w-7xl grid-cols-3 gap-5 px-6 py-7 xl:grid-cols-4">
+                        {storeCategories.map((category) => (
+                            <a
+                                key={category.id}
+                                href={`${route("home")}#cards`}
+                                className="group relative min-h-36 overflow-hidden"
+                            >
+                                {category.img ? (
+                                    <img
+                                        src={`/storage/${category.img}`}
+                                        alt={direction === "rtl" ? category.name_ar : category.name_en}
+                                        className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                                    />
+                                ) : (
+                                    <div className="avora-surface-muted absolute inset-0" />
+                                )}
+                                <div className="absolute inset-0 bg-black/35 transition group-hover:bg-black/45" />
+                                <div className="relative flex h-full min-h-36 flex-col justify-end p-4 text-white">
+                                    <span className="text-base font-semibold">
+                                        {direction === "rtl" ? category.name_ar : category.name_en}
+                                    </span>
+                                    {category.sub_categories.length > 0 && (
+                                        <span className="mt-1 line-clamp-1 text-xs text-white/85">
+                                            {category.sub_categories
+                                                .slice(0, 3)
+                                                .map((subcategory) => direction === "rtl" ? subcategory.name_ar : subcategory.name_en)
+                                                .join(" · ")}
+                                        </span>
+                                    )}
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+
                 <NavbarMobileMenu
                     placement="right"
                     motion="slide"
                     duration="slow"
                 >
                     <NavbarLinks className="flex-col items-stretch">
+                        <NavbarLink href={`${route("home")}#cards`}>
+                            {translate({ ar: "تسوّق", en: "Shop" })}
+                        </NavbarLink>
                         {navbar.map((nav) => (
                             <NavbarLink key={nav.href} href={nav.href}>
                                 {nav.name}

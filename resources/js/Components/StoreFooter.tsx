@@ -5,7 +5,22 @@ import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
 import { useTheme } from '@/avora-dash/providers/ThemeProvider';
 import type { PageProps } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { LuArrowUpRight, LuFacebook, LuHeart, LuInstagram, LuMail, LuMapPin, LuPhone, LuSend, LuYoutube } from 'react-icons/lu';
+import { LuArrowUpRight, LuHeart, LuMail, LuMapPin, LuPhone, LuSend } from 'react-icons/lu';
+import {
+    FaDiscord,
+    FaFacebookF,
+    FaGithub,
+    FaInstagram,
+    FaLinkedinIn,
+    FaPinterestP,
+    FaSnapchat,
+    FaTelegram,
+    FaThreads,
+    FaTiktok,
+    FaWhatsapp,
+    FaXTwitter,
+    FaYoutube,
+} from 'react-icons/fa6';
 
 export function StoreFooter() {
     const { colors } = useTheme();
@@ -14,9 +29,25 @@ export function StoreFooter() {
     const settings = usePage<PageProps>().props.websiteSettings;
     const currentYear = new Date().getFullYear();
     const socialLinks = [
-        { href: settings.instagram_url, label: 'Instagram', icon: LuInstagram },
-        { href: settings.facebook_url, label: 'Facebook', icon: LuFacebook },
-        { href: settings.youtube_url, label: 'YouTube', icon: LuYoutube },
+        { href: settings.facebook_url, label: 'Facebook', icon: FaFacebookF },
+        { href: settings.instagram_url, label: 'Instagram', icon: FaInstagram },
+        { href: settings.x_url, label: 'X', icon: FaXTwitter },
+        { href: settings.linkedin_url, label: 'LinkedIn', icon: FaLinkedinIn },
+        { href: settings.youtube_url, label: 'YouTube', icon: FaYoutube },
+        { href: settings.tiktok_url, label: 'TikTok', icon: FaTiktok },
+        { href: settings.telegram_url, label: 'Telegram', icon: FaTelegram },
+        { href: settings.snapchat_url, label: 'Snapchat', icon: FaSnapchat },
+        { href: settings.pinterest_url, label: 'Pinterest', icon: FaPinterestP },
+        { href: settings.github_url, label: 'GitHub', icon: FaGithub },
+        { href: settings.discord_url, label: 'Discord', icon: FaDiscord },
+        { href: settings.threads_url, label: 'Threads', icon: FaThreads },
+        {
+            href: settings.whatsapp
+                ? `https://wa.me/${settings.whatsapp.replace(/[^\\d]/g, '')}`
+                : null,
+            label: 'WhatsApp',
+            icon: FaWhatsapp,
+        },
     ].filter((link) => link.href);
 
     return (
