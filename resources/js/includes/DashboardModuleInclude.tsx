@@ -13,7 +13,6 @@ import { router, useForm, usePage } from "@inertiajs/react";
 import { useState, type FormEventHandler } from "react";
 import { Grid, GridItem } from "@/avora-dash/components/Grid";
 
-import { AttrbutePage } from "@/Pages/ecommerce/AttrbutePage";
 import { CategoriesPage } from "@/Pages/ecommerce/CategoriesPage";
 import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";
 import { ProductsPage } from "@/Pages/ecommerce/ProductsPage";
@@ -22,6 +21,7 @@ import { OffersPage } from "@/Pages/ecommerce/OffersPage";
 import { ArticlesPage } from "@/Pages/ecommerce/ArticlesPage";
 import { BrandsPage } from "@/Pages/ecommerce/BrandsPage";
 import { ColorsPage } from "@/Pages/ecommerce/ColorsPage";
+import { ProductOptionsPage } from "@/Pages/ecommerce/ProductOptionsPage";
 
 const sectionTitles = {
     brands: { ar: "إدارة البراندات", en: "Brands management" },
@@ -2011,10 +2011,12 @@ export function DashboardModuleInclude({
             return <RecentOrders />;
 
         if (section === "subCategories") return SubCategoriesPage();
-        if (section === "attributes") return AttrbutePage();
         if (section === "categories") return CategoriesPage();
         if (section === "brands") return <BrandsPage />;
         if (section === "colors") return <ColorsPage />;
+        if (section === "sizes") return <ProductOptionsPage type="sizes" title="المقاسات" />;
+        if (section === "weights") return <ProductOptionsPage type="weights" title="الأوزان" />;
+        if (section === "materials") return <ProductOptionsPage type="materials" title="الخامات" />;
         if (section === "classes") return ClassesPage();
         if (section === "offers") return OffersPage();
         if (section === "articles") return <ArticlesPage />;

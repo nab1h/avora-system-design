@@ -10,7 +10,6 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
-use App\Models\Attribute;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -25,10 +24,8 @@ class DashboardController extends Controller
 
     public function section(string $section): Response
     {
-        $attributes = Attribute::all();
         return Inertia::render('Dashboard', [
             'section' => $section,
-            'attributes' => $attributes,
         ]);
     }
 

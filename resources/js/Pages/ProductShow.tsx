@@ -10,6 +10,8 @@ import { useState, type ReactNode } from "react";
 import {
     LuArrowLeft,
     LuCheck,
+    LuMinus,
+    LuPlus,
     LuPackageCheck,
     LuShoppingCart,
 } from "react-icons/lu";
@@ -56,6 +58,10 @@ interface ProductDetails {
     offer: ProductOffer | null;
     features: string[];
     attributes: ProductAttribute[];
+    colors: { id: number; name_ar: string; name_en: string; hex: string }[];
+    sizes: { id: number; name_ar: string; name_en: string }[];
+    weights: { id: number; name_ar: string; name_en: string }[];
+    materials: { id: number; name_ar: string; name_en: string }[];
 }
 
 interface ProductShowPageProps extends PageProps {
@@ -70,6 +76,9 @@ export default function ProductShow() {
 
     const [activeImage, setActiveImage] = useState(0);
     const [authOpen, setAuthOpen] = useState(false);
+    const [quantity, setQuantity] = useState(1);
+    const [selectedColor, setSelectedColor] = useState<number | null>(product.colors[0]?.id ?? null);
+    const [selectedSize, setSelectedSize] = useState<number | null>(product.sizes[0]?.id ?? null);
 
     const currency = websiteSettings.currency ?? "EGP";
 
@@ -122,6 +131,7 @@ export default function ProductShow() {
             route("cart.store"),
             {
                 product_id: product.id,
+                quantity,
             },
             {
                 preserveScroll: true,
@@ -139,7 +149,7 @@ export default function ProductShow() {
             />
 
             <main
-                className="min-h-screen bg-slate-50 dark:bg-slate-950"
+                className="min-h-screen bg-white dark:bg-slate-950"
                 dir={direction}
             >
                 <Container width="xl" className="py-8 sm:py-12">
@@ -159,14 +169,14 @@ export default function ProductShow() {
                         })}
                     </Link>
 
-                    <div className="grid gap-8 lg:grid-cols-2">
+                    <div className="grid gap-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(380px,0.88fr)] xl:gap-16">
                         <section>
-                            <Card padding="none" className="overflow-hidden">
+                            <Card padding="none" className="overflow-hidden rounded-none border-0 shadow-none">
                                 {activeProductImage ? (
                                     <img
                                         src={`/storage/${activeProductImage.image}`}
                                         alt={productName}
-                                        className="aspect-square w-full object-cover"
+                                        className="aspect-square w-full object-contain"
                                     />
                                 ) : (
                                     <div className="aspect-square bg-slate-200 dark:bg-slate-800" />
@@ -208,7 +218,7 @@ export default function ProductShow() {
                             )}
                         </section>
 
-                        <section className="space-y-5">
+                        <section className="max-w-xl space-y-5 pt-2">
                             {(categoryName || productClassName) && (
                                 <div className="flex flex-wrap gap-2 text-xs font-bold">
                                     {categoryName && (
@@ -225,7 +235,7 @@ export default function ProductShow() {
                                 </div>
                             )}
 
-                            <h1 className="text-3xl font-black text-slate-950 dark:text-white sm:text-4xl">
+                            <h1 className="text-2xl font-bold uppercase tracking-tight text-slate-950 dark:text-white sm:text-3xl">
                                 {productName}
                             </h1>
 
@@ -252,7 +262,7 @@ export default function ProductShow() {
                             )}
 
                             <div className="flex flex-wrap items-end gap-3">
-                                <p className="text-3xl font-black text-emerald-600">
+                                <p className="text-2xl font-bold text-slate-900 dark:text-white">
                                     {formatPrice(product.sale_price)}
                                 </p>
 
@@ -269,7 +279,10 @@ export default function ProductShow() {
                                 </p>
                             )}
 
-                            <Card padding="md" className="space-y-3">
+                            <div className="space-y-4 border-y border-slate-200 py-5 dark:border-slate-800">
+                                {product.sizes.length > 0 && <div><p className="mb-2 text-sm font-medium">{translate({ar:"المقاس",en:"Size"})}</p><div className="flex gap-2">{product.sizes.map(size => <button key={size.id} type="button" onClick={() => setSelectedSize(size.id)} className={`min-w-10 border px-3 py-2 text-sm ${selectedSize === size.id ? "border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-950" : "border-slate-300"}`}>{direction === "rtl" ? size.name_ar : size.name_en}</button>)}</div></div>}
+                                {product.colors.length > 0 && <div><p className="mb-2 text-sm font-medium">{translate({ar:"اللون",en:"Color"})}</p><div className="flex gap-3">{product.colors.map(color => <button key={color.id} type="button" onClick={() => setSelectedColor(color.id)} aria-label={color.name_en} className={`h-8 w-8 border-2 ${selectedColor === color.id ? "border-slate-900 ring-2 ring-slate-300" : "border-slate-300"}`} style={{backgroundColor: color.hex}} />)}</div></div>}
+                                {product.materials.length > 0 && <p className="text-sm text-slate-600 dark:text-slate-300">{translate({ar:"الخامة: ",en:"Material: "})}{product.materials.map(item => direction === "rtl" ? item.name_ar : item.name_en).join("، ")}</p>}
                                 <p className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-100">
                                     <LuPackageCheck className="h-5 w-5 shrink-0 text-emerald-600" />
 
@@ -284,22 +297,15 @@ export default function ProductShow() {
                                           })}
                                 </p>
 
-                                <Button
-                                    fullWidth
-                                    size="lg"
-                                    type="button"
-                                    disabled={product.stock <= 0}
-                                    onClick={addToCart}
-                                    className="gap-2"
-                                >
+                                <div className="flex gap-3"><div className="flex border border-slate-300"><button type="button" className="px-3" onClick={() => setQuantity(Math.max(1, quantity - 1))}><LuMinus /></button><span className="grid min-w-10 place-items-center">{quantity}</span><button type="button" className="px-3" onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}><LuPlus /></button></div><Button size="lg" type="button" disabled={product.stock <= 0} onClick={addToCart} className="flex-1 gap-2 rounded-none bg-slate-900 hover:bg-slate-700">
                                     <LuShoppingCart className="h-5 w-5" />
 
                                     {translate({
                                         ar: "إضافة إلى عربة التسوق",
                                         en: "Add to cart",
                                     })}
-                                </Button>
-                            </Card>
+                                </Button></div>
+                            </div>
 
                             {product.features.length > 0 && (
                                 <Card padding="md">

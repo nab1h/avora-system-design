@@ -22,7 +22,7 @@ class ProductController extends Controller
                 ->get();
         }
 
-        $product->load(['images:id,product_id,image,type', 'category:id,name_ar,name_en', 'subCategory:id,name_ar,name_en', 'brand:id,name_ar,name_en,desc_ar,desc_en,image', 'productClass:id,name_ar,name_en', 'offer:id,name_ar,name_en,type,value,start_at,end_at,is_active', 'features:id,product_id,feature', 'attributes:id,product_id,attribute_value_id', 'attributes.value:id,attribute_id,value', 'attributes.value.attribute:id,name,name_en,unit,unit_en']);
+        $product->load(['images:id,product_id,image,type', 'category:id,name_ar,name_en', 'subCategory:id,name_ar,name_en', 'brand:id,name_ar,name_en,desc_ar,desc_en,image', 'productClass:id,name_ar,name_en', 'offer:id,name_ar,name_en,type,value,start_at,end_at,is_active', 'features:id,product_id,feature', 'colors:id,name_ar,name_en,hex', 'sizes:id,name_ar,name_en', 'weights:id,name_ar,name_en', 'materials:id,name_ar,name_en']);
         $offer = $product->offer;
         $active = $offer && $offer->is_active && (! $offer->start_at || $offer->start_at->isPast()) && (! $offer->end_at || $offer->end_at->isToday() || $offer->end_at->isFuture());
         $price = (float) $product->price;
@@ -34,7 +34,11 @@ class ProductController extends Controller
             'category' => $product->category, 'sub_category' => $product->subCategory, 'brand' => $product->brand, 'product_class' => $product->productClass,
             'offer' => $active ? ['name_ar' => $offer->name_ar, 'name_en' => $offer->name_en, 'type' => $offer->type, 'value' => $offer->value, 'end_at' => $offer->end_at?->toDateString()] : null,
             'features' => $product->features->pluck('feature')->values(),
-            'attributes' => $product->attributes->map(fn ($item) => ['name_ar' => $item->value?->attribute?->name, 'name_en' => $item->value?->attribute?->name_en, 'value' => $item->value?->value, 'unit_ar' => $item->value?->attribute?->unit, 'unit_en' => $item->value?->attribute?->unit_en])->filter(fn ($item) => $item['value'])->values(),
+            'colors' => $product->colors,
+            'sizes' => $product->sizes,
+            'weights' => $product->weights,
+            'materials' => $product->materials,
+            'attributes' => [],
         ]]);
     }
 }

@@ -74,15 +74,13 @@ export const dashboardNavigation: DashboardNavItem[] = [
 ];
 
 export const dashboardProperties: DashboardNavItem[] = [
+    { label: { ar: "المقاسات", en: "Sizes" }, icon: "products", href: "/dashboard/sizes" },
+    { label: { ar: "الأوزان", en: "Weights" }, icon: "products", href: "/dashboard/weights" },
+    { label: { ar: "الخامات", en: "Materials" }, icon: "products", href: "/dashboard/materials" },
     {
         label: { ar: "إدارة الألوان", en: "Colors" },
         icon: "products",
         href: "/dashboard/colors",
-    },
-    {
-        label: { ar: "خصائص المنتجات", en: "Products Properties" },
-        icon: "orders",
-        href: "/dashboard/attributes",
     },
     {
         label: { ar: "الأصناف", en: "Categories" },

@@ -13,6 +13,7 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'product_id' => ['required', 'integer', 'exists:products,id'],
+            'quantity' => ['nullable', 'integer', 'min:1'],
         ]);
 
         $product = Product::query()
@@ -26,7 +27,7 @@ class CartController extends Controller
             ->first()?->pivot->quantity;
 
         $user->cartProducts()->syncWithoutDetaching([
-            $product->id => ['quantity' => ($existingQuantity ?? 0) + 1],
+            $product->id => ['quantity' => ($existingQuantity ?? 0) + ($validated['quantity'] ?? 1)],
         ]);
 
         DashboardNotifier::send(

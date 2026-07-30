@@ -43,6 +43,9 @@ type Product = {
         value?: { attribute_id: number; value: string };
     }[];
     colors: (Color & { pivot: { stock: number | null } })[];
+    sizes: (Named & { pivot: { stock: number | null } })[];
+    weights: (Named & { pivot: { stock: number | null } })[];
+    materials: Named[];
 };
 type ProductForm = {
     _method: "post" | "put";
@@ -61,6 +64,9 @@ type ProductForm = {
     stock: string;
     has_custom_color_stock: boolean;
     colors: { id: number; stock: string }[];
+    sizes: { id: number; stock: string }[];
+    weights: { id: number; stock: string }[];
+    materials: { id: number }[];
     is_active: boolean;
     features: string[];
     attributes: { attribute_id: number | null; value: string }[];
@@ -85,6 +91,9 @@ const emptyForm: ProductForm = {
     stock: "0",
     has_custom_color_stock: false,
     colors: [],
+    sizes: [],
+    weights: [],
+    materials: [],
     is_active: true,
     features: [""],
     attributes: [],
@@ -104,6 +113,9 @@ export function ProductsPage() {
     const offers = (props.offers ?? []) as Offer[];
     const attributes = (props.attributes ?? []) as Attribute[];
     const colors = (props.colors ?? []) as Color[];
+    const sizes = (props.sizes ?? []) as Named[];
+    const weights = (props.weights ?? []) as Named[];
+    const materials = (props.materials ?? []) as Named[];
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState<Product | null>(null);
     const [deleting, setDeleting] = useState<Product | null>(null);
@@ -144,11 +156,14 @@ export function ProductsPage() {
                 id: color.id,
                 stock: color.pivot.stock === null ? "" : String(color.pivot.stock),
             })),
+            sizes: product.sizes.map((item) => ({ id: item.id, stock: item.pivot.stock === null ? "" : String(item.pivot.stock) })),
+            weights: product.weights.map((item) => ({ id: item.id, stock: item.pivot.stock === null ? "" : String(item.pivot.stock) })),
+            materials: product.materials.map((item) => ({ id: item.id })),
             is_active: product.is_active,
             features: product.features.length
                 ? product.features.map((item) => item.feature)
                 : [""],
-            attributes: product.attributes
+            attributes: (product.attributes ?? [])
                 .filter((item) => item.value)
                 .map((item) => ({
                     attribute_id: item.value!.attribute_id,
@@ -539,6 +554,24 @@ export function ProductsPage() {
                                 <p className="mt-3 text-xs text-slate-500">الإجمالي المحدد للألوان: {form.data.colors.reduce((total, color) => total + Number(color.stock || 0), 0)} قطعة.</p>
                             )}
                         </div>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-3">
+                        {([
+                            ["sizes", "المقاسات", sizes],
+                            ["weights", "الأوزان", weights],
+                            ["materials", "الخامات", materials],
+                        ] as const).map(([field, label, options]) => (
+                            <div key={field} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+                                <p className="font-semibold">{label}</p>
+                                <p className="mt-1 text-xs text-slate-500">اختياري ويمكن اختيار أكثر من قيمة.</p>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                    {options.map((option) => {
+                                        const selected = form.data[field].some((item) => item.id === option.id);
+                                        return <button key={option.id} type="button" onClick={() => (form.setData as any)(field, selected ? form.data[field].filter((item) => item.id !== option.id) : [...form.data[field], field === "materials" ? { id: option.id } : { id: option.id, stock: "" }])} className={`rounded-lg border px-3 py-2 text-sm ${selected ? "border-sky-500 bg-sky-50 dark:bg-sky-950/30" : "border-slate-200 dark:border-slate-700"}`}>{option.name_ar}</button>;
+                                    })}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                     {editing && !!editing.images.length && (
                         <div>

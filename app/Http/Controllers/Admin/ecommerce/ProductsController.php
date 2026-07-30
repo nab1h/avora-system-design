@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\admin\ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Models\Attribute;
-use App\Models\AttributeValue;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Classes;
 use App\Models\Color;
+use App\Models\Size;
+use App\Models\Weight;
 use App\Models\Offer;
 use App\Models\Product;
 use App\Models\SubCategory;
@@ -38,10 +38,10 @@ class ProductsController extends Controller
                 'offer:id,name_ar,name_en,type,value',
                 'images:id,product_id,image,type',
                 'features:id,product_id,feature',
-                'attributes:id,product_id,attribute_value_id',
-                'attributes.value:id,attribute_id,value',
-                'attributes.value.attribute:id,name,name_en',
                 'colors:id,name_ar,name_en,hex',
+                'sizes:id,name_ar,name_en',
+                'weights:id,name_ar,name_en',
+                'materials:id,name_ar,name_en',
             ])
                 ->latest()
                 ->get(),
@@ -83,11 +83,10 @@ class ProductsController extends Controller
                 )
                 ->get(),
 
-            'attributes' => Attribute::with([
-                'values:id,attribute_id,value',
-            ])->get(),
-
             'colors' => Color::query()->select('id', 'name_ar', 'name_en', 'hex')->orderBy('name_ar')->get(),
+            'sizes' => Size::query()->select('id', 'name_ar', 'name_en')->orderBy('name_ar')->get(),
+            'weights' => Weight::query()->select('id', 'name_ar', 'name_en')->orderBy('name_ar')->get(),
+            'materials' => \App\Models\Material::query()->select('id', 'name_ar', 'name_en')->orderBy('name_ar')->get(),
         ]);
     }
 
@@ -274,7 +273,7 @@ class ProductsController extends Controller
                 'min:0',
             ],
 
-            'has_custom_color_stock' => ['required', 'boolean'],
+            'has_custom_color_stock' => ['nullable', 'boolean'],
 
             'colors' => ['nullable', 'array'],
             'colors.*.id' => ['required', 'integer', 'distinct', 'exists:colors,id'],
@@ -296,23 +295,16 @@ class ProductsController extends Controller
                 'max:255',
             ],
 
-            'attributes' => [
-                'nullable',
-                'array',
-            ],
-
-            'attributes.*.attribute_id' => [
-                'required',
-                'integer',
-                'distinct',
-                'exists:attributes,id',
-            ],
-
-            'attributes.*.value' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+            'has_custom_size_stock' => ['nullable', 'boolean'],
+            'has_custom_weight_stock' => ['nullable', 'boolean'],
+            'sizes' => ['nullable', 'array'],
+            'sizes.*.id' => ['required', 'integer', 'distinct', 'exists:sizes,id'],
+            'sizes.*.stock' => ['nullable', 'integer', 'min:0'],
+            'weights' => ['nullable', 'array'],
+            'weights.*.id' => ['required', 'integer', 'distinct', 'exists:weights,id'],
+            'weights.*.stock' => ['nullable', 'integer', 'min:0'],
+            'materials' => ['nullable', 'array'],
+            'materials.*.id' => ['required', 'integer', 'distinct', 'exists:materials,id'],
 
             'main_image' => [
                 $product ? 'nullable' : 'required',
@@ -371,6 +363,8 @@ class ProductsController extends Controller
             'price',
             'stock',
             'has_custom_color_stock',
+            'has_custom_size_stock',
+            'has_custom_weight_stock',
             'is_active',
         ])->all();
     }
@@ -432,30 +426,11 @@ class ProductsController extends Controller
                 ->all()
         );
 
-        $product->attributes()->delete();
-
-        $attributeRows = collect(
-            $data['attributes'] ?? []
-        )->map(function (array $item) {
-            $value = AttributeValue::firstOrCreate([
-                'attribute_id' => $item['attribute_id'],
-                'value' => trim($item['value']),
-            ]);
-
-            return [
-                'attribute_value_id' => $value->id,
-            ];
-        })->all();
-
-        $product
-            ->attributes()
-            ->createMany($attributeRows);
-
         $colors = collect($data['colors'] ?? [])->values();
         if ($colors->isEmpty()) {
             $product->colors()->detach();
         } else {
-            $customStock = (bool) $data['has_custom_color_stock'];
+            $customStock = (bool) ($data['has_custom_color_stock'] ?? false);
             $product->colors()->sync(
                 $colors->mapWithKeys(function (array $color) use ($customStock) {
                     return [$color['id'] => [
@@ -467,6 +442,10 @@ class ProductsController extends Controller
             );
 
         }
+
+        $this->syncOptionStocks($product, 'sizes', $data['sizes'] ?? [], (bool) ($data['has_custom_size_stock'] ?? false));
+        $this->syncOptionStocks($product, 'weights', $data['weights'] ?? [], (bool) ($data['has_custom_weight_stock'] ?? false));
+        $product->materials()->sync(collect($data['materials'] ?? [])->pluck('id')->all());
 
         if ($request->hasFile('main_image')) {
             if ($updating) {
@@ -513,5 +492,10 @@ class ProductsController extends Controller
                 'type' => 'gallery',
             ]);
         }
+    }
+
+    private function syncOptionStocks(Product $product, string $relation, array $options, bool $customStock): void
+    {
+        $product->{$relation}()->sync(collect($options)->mapWithKeys(fn (array $option) => [$option['id'] => ['stock' => $customStock ? (int) ($option['stock'] ?? 0) : null]])->all());
     }
 }

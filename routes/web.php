@@ -6,9 +6,9 @@ use App\Http\Controllers\Admin\PermissionPageController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserPageController;
-use App\Http\Controllers\Admin\ecommerce\AttributeController;
 use App\Http\Controllers\Admin\ecommerce\BrandController;
 use App\Http\Controllers\Admin\ecommerce\ColorController;
+use App\Http\Controllers\Admin\ecommerce\ProductOptionController;
 use App\Http\Controllers\Admin\ecommerce\ProductsController;
 use App\Http\Controllers\Admin\ecommerce\CategoriesController;
 use App\Http\Controllers\admin\ecommerce\SubCategoriesController;
@@ -223,6 +223,17 @@ Route::middleware(['auth', 'verified', 'dashboard.access'])
         Route::delete('/{color}', [ColorController::class, 'destroy'])->name('destroy');
     });
 
+Route::middleware(['auth', 'verified', 'dashboard.access'])
+    ->prefix('dashboard/{type}')
+    ->whereIn('type', ['sizes', 'weights', 'materials'])
+    ->name('dashboard.options.')
+    ->group(function () {
+        Route::get('/', [ProductOptionController::class, 'index'])->name('index');
+        Route::post('/', [ProductOptionController::class, 'store'])->name('store');
+        Route::put('/{option}', [ProductOptionController::class, 'update'])->name('update');
+        Route::delete('/{option}', [ProductOptionController::class, 'destroy'])->name('destroy');
+    });
+
 // حساب المستخدم الحالي: تعديل البروفايل وحذف الحساب.
 Route::get('/profile', [ProfileController::class, 'edit'])
     ->middleware('auth')
@@ -237,28 +248,6 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])
     ->name('profile.destroy');
 
 
-
-// attribute ================
-Route::middleware(['auth', 'verified', 'dashboard.access'])
-    ->prefix('dashboard/attributes')
-    ->name('dashboard.attributes.')
-    ->group(function () {
-
-        Route::get('/', [AttributeController::class, 'index'])
-            ->name('index');
-
-        Route::post('/', [AttributeController::class, 'store'])
-            ->name('store');
-
-        Route::get('/{attribute}/edit', [AttributeController::class, 'edit'])
-            ->name('edit');
-
-        Route::put('/{attribute}', [AttributeController::class, 'update'])
-            ->name('update');
-
-        Route::delete('/{attribute}', [AttributeController::class, 'destroy'])
-            ->name('destroy');
-    });
 
 // categories ================
 Route::middleware(['auth', 'verified', 'dashboard.access'])
