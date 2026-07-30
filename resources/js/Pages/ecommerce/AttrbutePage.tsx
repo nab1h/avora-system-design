@@ -12,6 +12,7 @@ import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { Attribute, AttributeForm, PageProps } from "@/types";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
 import { FormEventHandler, useState } from "react";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 export const AttrbutePage = () => {
 
@@ -186,30 +187,24 @@ export const AttrbutePage = () => {
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex justify-end gap-2">
-                                        <Button
+                                        <button
                                             type="button"
-                                            variant="outline"
-                                            rounded="no"
+                                            className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 transition hover:bg-sky-50 hover:text-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500/30 dark:text-slate-400 dark:hover:bg-sky-950/40 dark:hover:text-sky-400"
                                             onClick={() => editHandler(item)}
+                                            aria-label={translate({ ar: "تعديل الخاصية", en: "Edit attribute" })}
+                                            title={translate({ ar: "تعديل", en: "Edit" })}
                                         >
-                                            {translate({
-                                                ar: "تعديل",
-                                                en: "Edit",
-                                            })}
-                                        </Button>
-                                        <Button
+                                            <FiEdit2 aria-hidden="true" />
+                                        </button>
+                                        <button
                                             type="button"
-                                            variant="danger"
-                                            rounded="no"
-                                            onClick={() =>
-                                                deleteHandler(item.id)
-                                            }
+                                            className="grid h-9 w-9 place-items-center rounded-lg text-rose-500 transition hover:bg-rose-50 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/30 dark:text-rose-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-300"
+                                            onClick={() => deleteHandler(item.id)}
+                                            aria-label={translate({ ar: "حذف الخاصية", en: "Delete attribute" })}
+                                            title={translate({ ar: "حذف", en: "Delete" })}
                                         >
-                                            {translate({
-                                                ar: "حذف",
-                                                en: "Delete",
-                                            })}
-                                        </Button>
+                                            <FiTrash2 aria-hidden="true" />
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
