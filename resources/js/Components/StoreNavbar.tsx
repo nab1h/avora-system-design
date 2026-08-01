@@ -306,7 +306,7 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                     : category.name_en}
                             </NavbarLink>
                         ))}
-                        
+
                         {navbar.map((nav) => (
                             <NavbarLink key={nav.href} href={nav.href}>
                                 {nav.name}
@@ -382,7 +382,7 @@ export function StoreNavbar({setIsOpen}:IProps) {
                 >
                     {activeCategory &&
                         activeCategory.sub_categories.length > 0 && (
-                            <div className="mx-auto grid max-w-7xl gap-6 px-6 py-7 lg:grid-cols-[minmax(240px,0.8fr)_minmax(0,1fr)]">
+                            <div className="mx-auto grid max-w-7xl gap-6 px-6 py-4 lg:grid-cols-[minmax(240px,0.8fr)_minmax(0,1fr)]">
                                 <a href={`${route("shopping.index")}?category=${activeCategory.id}`} className="group relative min-h-72 overflow-hidden rounded-none">
                                     {activeCategory.img ? <img src={`/storage/${activeCategory.img}`} alt={activeCategory.name_en} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" /> : <div className="avora-surface-muted absolute inset-0" />}
                                     <div className="absolute inset-0 bg-black/35 group-hover:bg-black/50" />

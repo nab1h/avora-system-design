@@ -70,13 +70,13 @@ export default function Welcome({
                     color: colors.text,
                 }}
             >
+                <StoreHero />
                 <Container
                     width="wide"
                     gutter="lg"
                     paddingY="md"
                     className="space-y-14"
                 >
-                    <StoreHero />
                     <MainCategoriesSection />
                     <BrandsSlider brands={brands} />
                     <ProductsPage
