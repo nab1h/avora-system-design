@@ -35,6 +35,7 @@ type StoreCategory = {
         id: number;
         name_ar: string;
         name_en: string;
+        img: string | null;
     }[];
 };
 
@@ -44,9 +45,10 @@ interface IProps {
 export function StoreNavbar({setIsOpen}:IProps) {
     const { colors } = useTheme();
     const { translate, direction } = useLanguage();
-    const page = usePage<PageProps<{ cartProducts?: CartProduct[]; favoritesCount?: number; storeCategories?: StoreCategory[] }> & { errors?: Record<string, string> }>();
+    const page = usePage<PageProps<{ cartProducts?: CartProduct[]; favoritesCount?: number; storeCategories?: StoreCategory[]; storeBrands?: { id: number; name_ar: string; name_en: string }[] }> & { errors?: Record<string, string> }>();
     const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
     const [shopOpen, setShopOpen] = useState(false);
+    const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
     const shopCloseTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
     const user = page.props.auth.user;
     const appName = useAppName();
@@ -56,6 +58,8 @@ export function StoreNavbar({setIsOpen}:IProps) {
     );
     const favoritesCount = page.props.favoritesCount ?? 0;
     const storeCategories = page.props.storeCategories ?? [];
+    const storeBrands = page.props.storeBrands ?? [];
+    const activeCategory = storeCategories.find((category) => category.id === activeCategoryId) ?? storeCategories[0];
     const openShopMenu = () => {
         if (shopCloseTimeout.current) {
             clearTimeout(shopCloseTimeout.current);
@@ -76,24 +80,8 @@ export function StoreNavbar({setIsOpen}:IProps) {
             name: translate({ ar: "البراندات", en: "Brands" }),
         },
         {
-            href: "#home",
+            href: route("home"),
             name: translate({ ar: "الرئيسية", en: "Home" }),
-        },
-        {
-            href: "#cards",
-            name: translate({ ar: "الكروت", en: "Cards" }),
-        },
-        {
-            href: "#buy",
-            name: translate({ ar: "شراء", en: "Buy" }),
-        },
-        {
-            href: "#dashboard",
-            name: translate({ ar: "الداشبورد", en: "Dashboard" }),
-        },
-        {
-            href: "#backgrounds",
-            name: translate({ ar: "الخلفيات", en: "Backgrounds" }),
         },
     ];
     return (
@@ -230,7 +218,9 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                 <LuHeart className="h-5 w-5" />
                                 {favoritesCount > 0 && (
                                     <span className="absolute -end-2 -top-2 grid min-h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[9px] font-bold leading-4 text-white">
-                                        {favoritesCount > 99 ? "99+" : favoritesCount}
+                                        {favoritesCount > 99
+                                            ? "99+"
+                                            : favoritesCount}
                                     </span>
                                 )}
                             </span>
@@ -255,7 +245,9 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                 <LuShoppingCart className="h-5 w-5" />
                                 {cartItemsCount > 0 && (
                                     <span className="absolute -end-2 -top-2 grid min-h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[9px] font-bold leading-4 text-white">
-                                        {cartItemsCount > 99 ? "99+" : cartItemsCount}
+                                        {cartItemsCount > 99
+                                            ? "99+"
+                                            : cartItemsCount}
                                     </span>
                                 )}
                             </span>
@@ -275,7 +267,11 @@ export function StoreNavbar({setIsOpen}:IProps) {
                             onMouseLeave={closeShopMenu}
                             onFocus={openShopMenu}
                             onBlur={(event) => {
-                                if (!event.currentTarget.contains(event.relatedTarget)) {
+                                if (
+                                    !event.currentTarget.contains(
+                                        event.relatedTarget,
+                                    )
+                                ) {
                                     closeShopMenu();
                                 }
                             }}
@@ -286,9 +282,31 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                 aria-haspopup="true"
                                 aria-expanded={shopOpen}
                             >
-                                {translate({ ar: "تسوّق", en: "Shop" })}
+                                {translate({
+                                    ar: "التصنيفات",
+                                    en: "Categories",
+                                })}
                             </NavbarLink>
                         </div>
+                        {storeCategories.map((category) => (
+                            <NavbarLink
+                                key={category.id}
+                                href="#"
+                                active={false}
+                                onMouseEnter={() => {
+                                    setActiveCategoryId(category.id);
+                                    openShopMenu();
+                                }}
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                }}
+                            >
+                                {direction === "rtl"
+                                    ? category.name_ar
+                                    : category.name_en}
+                            </NavbarLink>
+                        ))}
+                        
                         {navbar.map((nav) => (
                             <NavbarLink key={nav.href} href={nav.href}>
                                 {nav.name}
@@ -362,11 +380,49 @@ export function StoreNavbar({setIsOpen}:IProps) {
                     onMouseEnter={openShopMenu}
                     onMouseLeave={closeShopMenu}
                 >
-                    <div className="mx-auto grid max-w-7xl grid-cols-3 gap-5 px-6 py-7 xl:grid-cols-4">
+                    {activeCategory &&
+                        activeCategory.sub_categories.length > 0 && (
+                            <div className="mx-auto grid max-w-7xl gap-6 px-6 py-7 lg:grid-cols-[minmax(240px,0.8fr)_minmax(0,1fr)]">
+                                <a href={`${route("shopping.index")}?category=${activeCategory.id}`} className="group relative min-h-72 overflow-hidden rounded-none">
+                                    {activeCategory.img ? <img src={`/storage/${activeCategory.img}`} alt={activeCategory.name_en} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" /> : <div className="avora-surface-muted absolute inset-0" />}
+                                    <div className="absolute inset-0 bg-black/35 group-hover:bg-black/50" />
+                                    <span className="absolute inset-x-0 top-0 p-5 text-xl font-bold text-white">{direction === "rtl" ? activeCategory.name_ar : activeCategory.name_en}</span>
+                                </a>
+                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                                    {activeCategory.sub_categories.map(
+                                        (subcategory) => (
+                                            <a
+                                                key={subcategory.id}
+                                                href={`${route("shopping.index")}?category=${activeCategory.id}&subcategory=${subcategory.id}`}
+                                                className="group relative min-h-36 overflow-hidden rounded-none"
+                                            >
+                                                {subcategory.img ? (
+                                                    <img
+                                                        src={`/storage/${subcategory.img}`}
+                                                        alt=""
+                                                        className="h-full w-full object-cover transition group-hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <div className="avora-surface-muted h-full" />
+                                                )}
+                                                <span className="absolute inset-x-0 top-0 bg-black/60 p-2 text-center text-xs text-white">
+                                                    {direction === "rtl"
+                                                        ? subcategory.name_ar
+                                                        : subcategory.name_en}
+                                                </span>
+                                            </a>
+                                        ),
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                    {/* <div className="mx-auto grid max-w-7xl grid-cols-3 gap-5 px-6 py-7 xl:grid-cols-4">
                         {storeCategories.map((category) => (
                             <a
                                 key={category.id}
-                                href={`${route("home")}#cards`}
+                                href="#"
+                                onClick={(event) => { event.preventDefault(); setActiveCategoryId(category.id); }}
                                 className="group relative min-h-36 overflow-hidden"
                             >
                                 {category.img ? (
@@ -394,7 +450,7 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                 </div>
                             </a>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
 
                 <NavbarMobileMenu
@@ -403,6 +459,20 @@ export function StoreNavbar({setIsOpen}:IProps) {
                     duration="slow"
                 >
                     <NavbarLinks className="flex-col items-stretch">
+                        {storeCategories.map((category) => (
+                            <details key={category.id} className="border-b border-slate-200 py-2 dark:border-slate-700">
+                                <summary className="cursor-pointer px-3 py-2 text-sm font-medium">
+                                    {direction === "rtl" ? category.name_ar : category.name_en}
+                                </summary>
+                                <div className="ms-4 mt-2 space-y-1 border-s ps-3">
+                                    {category.sub_categories.map((subcategory) => (
+                                        <NavbarLink key={subcategory.id} href={`${route("shopping.index")}?category=${category.id}&subcategory=${subcategory.id}`} className="block !px-0 !py-1 text-xs">
+                                            {direction === "rtl" ? subcategory.name_ar : subcategory.name_en}
+                                        </NavbarLink>
+                                    ))}
+                                </div>
+                            </details>
+                        ))}
                         <NavbarLink href={`${route("home")}#cards`}>
                             {translate({ ar: "تسوّق", en: "Shop" })}
                         </NavbarLink>
@@ -454,7 +524,9 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                 <LuHeart className="h-5 w-5" />
                                 {favoritesCount > 0 && (
                                     <span className="absolute -end-2 -top-2 grid min-h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[9px] font-bold leading-4 text-white">
-                                        {favoritesCount > 99 ? "99+" : favoritesCount}
+                                        {favoritesCount > 99
+                                            ? "99+"
+                                            : favoritesCount}
                                     </span>
                                 )}
                             </span>
@@ -505,7 +577,9 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                 <LuShoppingCart className="h-5 w-5" />
                                 {cartItemsCount > 0 && (
                                     <span className="absolute -end-2 -top-2 grid min-h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[9px] font-bold leading-4 text-white">
-                                        {cartItemsCount > 99 ? "99+" : cartItemsCount}
+                                        {cartItemsCount > 99
+                                            ? "99+"
+                                            : cartItemsCount}
                                     </span>
                                 )}
                             </span>
