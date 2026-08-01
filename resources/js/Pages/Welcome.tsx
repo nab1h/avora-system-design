@@ -15,6 +15,8 @@ import { SectionTitle } from "@/avora-dash/components/SectionTitle";
 import { BrandsSlider, type StoreBrand } from '@/Components/BrandsSlider';
 import { ShoppingBenefits } from '@/Components/ShoppingBenefits';
 import { StoreFooter } from '@/Components/StoreFooter';
+import { MainCategoriesSection } from '@/Components/MainCategoriesSection';
+import { ClassesSection } from '@/Components/ClassesSection';
 type WelcomeProps = PageProps<{
     products: StoreProduct[];
     articles: ArticlePreview[];
@@ -75,13 +77,19 @@ export default function Welcome({
                     className="space-y-14"
                 >
                     <StoreHero />
+                    <MainCategoriesSection />
                     <BrandsSlider brands={brands} />
-                    <ProductsPage products={storeProducts} favoriteProductIds={favoriteProductIds} />
+                    <ProductsPage
+                        products={storeProducts}
+                        favoriteProductIds={favoriteProductIds}
+                    />
                     <ShoppingBenefits />
                     {/* section blog */}
-                    <SectionTitle className="mt-2">{translate({ar: "المنتجات", en: "Products"})}</SectionTitle>
+                    <SectionTitle className="mt-2">
+                        {translate({ ar: "المنتجات", en: "Products" })}
+                    </SectionTitle>
                     <ArticlePage articles={articles} />
-
+                    <ClassesSection />
                 </Container>
                 <StoreDrawer
                     isOpen={isOpen}

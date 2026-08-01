@@ -7,6 +7,7 @@ use Inertia\Middleware;
 use App\Models\WebsiteSetting;
 use App\Models\PaymentGateway;
 use App\Models\Category;
+use App\Models\Classes;
 use Illuminate\Support\Facades\Schema;
 
 class HandleInertiaRequests extends Middleware
@@ -103,6 +104,9 @@ class HandleInertiaRequests extends Middleware
                 ->get([
                     'id', 'name_ar', 'name_en', 'slug_ar', 'slug_en', 'img',
                 ]),
+            'storeClasses' => fn () => Classes::query()
+                ->orderBy('name_ar')
+                ->get(['id', 'name_ar', 'name_en', 'img']),
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),
