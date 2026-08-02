@@ -1,9 +1,12 @@
 import { Button } from "@/avora-dash/components/Button";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { Modal } from "@/avora-dash/components/Modal";
 import { LuMinus, LuPlus, LuTrash2 } from "react-icons/lu";
 import { Drawer } from "@/avora-dash/components/Drawer/Drawer";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
-import { router, usePage } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import { CartProduct, PageProps } from "@/types";
+import { useState, type FormEvent } from "react";
 
 interface IProps{
     isOpen: boolean;
@@ -14,6 +17,9 @@ export function StoreDrawer({ isOpen, setIsOpen, cartProducts = [] }: IProps) {
     const { translate, direction } = useLanguage();
     const page = usePage<PageProps & { errors?: Record<string, string> }>();
     const websiteCurrency = page.props.websiteSettings.currency ?? "EGP";
+    const address = (page.props as any).shippingAddress;
+    const [addressOpen, setAddressOpen] = useState(false);
+    const addressForm = useForm({ full_name: address?.full_name ?? "", phone: address?.phone ?? "", country: address?.country ?? "EG", city: address?.city ?? "", area: address?.area ?? "", street: address?.street ?? "", building: address?.building ?? "", floor: address?.floor ?? "", apartment: address?.apartment ?? "", postal_code: address?.postal_code ?? "", notes: address?.notes ?? "" });
     const cartTotal = cartProducts.reduce(
         (total, product) =>
             total + Number(product.price) * Number(product.pivot.quantity),
@@ -31,6 +37,14 @@ export function StoreDrawer({ isOpen, setIsOpen, cartProducts = [] }: IProps) {
             { delta },
             { preserveScroll: true },
         );
+    };
+    const checkout = () => {
+        if (!address) { setAddressOpen(true); return; }
+        router.visit(route("checkout.review"));
+    };
+    const saveAddress = (event: FormEvent) => {
+        event.preventDefault();
+        addressForm.put(route("customer.shipping-address.upsert"), { preserveScroll: true, onSuccess: () => { setAddressOpen(false); router.visit(route("checkout.review")); } });
     };
 
     return (
@@ -54,7 +68,7 @@ export function StoreDrawer({ isOpen, setIsOpen, cartProducts = [] }: IProps) {
                         إلغاء
                     </Button>
 
-                    <Button type="button" disabled={!cartProducts.length}>
+                    <Button type="button" disabled={!cartProducts.length} onClick={checkout}>
                         {translate({
                             ar: "إتمام الطلب",
                             en: "Checkout",
@@ -185,6 +199,7 @@ export function StoreDrawer({ isOpen, setIsOpen, cartProducts = [] }: IProps) {
                     })}
                 </p>
             )}
+            <Modal open={addressOpen} onClose={() => setAddressOpen(false)} title={translate({ ar: "بيانات الشحن", en: "Shipping details" })} size="lg"><form onSubmit={saveAddress} className="space-y-4"><div className="grid gap-4 sm:grid-cols-2"><FormField required label={translate({ ar: "الاسم بالكامل", en: "Full name" })} value={addressForm.data.full_name} onChange={e => addressForm.setData("full_name", e.target.value)} error={addressForm.errors.full_name}/><FormField required label={translate({ ar: "رقم الهاتف", en: "Phone" })} value={addressForm.data.phone} onChange={e => addressForm.setData("phone", e.target.value)} error={addressForm.errors.phone}/><FormField required label={translate({ ar: "المدينة", en: "City" })} value={addressForm.data.city} onChange={e => addressForm.setData("city", e.target.value)} error={addressForm.errors.city}/><FormField label={translate({ ar: "المنطقة", en: "Area" })} value={addressForm.data.area} onChange={e => addressForm.setData("area", e.target.value)}/><FormField required label={translate({ ar: "الشارع", en: "Street" })} value={addressForm.data.street} onChange={e => addressForm.setData("street", e.target.value)} error={addressForm.errors.street}/><FormField label={translate({ ar: "المبنى", en: "Building" })} value={addressForm.data.building} onChange={e => addressForm.setData("building", e.target.value)}/><FormField label={translate({ ar: "الدور", en: "Floor" })} value={addressForm.data.floor} onChange={e => addressForm.setData("floor", e.target.value)}/><FormField label={translate({ ar: "الشقة", en: "Apartment" })} value={addressForm.data.apartment} onChange={e => addressForm.setData("apartment", e.target.value)}/></div><FormField label={translate({ ar: "ملاحظات التوصيل", en: "Delivery notes" })} value={addressForm.data.notes} onChange={e => addressForm.setData("notes", e.target.value)}/><div className="flex justify-end gap-3"><Button type="button" variant="outline" onClick={() => setAddressOpen(false)}>{translate({ ar: "إلغاء", en: "Cancel" })}</Button><Button type="submit" disabled={addressForm.processing}>{translate({ ar: "حفظ وإتمام الدفع", en: "Save and continue" })}</Button></div></form></Modal>
         </Drawer>
     );
 }

@@ -1,0 +1,4 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request; use Illuminate\Http\RedirectResponse;
+class CustomerAddressController extends Controller { public function upsert(Request $request): RedirectResponse { $data=$request->validate(['full_name'=>['required','string','max:255'],'phone'=>['required','string','max:32'],'country'=>['required','string','size:2'],'city'=>['required','string','max:255'],'area'=>['nullable','string','max:255'],'street'=>['required','string','max:255'],'building'=>['nullable','string','max:100'],'floor'=>['nullable','string','max:100'],'apartment'=>['nullable','string','max:100'],'postal_code'=>['nullable','string','max:30'],'notes'=>['nullable','string','max:1000']]); $request->user()->shippingAddress()->updateOrCreate([], $data); return back()->with('success','Address saved.'); } }

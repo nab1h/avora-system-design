@@ -166,6 +166,7 @@ export type AdminPageProps = {
     websiteSettings?: WebsiteSettings;
     paymentGateways?: PaymentGateway[];
     purchases?: PurchaseRow[];
+    purchaseFilters?: { period: string; from: string | null; to: string | null };
 };
 
 export type UserForm = {

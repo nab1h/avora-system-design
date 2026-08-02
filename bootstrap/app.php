@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->validateCsrfTokens(except: [
+            'checkout/stripe/webhook',
             'checkout/*/tap/webhook',
             'checkout/paymob/callback',
             'checkout/moyasar/callback',

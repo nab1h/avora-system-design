@@ -105,6 +105,11 @@ export function StoreNavbar({setIsOpen}:IProps) {
                             variant="ghost"
                             rounded="full"
                             type="button"
+                            onClick={() =>
+                                user
+                                    ? router.visit(route("my-products.index"))
+                                    : setCustomerAuthOpen(true)
+                            }
                             aria-label={translate({
                                 ar: "الطلبات",
                                 en: "Orders",
@@ -489,6 +494,11 @@ export function StoreNavbar({setIsOpen}:IProps) {
                             variant="ghost"
                             rounded="full"
                             type="button"
+                            onClick={() =>
+                                user
+                                    ? router.visit(route("my-products.index"))
+                                    : setCustomerAuthOpen(true)
+                            }
                             aria-label={translate({
                                 ar: "الطلبات",
                                 en: "Orders",

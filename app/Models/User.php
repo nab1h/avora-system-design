@@ -97,4 +97,14 @@ class User extends Authenticatable
             ->withPivot('quantity')
             ->withTimestamps();
     }
+
+    public function shippingAddress()
+    {
+        return $this->hasOne(CustomerAddress::class);
+    }
+
+    public function myProducts()
+    {
+        return $this->hasMany(MyProduct::class);
+    }
 }

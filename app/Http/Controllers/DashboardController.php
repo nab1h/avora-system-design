@@ -36,10 +36,36 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function purchases(): Response
+    public function purchases(Request $request): Response
     {
+        $validated = $request->validate([
+            'period' => ['nullable', 'in:today,week,month,custom,all'],
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date'],
+        ]);
+
+        $period = $validated['period'] ?? 'today';
+        $from = null;
+        $to = null;
+
+        if ($period === 'today') {
+            $from = now()->startOfDay();
+            $to = now()->endOfDay();
+        } elseif ($period === 'week') {
+            $from = now()->startOfWeek();
+            $to = now()->endOfWeek();
+        } elseif ($period === 'month') {
+            $from = now()->startOfMonth();
+            $to = now()->endOfMonth();
+        } elseif ($period === 'custom') {
+            $from = isset($validated['from']) ? Carbon::parse($validated['from'])->startOfDay() : null;
+            $to = isset($validated['to']) ? Carbon::parse($validated['to'])->endOfDay() : null;
+        }
+
         $purchases = PaymentTransaction::query()
             ->with(['user:id,name,email', 'gateway:id,name,slug'])
+            ->when($from, fn ($query) => $query->where('created_at', '>=', $from))
+            ->when($to, fn ($query) => $query->where('created_at', '<=', $to))
             ->latest()
             ->get()
             ->map(fn (PaymentTransaction $transaction) => [
@@ -58,6 +84,11 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'section' => 'purchases',
             'purchases' => $purchases,
+            'purchaseFilters' => [
+                'period' => $period,
+                'from' => $from?->toDateString(),
+                'to' => $to?->toDateString(),
+            ],
         ]);
     }
 
@@ -154,7 +185,8 @@ class DashboardController extends Controller
             'from' => ['nullable', 'date'],
             'to' => ['nullable', 'date'],
         ]);
-        $period = $validated['period'] ?? 'today';
+        // Favorite entries may have been added long ago; show all activity initially.
+        $period = $validated['period'] ?? 'all';
         $from = null;
         $to = null;
 

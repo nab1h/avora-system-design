@@ -93,6 +93,7 @@ class HandleInertiaRequests extends Middleware
             'favoritesCount' => fn () => $request->user()
                 ? $request->user()->favoriteProducts()->count()
                 : 0,
+            'shippingAddress' => fn () => $request->user()?->shippingAddress,
             'storeCategories' => fn () => Category::query()
                 ->where('status', true)
                 ->with([

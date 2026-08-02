@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\PaymentGateway;
 use App\Models\PaymentTransaction;
+use App\Models\Order;
+use App\Models\MyProduct;
 use App\Models\WebsiteSetting;
 use App\Support\DashboardNotifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -21,11 +24,13 @@ class PaymentCheckoutController extends Controller
 {
     public function store(Request $request): Response
     {
-        $data = $request->validate([
-            'product_id' => ['required', 'string'],
-        ]);
-
-        $product = $this->resolveProduct($data['product_id']);
+        $user = $request->user();
+        abort_unless($user, 403);
+        if (! $user->shippingAddress()->exists()) {
+            throw ValidationException::withMessages(['shipping_address' => 'Shipping address is required.']);
+        }
+        $cart = $user->cartProducts()->where('is_active', true)->lockForUpdate()->get();
+        if ($cart->isEmpty()) throw ValidationException::withMessages(['cart' => 'Your cart is empty.']);
         $gateway = $this->resolveGateway();
         $currency = strtoupper((string) (WebsiteSetting::current()->currency ?: 'EGP'));
 
@@ -35,20 +40,28 @@ class PaymentCheckoutController extends Controller
             ]);
         }
 
-        $transaction = PaymentTransaction::create([
+        $transaction = DB::transaction(function () use ($user, $cart, $gateway, $currency) {
+            $subtotal = $cart->sum(fn ($product) => (int) round((float) $product->price * 100) * (int) $product->pivot->quantity);
+            foreach ($cart as $product) {
+                if ($product->stock < $product->pivot->quantity) throw ValidationException::withMessages(['cart' => "Insufficient stock for {$product->name_en}."]);
+            }
+            $transaction = PaymentTransaction::create([
             'uuid' => (string) Str::uuid(),
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'payment_gateway_id' => $gateway->id,
             'gateway_slug' => $gateway->slug,
-            'product_name' => $product['name'],
-            'amount' => $product['amount'],
+            'product_name' => $cart->count().' cart items',
+            'amount' => $subtotal,
             'currency' => $currency,
             'status' => 'pending',
             'payload' => [
-                'source' => 'website_product_card',
-                'product_id' => $data['product_id'],
+                'source' => 'cart_checkout',
             ],
-        ]);
+            ]);
+            $order = Order::create(['uuid'=>(string) Str::uuid(),'user_id'=>$user->id,'payment_transaction_id'=>$transaction->id,'subtotal'=>$subtotal,'total'=>$subtotal,'currency'=>$currency]);
+            $order->items()->createMany($cart->map(fn ($product) => ['product_id'=>$product->id,'product_name'=>$product->name_ar,'quantity'=>$product->pivot->quantity,'unit_amount'=>(int) round((float) $product->price * 100),'total_amount'=>(int) round((float) $product->price * 100) * $product->pivot->quantity])->all());
+            return $transaction;
+        });
 
         $this->notifyTransaction(
             $transaction,
@@ -85,12 +98,18 @@ class PaymentCheckoutController extends Controller
         ]);
     }
 
-    public function success(PaymentTransaction $paymentTransaction): InertiaResponse
+    public function success(Request $request, PaymentTransaction $paymentTransaction): InertiaResponse
     {
-        $paymentTransaction->update([
-            'status' => 'paid_waiting_webhook',
-        ]);
-
+        // A return URL alone is not proof of payment. For Stripe we securely
+        // retrieve the Checkout Session from Stripe before fulfilling the order.
+        if ($paymentTransaction->gateway_slug === 'stripe') {
+            $this->confirmStripeCheckoutSession(
+                $paymentTransaction,
+                (string) $request->query('session_id', ''),
+            );
+        } elseif ($paymentTransaction->status !== 'paid') {
+            $paymentTransaction->update(['status' => 'paid_waiting_webhook']);
+        }
         $this->notifyTransaction(
             $paymentTransaction,
             'عملية دفع ناجحة',
@@ -103,6 +122,57 @@ class PaymentCheckoutController extends Controller
         return Inertia::render('Checkout/Success', [
             'transaction' => $paymentTransaction->toFrontend(),
         ]);
+    }
+
+    public function stripeWebhook(Request $request): Response
+    {
+        $signature = (string) $request->header('Stripe-Signature', '');
+        $gateway = PaymentGateway::query()->where('slug', 'stripe')->first();
+        $webhookSecret = ($gateway?->secret_config ?? [])['webhook_secret'] ?? config('cashier.webhook.secret');
+
+        if (! filled($webhookSecret) || ! filled($signature)) {
+            return response('Invalid Stripe webhook.', 400);
+        }
+
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $request->getContent(),
+                $signature,
+                $webhookSecret,
+            );
+        } catch (\Throwable) {
+            return response('Invalid Stripe webhook.', 400);
+        }
+
+        if (! in_array($event->type, ['checkout.session.completed', 'checkout.session.async_payment_succeeded'], true)) {
+            return response()->noContent();
+        }
+
+        $session = $event->data->object;
+        if (($session->payment_status ?? null) !== 'paid') {
+            return response()->noContent();
+        }
+
+        $transaction = PaymentTransaction::query()
+            ->where('gateway_slug', 'stripe')
+            ->where('uuid', (string) ($session->client_reference_id ?? ''))
+            ->where('gateway_reference', (string) ($session->id ?? ''))
+            ->first();
+
+        if (! $transaction) {
+            return response()->noContent();
+        }
+
+        $transaction->update([
+            'status' => 'paid',
+            'payload' => array_merge($transaction->payload ?? [], [
+                'stripe_webhook_event_id' => $event->id,
+                'stripe_payment_status' => $session->payment_status,
+            ]),
+        ]);
+        $this->fulfillOrder($transaction);
+
+        return response()->noContent();
     }
 
     public function cancel(PaymentTransaction $paymentTransaction): InertiaResponse
@@ -136,6 +206,9 @@ class PaymentCheckoutController extends Controller
                 'tap_webhook' => $request->all(),
             ]),
         ]);
+        if (in_array($status, ['captured', 'paid'], true)) {
+            $this->fulfillOrder($paymentTransaction);
+        }
 
         $this->notifyTransaction(
             $paymentTransaction,
@@ -174,6 +247,7 @@ class PaymentCheckoutController extends Controller
                 'paymob_callback' => $request->all(),
             ]),
         ]);
+        if ($success && ! $pending) $this->fulfillOrder($transaction);
 
         $this->notifyTransaction(
             $transaction,
@@ -213,6 +287,7 @@ class PaymentCheckoutController extends Controller
                 'moyasar_callback' => $request->all(),
             ]),
         ]);
+        if ($status === 'paid') $this->fulfillOrder($transaction);
 
         $this->notifyTransaction(
             $transaction,
@@ -232,6 +307,75 @@ class PaymentCheckoutController extends Controller
             route('dashboard.purchases'),
             $eventType,
         );
+    }
+
+    private function fulfillOrder(PaymentTransaction $transaction): void
+    {
+        DB::transaction(function () use ($transaction) {
+            $order = Order::query()->where('payment_transaction_id', $transaction->id)->lockForUpdate()->first();
+            if (! $order || $order->status === 'paid') return;
+            $order->load('items.product');
+            foreach ($order->items as $item) {
+                $product = \App\Models\Product::query()->lockForUpdate()->findOrFail($item->product_id);
+                if ($product->stock < $item->quantity) throw new \RuntimeException('Insufficient stock during payment fulfillment.');
+                $product->decrement('stock', $item->quantity);
+
+                MyProduct::firstOrCreate(
+                    ['order_item_id' => $item->id],
+                    [
+                        'user_id' => $order->user_id,
+                        'product_id' => $item->product_id,
+                        'order_id' => $order->id,
+                        'quantity' => $item->quantity,
+                        'unit_amount' => $item->unit_amount,
+                        'currency' => $order->currency,
+                    ],
+                );
+            }
+            $order->update(['status' => 'paid', 'paid_at' => now()]);
+            $order->user->cartProducts()->detach($order->items->pluck('product_id'));
+        });
+    }
+
+    private function confirmStripeCheckoutSession(PaymentTransaction $transaction, string $sessionId): void
+    {
+        if (! filled($sessionId) || ! hash_equals((string) $transaction->gateway_reference, $sessionId)) {
+            $transaction->update(['status' => 'paid_waiting_webhook']);
+            return;
+        }
+
+        $gateway = $transaction->gateway ?: PaymentGateway::query()->find($transaction->payment_gateway_id);
+        $secretKey = ($gateway?->secret_config ?? [])['secret_key'] ?? config('cashier.secret');
+
+        if (! filled($secretKey)) {
+            $transaction->update(['status' => 'paid_waiting_webhook']);
+            return;
+        }
+
+        try {
+            Stripe::setApiKey($secretKey);
+            $session = StripeSession::retrieve($sessionId);
+        } catch (\Throwable) {
+            $transaction->update(['status' => 'paid_waiting_webhook']);
+            return;
+        }
+
+        if (
+            $session->payment_status !== 'paid'
+            || ! hash_equals((string) $transaction->uuid, (string) $session->client_reference_id)
+        ) {
+            $transaction->update(['status' => 'paid_waiting_webhook']);
+            return;
+        }
+
+        $transaction->update([
+            'status' => 'paid',
+            'payload' => array_merge($transaction->payload ?? [], [
+                'stripe_session_id' => $session->id,
+                'stripe_payment_status' => $session->payment_status,
+            ]),
+        ]);
+        $this->fulfillOrder($transaction);
     }
 
     private function resolveGateway(): ?PaymentGateway

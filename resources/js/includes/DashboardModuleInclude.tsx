@@ -3,6 +3,7 @@ import { DashboardIcon } from "@/avora-dash/components/DashboardIcon";
 import { RecentOrders } from "@/avora-dash/components/dashboard/RecentOrders";
 import { SalesOverview } from "@/avora-dash/components/dashboard/SalesOverview";
 import { FormField } from "@/avora-dash/components/forms/FormField";
+import { Select } from "@/avora-dash/components/forms/Select";
 import { Modal } from "@/avora-dash/components/Modal";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
@@ -108,6 +109,11 @@ export function DashboardModuleInclude({
         page.props.websiteSettings ?? page.props.websiteSettings;
     const paymentGateways = page.props.paymentGateways ?? [];
     const purchases = page.props.purchases ?? [];
+    const purchaseFilters = page.props.purchaseFilters ?? {
+        period: "today",
+        from: null,
+        to: null,
+    };
     const title =
         sectionTitles[section as keyof typeof sectionTitles] ??
         sectionTitles.orders;
@@ -120,6 +126,9 @@ export function DashboardModuleInclude({
     const [permissionModalOpen, setPermissionModalOpen] = useState(false);
     const [editingPermission, setEditingPermission] =
         useState<PermissionRow | null>(null);
+    const [purchasePeriod, setPurchasePeriod] = useState(purchaseFilters.period);
+    const [purchaseFrom, setPurchaseFrom] = useState(purchaseFilters.from ?? "");
+    const [purchaseTo, setPurchaseTo] = useState(purchaseFilters.to ?? "");
 
     const userForm = useForm<UserForm>({
         name: "",
@@ -1808,6 +1817,18 @@ export function DashboardModuleInclude({
     );
 
     const renderPurchases = () => {
+        const updatePurchasePeriod = (value: string) => {
+            setPurchasePeriod(value);
+
+            if (value !== "custom") {
+                router.get(
+                    route("dashboard.purchases"),
+                    { period: value },
+                    { preserveState: true, preserveScroll: true },
+                );
+            }
+        };
+
         const statusClass = (status: string) => {
             if (["paid", "paid_waiting_webhook"].includes(status))
                 return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300";
@@ -1820,6 +1841,34 @@ export function DashboardModuleInclude({
 
         return (
             <section className="space-y-5">
+                <div className="flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
+                    <Select
+                        label={translate({ ar: "الفترة", en: "Period" })}
+                        value={purchasePeriod}
+                        onChange={(value) => value && updatePurchasePeriod(value)}
+                        className="w-52"
+                        options={[
+                            { value: "today", label: translate({ ar: "اليوم", en: "Today" }) },
+                            { value: "week", label: translate({ ar: "هذا الأسبوع", en: "This week" }) },
+                            { value: "month", label: translate({ ar: "هذا الشهر", en: "This month" }) },
+                            { value: "all", label: translate({ ar: "كل الوقت", en: "All time" }) },
+                            { value: "custom", label: translate({ ar: "وقت محدد", en: "Custom range" }) },
+                        ]}
+                    />
+                    {purchasePeriod === "custom" && (
+                        <>
+                            <FormField label={translate({ ar: "من", en: "From" })} value={purchaseFrom} onChange={(event) => setPurchaseFrom(event.target.value)} type="date" />
+                            <FormField label={translate({ ar: "إلى", en: "To" })} value={purchaseTo} onChange={(event) => setPurchaseTo(event.target.value)} type="date" />
+                            <Button
+                                type="button"
+                                onClick={() => router.get(route("dashboard.purchases"), { period: "custom", from: purchaseFrom, to: purchaseTo }, { preserveState: true, preserveScroll: true })}
+                            >
+                                {translate({ ar: "تطبيق", en: "Apply" })}
+                            </Button>
+                        </>
+                    )}
+                </div>
+
                 <div className="grid gap-4 md:grid-cols-3">
                     <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
                         <p className="text-sm text-slate-500">

@@ -22,6 +22,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardNotificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CustomerAddressController;
+use App\Http\Controllers\CheckoutReviewController;
+use App\Http\Controllers\MyProductsController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ArticleShowController;
@@ -50,6 +53,10 @@ Route::get('/favorites', [FavoriteController::class, 'index'])
     ->middleware('auth')
     ->name('favorites.index');
 
+Route::get('/my-products', [MyProductsController::class, 'index'])
+    ->middleware('auth')
+    ->name('my-products.index');
+
 Route::post('/favorites/{product}/toggle', [FavoriteController::class, 'toggle'])
     ->middleware('auth')
     ->name('favorites.toggle');
@@ -68,14 +75,24 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/site.webmanifest', SiteManifestController::class)->name('site.webmanifest');
 
+Route::get('/checkout/review', CheckoutReviewController::class)->middleware('auth')->name('checkout.review');
+
 Route::post('/checkout', [PaymentCheckoutController::class, 'store'])
+    ->middleware('auth')
     ->name('checkout.store');
+
+Route::put('/customer/shipping-address', [CustomerAddressController::class, 'upsert'])
+    ->middleware('auth')
+    ->name('customer.shipping-address.upsert');
 
 Route::get('/checkout/{paymentTransaction}', [PaymentCheckoutController::class, 'show'])
     ->name('checkout.show');
 
 Route::get('/checkout/{paymentTransaction}/success', [PaymentCheckoutController::class, 'success'])
     ->name('checkout.success');
+
+Route::post('/checkout/stripe/webhook', [PaymentCheckoutController::class, 'stripeWebhook'])
+    ->name('checkout.stripe.webhook');
 
 Route::get('/checkout/{paymentTransaction}/cancel', [PaymentCheckoutController::class, 'cancel'])
     ->name('checkout.cancel');
