@@ -395,31 +395,6 @@ class PaymentCheckoutController extends Controller
             ->first();
     }
 
-    private function resolveProduct(string $productId): array
-    {
-        $products = [
-            'avora-system' => [
-                'name' => 'نظام Avora',
-                'amount' => 120000,
-            ],
-            'color-collection' => [
-                'name' => 'حزمة الألوان',
-                'amount' => 85000,
-            ],
-            'grid-collection' => [
-                'name' => 'مجموعة الجريد',
-                'amount' => 95000,
-            ],
-        ];
-
-        if (! isset($products[$productId])) {
-            throw ValidationException::withMessages([
-                'product_id' => 'المنتج غير موجود.',
-            ]);
-        }
-
-        return $products[$productId];
-    }
 
     private function redirectToStripe(PaymentTransaction $transaction, PaymentGateway $gateway): Response
     {
