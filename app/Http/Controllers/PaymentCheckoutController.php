@@ -415,7 +415,7 @@ class PaymentCheckoutController extends Controller
 
         $paymentToken = $paymentKeyResponse->json('token');
         $checkoutUrl = "https://accept.paymob.com/api/acceptance/iframes/{$iframeId}?payment_token={$paymentToken}";
-
+ 
         $transaction->update([
             'status' => 'redirected',
             'gateway_reference' => (string) $paymobOrderId,
