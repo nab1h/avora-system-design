@@ -1,6 +1,5 @@
-
-import { Button } from "@/avora-dash/components/Button";
-import { LanguageButton } from "@/avora-dash/components/LanguageButton";
+import { Button } from "@/avora-dash/Components/Button";
+import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
 import {
     Navbar,
     NavbarActions,
@@ -12,7 +11,7 @@ import {
     NavbarLogo,
     NavbarMobileMenu,
     NavbarToggle,
-} from "@/avora-dash/components/Navbar";
+} from "@/avora-dash/Components/Navbar";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import ModeButton from "@/avora-dash/providers/ModeButton";
@@ -20,7 +19,15 @@ import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { CartProduct, PageProps } from "@/types";
 import { router, usePage } from "@inertiajs/react";
 import { CgMenuRight } from "react-icons/cg";
-import { LuHeart, LuLogOut, LuPackage, LuSearch, LuSettings, LuShoppingCart, LuUserRound } from "react-icons/lu";
+import {
+    LuHeart,
+    LuLogOut,
+    LuPackage,
+    LuSearch,
+    LuSettings,
+    LuShoppingCart,
+    LuUserRound,
+} from "react-icons/lu";
 import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
 import { useRef, useState } from "react";
 
@@ -42,13 +49,22 @@ type StoreCategory = {
 interface IProps {
     setIsOpen: (open: boolean) => void;
 }
-export function StoreNavbar({setIsOpen}:IProps) {
+export function StoreNavbar({ setIsOpen }: IProps) {
     const { colors } = useTheme();
     const { translate, direction } = useLanguage();
-    const page = usePage<PageProps<{ cartProducts?: CartProduct[]; favoritesCount?: number; storeCategories?: StoreCategory[]; storeBrands?: { id: number; name_ar: string; name_en: string }[] }> & { errors?: Record<string, string> }>();
+    const page = usePage<
+        PageProps<{
+            cartProducts?: CartProduct[];
+            favoritesCount?: number;
+            storeCategories?: StoreCategory[];
+            storeBrands?: { id: number; name_ar: string; name_en: string }[];
+        }> & { errors?: Record<string, string> }
+    >();
     const [customerAuthOpen, setCustomerAuthOpen] = useState(false);
     const [shopOpen, setShopOpen] = useState(false);
-    const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
+    const [activeCategoryId, setActiveCategoryId] = useState<number | null>(
+        null,
+    );
     const shopCloseTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
     const user = page.props.auth.user;
     const appName = useAppName();
@@ -59,7 +75,9 @@ export function StoreNavbar({setIsOpen}:IProps) {
     const favoritesCount = page.props.favoritesCount ?? 0;
     const storeCategories = page.props.storeCategories ?? [];
     const storeBrands = page.props.storeBrands ?? [];
-    const activeCategory = storeCategories.find((category) => category.id === activeCategoryId) ?? storeCategories[0];
+    const activeCategory =
+        storeCategories.find((category) => category.id === activeCategoryId) ??
+        storeCategories[0];
     const openShopMenu = () => {
         if (shopCloseTimeout.current) {
             clearTimeout(shopCloseTimeout.current);
@@ -72,16 +90,16 @@ export function StoreNavbar({setIsOpen}:IProps) {
 
     const navbar = [
         {
+            href: route("home"),
+            name: translate({ ar: "الرئيسية", en: "Home" }),
+        },
+        {
             href: route("shopping.index"),
             name: translate({ ar: "مزايا التسوق", en: "Shopping" }),
         },
         {
             href: route("brands.index"),
             name: translate({ ar: "البراندات", en: "Brands" }),
-        },
-        {
-            href: route("home"),
-            name: translate({ ar: "الرئيسية", en: "Home" }),
         },
     ];
     return (
@@ -275,19 +293,12 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                     closeShopMenu();
                                 }
                             }}
-                        >
-                            <NavbarLink
-                                href={`${route("home")}#cards`}
-                                className="block"
-                                aria-haspopup="true"
-                                aria-expanded={shopOpen}
-                            >
-                                {translate({
-                                    ar: "التصنيفات",
-                                    en: "Categories",
-                                })}
+                        ></div>
+                        {navbar.map((nav) => (
+                            <NavbarLink key={nav.href} href={nav.href}>
+                                {nav.name}
                             </NavbarLink>
-                        </div>
+                        ))}
                         {storeCategories.map((category) => (
                             <NavbarLink
                                 key={category.id}
@@ -304,12 +315,6 @@ export function StoreNavbar({setIsOpen}:IProps) {
                                 {direction === "rtl"
                                     ? category.name_ar
                                     : category.name_en}
-                            </NavbarLink>
-                        ))}
-
-                        {navbar.map((nav) => (
-                            <NavbarLink key={nav.href} href={nav.href}>
-                                {nav.name}
                             </NavbarLink>
                         ))}
                     </NavbarLinks>
@@ -383,10 +388,25 @@ export function StoreNavbar({setIsOpen}:IProps) {
                     {activeCategory &&
                         activeCategory.sub_categories.length > 0 && (
                             <div className="mx-auto grid max-w-7xl gap-6 px-6 py-4 lg:grid-cols-[minmax(240px,0.8fr)_minmax(0,1fr)]">
-                                <a href={`${route("shopping.index")}?category=${activeCategory.id}`} className="group relative min-h-72 overflow-hidden rounded-none">
-                                    {activeCategory.img ? <img src={`/storage/${activeCategory.img}`} alt={activeCategory.name_en} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" /> : <div className="avora-surface-muted absolute inset-0" />}
+                                <a
+                                    href={`${route("shopping.index")}?category=${activeCategory.id}`}
+                                    className="group relative min-h-72 overflow-hidden rounded-none"
+                                >
+                                    {activeCategory.img ? (
+                                        <img
+                                            src={`/storage/${activeCategory.img}`}
+                                            alt={activeCategory.name_en}
+                                            className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                                        />
+                                    ) : (
+                                        <div className="avora-surface-muted absolute inset-0" />
+                                    )}
                                     <div className="absolute inset-0 bg-black/35 group-hover:bg-black/50" />
-                                    <span className="absolute inset-x-0 top-0 p-5 text-xl font-bold text-white">{direction === "rtl" ? activeCategory.name_ar : activeCategory.name_en}</span>
+                                    <span className="absolute inset-x-0 top-0 p-5 text-xl font-bold text-white">
+                                        {direction === "rtl"
+                                            ? activeCategory.name_ar
+                                            : activeCategory.name_en}
+                                    </span>
                                 </a>
                                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                                     {activeCategory.sub_categories.map(
@@ -460,16 +480,29 @@ export function StoreNavbar({setIsOpen}:IProps) {
                 >
                     <NavbarLinks className="flex-col items-stretch">
                         {storeCategories.map((category) => (
-                            <details key={category.id} className="border-b border-slate-200 py-2 dark:border-slate-700">
+                            <details
+                                key={category.id}
+                                className="border-b border-slate-200 py-2 dark:border-slate-700"
+                            >
                                 <summary className="cursor-pointer px-3 py-2 text-sm font-medium">
-                                    {direction === "rtl" ? category.name_ar : category.name_en}
+                                    {direction === "rtl"
+                                        ? category.name_ar
+                                        : category.name_en}
                                 </summary>
                                 <div className="ms-4 mt-2 space-y-1 border-s ps-3">
-                                    {category.sub_categories.map((subcategory) => (
-                                        <NavbarLink key={subcategory.id} href={`${route("shopping.index")}?category=${category.id}&subcategory=${subcategory.id}`} className="block !px-0 !py-1 text-xs">
-                                            {direction === "rtl" ? subcategory.name_ar : subcategory.name_en}
-                                        </NavbarLink>
-                                    ))}
+                                    {category.sub_categories.map(
+                                        (subcategory) => (
+                                            <NavbarLink
+                                                key={subcategory.id}
+                                                href={`${route("shopping.index")}?category=${category.id}&subcategory=${subcategory.id}`}
+                                                className="block !px-0 !py-1 text-xs"
+                                            >
+                                                {direction === "rtl"
+                                                    ? subcategory.name_ar
+                                                    : subcategory.name_en}
+                                            </NavbarLink>
+                                        ),
+                                    )}
                                 </div>
                             </details>
                         ))}

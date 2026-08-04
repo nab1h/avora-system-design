@@ -1,11 +1,11 @@
-import { Alert, AlertVariant } from "@/avora-dash/components/Alert";
-import { Button } from "@/avora-dash/components/Button";
-import { FormField } from "@/avora-dash/components/forms/FormField";
-import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
-import { Select } from "@/avora-dash/components/forms/Select";
-import { Grid } from "@/avora-dash/components/Grid/Grid";
-import { GridItem } from "@/avora-dash/components/Grid/GridItem";
-import { Modal } from "@/avora-dash/components/Modal/Modal";
+import { Alert, AlertVariant } from "@/avora-dash/Components/Alert";
+import { Button } from "@/avora-dash/Components/Button";
+import { FormField } from "@/avora-dash/Components/forms/FormField";
+import { ImageInput } from "@/avora-dash/Components/forms/ImageInput";
+import { Select } from "@/avora-dash/Components/forms/Select";
+import { Grid } from "@/avora-dash/Components/Grid/Grid";
+import { GridItem } from "@/avora-dash/Components/Grid/GridItem";
+import { Modal } from "@/avora-dash/Components/Modal/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { Classes, PageProps } from "@/types";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
@@ -47,25 +47,25 @@ export const ClassesPage = () => {
     //
     // Edit  =============================================
 
-  const editHandler = (item: Classes) => {
-      setEditingId(item.id);
+    const editHandler = (item: Classes) => {
+        setEditingId(item.id);
 
-      const currentImage =
-          typeof item.img === "string" && item.img
-              ? item.img.startsWith("http") || item.img.startsWith("/")
-                  ? item.img
-                  : `/storage/${item.img}`
-              : null;
+        const currentImage =
+            typeof item.img === "string" && item.img
+                ? item.img.startsWith("http") || item.img.startsWith("/")
+                    ? item.img
+                    : `/storage/${item.img}`
+                : null;
 
-      setEditingImage(currentImage);
+        setEditingImage(currentImage);
 
-      classesForm.setData({
-          ...item,
-          img: null,
-      });
+        classesForm.setData({
+            ...item,
+            img: null,
+        });
 
-      setOpenModal(true);
-  };
+        setOpenModal(true);
+    };
     // Delete  ============================================
     const deleteHandler = (id: number) => {
         setDeleteId(id);

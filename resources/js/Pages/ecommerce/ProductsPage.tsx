@@ -1,9 +1,9 @@
-import { Button } from "@/avora-dash/components/Button";
-import { FormField } from "@/avora-dash/components/forms/FormField";
-import { GalleryImageInput } from "@/avora-dash/components/forms/GalleryImageInput";
-import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
-import { Select } from "@/avora-dash/components/forms/Select";
-import { Modal } from "@/avora-dash/components/Modal";
+import { Button } from "@/avora-dash/Components/Button";
+import { FormField } from "@/avora-dash/Components/forms/FormField";
+import { GalleryImageInput } from "@/avora-dash/Components/forms/GalleryImageInput";
+import { ImageInput } from "@/avora-dash/Components/forms/ImageInput";
+import { Select } from "@/avora-dash/Components/forms/Select";
+import { Modal } from "@/avora-dash/Components/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import type { PageProps } from "@/types";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
@@ -154,10 +154,19 @@ export function ProductsPage() {
             has_custom_color_stock: product.has_custom_color_stock,
             colors: product.colors.map((color) => ({
                 id: color.id,
-                stock: color.pivot.stock === null ? "" : String(color.pivot.stock),
+                stock:
+                    color.pivot.stock === null ? "" : String(color.pivot.stock),
             })),
-            sizes: product.sizes.map((item) => ({ id: item.id, stock: item.pivot.stock === null ? "" : String(item.pivot.stock) })),
-            weights: product.weights.map((item) => ({ id: item.id, stock: item.pivot.stock === null ? "" : String(item.pivot.stock) })),
+            sizes: product.sizes.map((item) => ({
+                id: item.id,
+                stock:
+                    item.pivot.stock === null ? "" : String(item.pivot.stock),
+            })),
+            weights: product.weights.map((item) => ({
+                id: item.id,
+                stock:
+                    item.pivot.stock === null ? "" : String(item.pivot.stock),
+            })),
             materials: product.materials.map((item) => ({ id: item.id })),
             is_active: product.is_active,
             features: product.features.length
@@ -206,16 +215,30 @@ export function ProductsPage() {
     const toggleColor = (colorId: number) => {
         const selected = form.data.colors.find((color) => color.id === colorId);
         if (selected) {
-            form.setData("colors", form.data.colors.filter((color) => color.id !== colorId));
+            form.setData(
+                "colors",
+                form.data.colors.filter((color) => color.id !== colorId),
+            );
             return;
         }
         const count = form.data.colors.length + 1;
         const stock = Math.floor(Number(form.data.stock || 0) / count);
-        form.setData("colors", [...form.data.colors.map((color) => ({ ...color, stock: String(stock) })), { id: colorId, stock: String(stock) }]);
+        form.setData("colors", [
+            ...form.data.colors.map((color) => ({
+                ...color,
+                stock: String(stock),
+            })),
+            { id: colorId, stock: String(stock) },
+        ]);
     };
 
     const updateColorStock = (colorId: number, stock: string) => {
-        form.setData("colors", form.data.colors.map((color) => color.id === colorId ? { ...color, stock } : color));
+        form.setData(
+            "colors",
+            form.data.colors.map((color) =>
+                color.id === colorId ? { ...color, stock } : color,
+            ),
+        );
     };
 
     return (
@@ -434,7 +457,9 @@ export function ProductsPage() {
                                     ? `/storage/${item.image}`
                                     : null,
                             }))}
-                            onChange={(value) => form.setData("brand_id", value)}
+                            onChange={(value) =>
+                                form.setData("brand_id", value)
+                            }
                             error={form.errors.brand_id}
                         />
                         <Select
@@ -507,67 +532,158 @@ export function ProductsPage() {
                         <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
                             <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div>
-                                    <p className="font-semibold">ألوان المنتج</p>
-                                    <p className="mt-1 text-xs text-slate-500">اختر الألوان المتاحة لهذا المنتج.</p>
+                                    <p className="font-semibold">
+                                        ألوان المنتج
+                                    </p>
+                                    <p className="mt-1 text-xs text-slate-500">
+                                        اختر الألوان المتاحة لهذا المنتج.
+                                    </p>
                                 </div>
                                 <label className="flex items-center gap-2 text-sm font-medium">
                                     <input
                                         type="checkbox"
-                                        checked={form.data.has_custom_color_stock}
-                                        onChange={(event) => form.setData("has_custom_color_stock", event.target.checked)}
+                                        checked={
+                                            form.data.has_custom_color_stock
+                                        }
+                                        onChange={(event) =>
+                                            form.setData(
+                                                "has_custom_color_stock",
+                                                event.target.checked,
+                                            )
+                                        }
                                     />
                                     مخزون مخصص لكل لون
                                 </label>
                             </div>
                             <div className="mt-3 flex flex-wrap gap-2">
                                 {colors.map((color) => {
-                                    const selected = form.data.colors.some((item) => item.id === color.id);
-                                    return <button
-                                        key={color.id}
-                                        type="button"
-                                        onClick={() => toggleColor(color.id)}
-                                        className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${selected ? "border-sky-500 bg-sky-50 dark:bg-sky-950/30" : "border-slate-200 dark:border-slate-700"}`}
-                                    >
-                                        <span className="h-4 w-4 rounded-full border border-slate-300" style={{ backgroundColor: color.hex }} />
-                                        {color.name_ar}
-                                    </button>;
+                                    const selected = form.data.colors.some(
+                                        (item) => item.id === color.id,
+                                    );
+                                    return (
+                                        <button
+                                            key={color.id}
+                                            type="button"
+                                            onClick={() =>
+                                                toggleColor(color.id)
+                                            }
+                                            className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${selected ? "border-sky-500 bg-sky-50 dark:bg-sky-950/30" : "border-slate-200 dark:border-slate-700"}`}
+                                        >
+                                            <span
+                                                className="h-4 w-4 rounded-full border border-slate-300"
+                                                style={{
+                                                    backgroundColor: color.hex,
+                                                }}
+                                            />
+                                            {color.name_ar}
+                                        </button>
+                                    );
                                 })}
                             </div>
-                            {!colors.length && <p className="mt-3 text-sm text-slate-500">أضف الألوان أولًا من جدول إدارة الألوان.</p>}
-                            {form.data.has_custom_color_stock && form.data.colors.length > 0 && (
-                                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                    {form.data.colors.map((selected) => {
-                                        const color = colors.find((item) => item.id === selected.id);
-                                        if (!color) return null;
-                                        return <FormField
-                                            key={color.id}
-                                            type="number"
-                                            min="0"
-                                            label={`مخزون ${color.name_ar}`}
-                                            value={selected.stock}
-                                            onChange={(event) => updateColorStock(color.id, event.target.value)}
-                                        />;
-                                    })}
-                                </div>
+                            {!colors.length && (
+                                <p className="mt-3 text-sm text-slate-500">
+                                    أضف الألوان أولًا من جدول إدارة الألوان.
+                                </p>
                             )}
-                            {form.data.has_custom_color_stock && form.data.colors.length > 0 && (
-                                <p className="mt-3 text-xs text-slate-500">الإجمالي المحدد للألوان: {form.data.colors.reduce((total, color) => total + Number(color.stock || 0), 0)} قطعة.</p>
-                            )}
+                            {form.data.has_custom_color_stock &&
+                                form.data.colors.length > 0 && (
+                                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                        {form.data.colors.map((selected) => {
+                                            const color = colors.find(
+                                                (item) =>
+                                                    item.id === selected.id,
+                                            );
+                                            if (!color) return null;
+                                            return (
+                                                <FormField
+                                                    key={color.id}
+                                                    type="number"
+                                                    min="0"
+                                                    label={`مخزون ${color.name_ar}`}
+                                                    value={selected.stock}
+                                                    onChange={(event) =>
+                                                        updateColorStock(
+                                                            color.id,
+                                                            event.target.value,
+                                                        )
+                                                    }
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            {form.data.has_custom_color_stock &&
+                                form.data.colors.length > 0 && (
+                                    <p className="mt-3 text-xs text-slate-500">
+                                        الإجمالي المحدد للألوان:{" "}
+                                        {form.data.colors.reduce(
+                                            (total, color) =>
+                                                total +
+                                                Number(color.stock || 0),
+                                            0,
+                                        )}{" "}
+                                        قطعة.
+                                    </p>
+                                )}
                         </div>
                     </div>
                     <div className="grid gap-4 md:grid-cols-3">
-                        {([
-                            ["sizes", "المقاسات", sizes],
-                            ["weights", "الأوزان", weights],
-                            ["materials", "الخامات", materials],
-                        ] as const).map(([field, label, options]) => (
-                            <div key={field} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+                        {(
+                            [
+                                ["sizes", "المقاسات", sizes],
+                                ["weights", "الأوزان", weights],
+                                ["materials", "الخامات", materials],
+                            ] as const
+                        ).map(([field, label, options]) => (
+                            <div
+                                key={field}
+                                className="rounded-xl border border-slate-200 p-4 dark:border-slate-700"
+                            >
                                 <p className="font-semibold">{label}</p>
-                                <p className="mt-1 text-xs text-slate-500">اختياري ويمكن اختيار أكثر من قيمة.</p>
+                                <p className="mt-1 text-xs text-slate-500">
+                                    اختياري ويمكن اختيار أكثر من قيمة.
+                                </p>
                                 <div className="mt-3 flex flex-wrap gap-2">
                                     {options.map((option) => {
-                                        const selected = form.data[field].some((item) => item.id === option.id);
-                                        return <button key={option.id} type="button" onClick={() => (form.setData as any)(field, selected ? form.data[field].filter((item) => item.id !== option.id) : [...form.data[field], field === "materials" ? { id: option.id } : { id: option.id, stock: "" }])} className={`rounded-lg border px-3 py-2 text-sm ${selected ? "border-sky-500 bg-sky-50 dark:bg-sky-950/30" : "border-slate-200 dark:border-slate-700"}`}>{option.name_ar}</button>;
+                                        const selected = form.data[field].some(
+                                            (item) => item.id === option.id,
+                                        );
+                                        return (
+                                            <button
+                                                key={option.id}
+                                                type="button"
+                                                onClick={() =>
+                                                    (form.setData as any)(
+                                                        field,
+                                                        selected
+                                                            ? form.data[
+                                                                  field
+                                                              ].filter(
+                                                                  (item) =>
+                                                                      item.id !==
+                                                                      option.id,
+                                                              )
+                                                            : [
+                                                                  ...form.data[
+                                                                      field
+                                                                  ],
+                                                                  field ===
+                                                                  "materials"
+                                                                      ? {
+                                                                            id: option.id,
+                                                                        }
+                                                                      : {
+                                                                            id: option.id,
+                                                                            stock: "",
+                                                                        },
+                                                              ],
+                                                    )
+                                                }
+                                                className={`rounded-lg border px-3 py-2 text-sm ${selected ? "border-sky-500 bg-sky-50 dark:bg-sky-950/30" : "border-slate-200 dark:border-slate-700"}`}
+                                            >
+                                                {option.name_ar}
+                                            </button>
+                                        );
                                     })}
                                 </div>
                             </div>
@@ -649,16 +765,26 @@ export function ProductsPage() {
                     </div>
                     <div className="grid gap-4 md:grid-cols-2">
                         <ImageInput
-                            label={`الصورة الرئيسية${!editing ? ' *' : ''}`}
+                            label={`الصورة الرئيسية${!editing ? " *" : ""}`}
                             value={form.data.main_image}
-                            currentImage={editing?.images.find((image) => image.type === 'main')?.image ? `/storage/${editing.images.find((image) => image.type === 'main')?.image}` : null}
-                            onChange={(image) => form.setData('main_image', image)}
+                            currentImage={
+                                editing?.images.find(
+                                    (image) => image.type === "main",
+                                )?.image
+                                    ? `/storage/${editing.images.find((image) => image.type === "main")?.image}`
+                                    : null
+                            }
+                            onChange={(image) =>
+                                form.setData("main_image", image)
+                            }
                             error={form.errors.main_image}
                         />
                         <GalleryImageInput
                             label="صور المعرض"
                             value={form.data.gallery_images}
-                            onChange={(images) => form.setData('gallery_images', images)}
+                            onChange={(images) =>
+                                form.setData("gallery_images", images)
+                            }
                             error={form.errors.gallery_images}
                         />
                     </div>

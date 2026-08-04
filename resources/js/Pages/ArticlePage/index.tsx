@@ -1,15 +1,14 @@
 import { ArticlePreview } from "@/types";
-import { Slider } from "@/avora-dash/components/Slider/Slider";
+import { Slider } from "@/avora-dash/Components/Slider/Slider";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { BlogCard } from "@/Components/BlogCard";
 import { router } from "@inertiajs/react";
 
-
-interface IProps{
+interface IProps {
     articles: ArticlePreview[];
 }
-export function ArticlePage({articles}:IProps) {
-const { translate, direction } = useLanguage();
+export function ArticlePage({ articles }: IProps) {
+    const { translate, direction } = useLanguage();
     return (
         <Slider
             ariaLabel={translate({

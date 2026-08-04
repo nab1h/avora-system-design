@@ -1,14 +1,11 @@
-import { Button } from "@/avora-dash/components/Button";
-import {
-    Alert,
-    type AlertVariant,
-} from "@/avora-dash/components/Alert";
-import { FormField } from "@/avora-dash/components/forms/FormField";
-import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
-import { Select } from "@/avora-dash/components/forms/Select";
-import { Grid } from "@/avora-dash/components/Grid";
-import { GridItem } from "@/avora-dash/components/Grid/GridItem";
-import { Modal } from "@/avora-dash/components/Modal/Modal";
+import { Button } from "@/avora-dash/Components/Button";
+import { Alert, type AlertVariant } from "@/avora-dash/Components/Alert";
+import { FormField } from "@/avora-dash/Components/forms/FormField";
+import { ImageInput } from "@/avora-dash/Components/forms/ImageInput";
+import { Select } from "@/avora-dash/Components/forms/Select";
+import { Grid } from "@/avora-dash/Components/Grid";
+import { GridItem } from "@/avora-dash/Components/Grid/GridItem";
+import { Modal } from "@/avora-dash/Components/Modal/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { Category, PageProps, SubCategory } from "@/types";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
@@ -621,10 +618,7 @@ export const SubCategoriesPage = () => {
                                     },
                                 ]}
                                 onChange={(value) =>
-                                    subCatForm.setData(
-                                        "is_active",
-                                        value === 1,
-                                    )
+                                    subCatForm.setData("is_active", value === 1)
                                 }
                             />
                         </GridItem>

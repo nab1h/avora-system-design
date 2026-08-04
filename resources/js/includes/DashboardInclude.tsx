@@ -1,8 +1,8 @@
-import { Card, CardMeta } from '@/avora-dash/components/Card';
-import { Container } from '@/avora-dash/components/Container';
-import { Grid, GridItem } from '@/avora-dash/components/Grid';
-import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
-import { useTheme } from '@/avora-dash/providers/ThemeProvider';
+import { Card, CardMeta } from "@/avora-dash/Components/Card";
+import { Container } from "@/avora-dash/Components/Container";
+import { Grid, GridItem } from "@/avora-dash/Components/Grid";
+import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
+import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 
 // Copy this dashboard and replace the sample values with real data.
 export function DashboardInclude() {
@@ -12,12 +12,12 @@ export function DashboardInclude() {
     // Replace these values with data from your backend.
     const statistics = [
         {
-            label: translate({ ar: 'الطلبات', en: 'Orders' }),
-            value: '124',
+            label: translate({ ar: "الطلبات", en: "Orders" }),
+            value: "124",
         },
         {
-            label: translate({ ar: 'العملاء', en: 'Customers' }),
-            value: '89',
+            label: translate({ ar: "العملاء", en: "Customers" }),
+            value: "89",
         },
     ];
 
@@ -29,15 +29,15 @@ export function DashboardInclude() {
                     <Card variant="elevated" padding="lg" className="h-full">
                         <CardMeta>
                             {translate({
-                                ar: 'إجمالي المبيعات',
-                                en: 'Total sales',
+                                ar: "إجمالي المبيعات",
+                                en: "Total sales",
                             })}
                         </CardMeta>
                         {/* Replace this value with real sales data. */}
                         <p className="mt-3 text-3xl font-bold">
                             {translate({
-                                ar: '٤٨٬٢٠٠ ج.م',
-                                en: 'EGP 48,200',
+                                ar: "٤٨٬٢٠٠ ج.م",
+                                en: "EGP 48,200",
                             })}
                         </p>
                         <p

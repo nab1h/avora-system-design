@@ -13,11 +13,12 @@ interface StoreLayoutProps {
 
 export function StoreLayout({ children, cartProducts = [] }: StoreLayoutProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const pageCartProducts = usePage<PageProps<{ cartProducts?: CartProduct[] }>>()
-        .props.cartProducts;
+    const pageCartProducts =
+        usePage<PageProps<{ cartProducts?: CartProduct[] }>>().props
+            .cartProducts;
     const resolvedCartProducts = cartProducts.length
         ? cartProducts
-        : pageCartProducts ?? [];
+        : (pageCartProducts ?? []);
 
     return (
         <>

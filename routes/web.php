@@ -31,12 +31,19 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiteManifestController;
 use App\Http\Controllers\ShoppingPageController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/articles/{slug}', [ArticleShowController::class, 'show'])->name('articles.show');
 Route::get('/brands', [BrandPageController::class, 'index'])->name('brands.index');
 Route::get('/shopping', [ShoppingPageController::class, 'index'])->name('shopping.index');
+
+Route::get('/depth-gallery', function () {
+    return Inertia::render('DepthGallery');
+})->name('depth-gallery');
+
 
 Route::post('/cart', [CartController::class, 'store'])
     ->middleware('auth')

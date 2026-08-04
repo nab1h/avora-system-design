@@ -1,4 +1,4 @@
-﻿import { Button } from "@/avora-dash/components/Button";
+﻿import { Button } from "@/avora-dash/Components/Button";
 import {
     Card,
     CardContent,
@@ -9,10 +9,10 @@ import {
     CardMeta,
     CardPrice,
     CardTitle,
-} from "@/avora-dash/components/Card";
-import { Container } from "@/avora-dash/components/Container";
-import { Grid, GridItem } from "@/avora-dash/components/Grid";
-import { LanguageButton } from "@/avora-dash/components/LanguageButton";
+} from "@/avora-dash/Components/Card";
+import { Container } from "@/avora-dash/Components/Container";
+import { Grid, GridItem } from "@/avora-dash/Components/Grid";
+import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
 import {
     Navbar,
     NavbarActions,
@@ -25,7 +25,7 @@ import {
     NavbarMobileMenu,
     NavbarOverlay,
     NavbarToggle,
-} from "@/avora-dash/components/Navbar";
+} from "@/avora-dash/Components/Navbar";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import ModeButton from "@/avora-dash/providers/ModeButton";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
@@ -143,7 +143,7 @@ export default function Welcome({}: PageProps) {
             }),
             description: translate({
                 ar: "مكونات مرنة لبناء واجهات سريعة ومتناسقة.",
-                en: "Flexible components for fast and consistent interfaces.",
+                en: "Flexible Components for fast and consistent interfaces.",
             }),
             amount: 1200,
             price: translate({

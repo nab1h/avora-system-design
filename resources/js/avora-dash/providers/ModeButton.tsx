@@ -1,21 +1,21 @@
-import { Button } from '../components/Button';
-import { useLanguage } from './LanguageProvider';
-import { useTheme } from './ThemeProvider';
+import { Button } from "../Components/Button";
+import { useLanguage } from "./LanguageProvider";
+import { useTheme } from "./ThemeProvider";
 
 export function ModeButton() {
     const { theme, setTheme } = useTheme();
     const { translate } = useLanguage();
-    const isDark = theme === 'dark';
+    const isDark = theme === "dark";
     const label = isDark
-        ? translate({ ar: 'الوضع الفاتح', en: 'Light mode' })
-        : translate({ ar: 'الوضع الداكن', en: 'Dark mode' });
+        ? translate({ ar: "الوضع الفاتح", en: "Light mode" })
+        : translate({ ar: "الوضع الداكن", en: "Dark mode" });
 
     return (
         <Button
             type="button"
             variant="ghost"
             size="icon"
-            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            onClick={() => setTheme(isDark ? "light" : "dark")}
             aria-label={label}
             title={label}
         >

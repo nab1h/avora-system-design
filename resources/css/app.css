@@ -1,5 +1,5 @@
 @tailwind base;
-@tailwind components;
+@tailwind Components;
 @tailwind utilities;
 
 @keyframes alert-in {
@@ -46,44 +46,41 @@
     }
 }
 
-
 /* google fonts */
 .roboto {
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 100;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 95.1;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+    font-variation-settings: "wdth" 95.1;
 }
 
 .science-gothic {
-  font-family: "Science Gothic", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 200;
-  font-style: normal;
-  font-variation-settings:
-    "slnt" -3,
-    "wdth" 100,
-    "CTRS" 0;
+    font-family: "Science Gothic", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-style: normal;
+    font-variation-settings:
+        "slnt" -3,
+        "wdth" 100,
+        "CTRS" 0;
 }
 
 .cairo {
-  font-family: "Cairo", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 323;
-  font-style: normal;
-  font-variation-settings:
-    "slnt" 0;
+    font-family: "Cairo", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 323;
+    font-style: normal;
+    font-variation-settings: "slnt" 0;
 }
 
 .playfair-display {
-  font-family: "Playfair Display", serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
 }
-@layer components {
+@layer Components {
     .avora-button-primary {
         background-color: var(--avora-primary);
     }
@@ -108,7 +105,11 @@
     }
 
     .avora-button-outline:hover {
-        background-color: color-mix(in srgb, var(--avora-primary) 10%, transparent);
+        background-color: color-mix(
+            in srgb,
+            var(--avora-primary) 10%,
+            transparent
+        );
     }
 
     .avora-text-primary {
@@ -120,23 +121,43 @@
     }
 
     .avora-bg-primary-soft {
-        background-color: color-mix(in srgb, var(--avora-primary) 12%, transparent);
+        background-color: color-mix(
+            in srgb,
+            var(--avora-primary) 12%,
+            transparent
+        );
     }
 
     .avora-brand-gradient {
-        background-image: linear-gradient(135deg, color-mix(in srgb, var(--avora-primary) 72%, #0f172a), var(--avora-primary));
+        background-image: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--avora-primary) 72%, #0f172a),
+            var(--avora-primary)
+        );
     }
 
     .avora-secondary-gradient {
-        background-image: linear-gradient(135deg, color-mix(in srgb, var(--avora-secondary) 72%, #0f172a), var(--avora-secondary));
+        background-image: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--avora-secondary) 72%, #0f172a),
+            var(--avora-secondary)
+        );
     }
 
     .avora-success-gradient {
-        background-image: linear-gradient(135deg, color-mix(in srgb, var(--avora-success) 72%, #0f172a), var(--avora-success));
+        background-image: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--avora-success) 72%, #0f172a),
+            var(--avora-success)
+        );
     }
 
     .avora-goal-card {
-        background-image: linear-gradient(135deg, color-mix(in srgb, var(--avora-primary) 32%, #020617), #020617);
+        background-image: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--avora-primary) 32%, #020617),
+            #020617
+        );
     }
 
     .avora-progress-primary {
@@ -144,12 +165,17 @@
     }
 
     .avora-sales-bar {
-        background-image: linear-gradient(to top, color-mix(in srgb, var(--avora-primary) 82%, black), var(--avora-primary));
+        background-image: linear-gradient(
+            to top,
+            color-mix(in srgb, var(--avora-primary) 82%, black),
+            var(--avora-primary)
+        );
     }
 
     .avora-form-field:focus {
         border-color: var(--avora-primary);
-        box-shadow: 0 0 0 0px color-mix(in srgb, var(--avora-primary) 10%, transparent);
+        box-shadow: 0 0 0 0px
+            color-mix(in srgb, var(--avora-primary) 10%, transparent);
     }
 
     .avora-floating-field {
@@ -238,17 +264,29 @@
     }
 
     .avora-status-success {
-        background-color: color-mix(in srgb, var(--avora-success) 12%, transparent);
+        background-color: color-mix(
+            in srgb,
+            var(--avora-success) 12%,
+            transparent
+        );
         color: var(--avora-success);
     }
 
     .avora-status-warning {
-        background-color: color-mix(in srgb, var(--avora-warning) 12%, transparent);
+        background-color: color-mix(
+            in srgb,
+            var(--avora-warning) 12%,
+            transparent
+        );
         color: var(--avora-warning);
     }
 
     .avora-status-danger {
-        background-color: color-mix(in srgb, var(--avora-danger) 12%, transparent);
+        background-color: color-mix(
+            in srgb,
+            var(--avora-danger) 12%,
+            transparent
+        );
         color: var(--avora-danger);
     }
 }

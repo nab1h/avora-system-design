@@ -1,5 +1,5 @@
-import { GridItem } from "@/avora-dash/components/Grid";
-import { Grid } from "@/avora-dash/components/Grid/Grid";
+import { GridItem } from "@/avora-dash/Components/Grid";
+import { Grid } from "@/avora-dash/Components/Grid/Grid";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 
 export interface BlogCard2Props {
@@ -8,11 +8,7 @@ export interface BlogCard2Props {
     imageAlt: string;
 }
 
-export function BlogCard2({
-    title,
-    imageSrc,
-    imageAlt,
-}: BlogCard2Props) {
+export function BlogCard2({ title, imageSrc, imageAlt }: BlogCard2Props) {
     const { colors } = useTheme();
 
     return (

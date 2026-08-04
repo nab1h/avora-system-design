@@ -4,27 +4,27 @@ export type DashboardTranslation = {
 };
 
 export type DashboardIconName =
-    | 'dashboard'
-    | 'orders'
-    | 'products'
-    | 'purchases'
-    | 'customers'
-    | 'reports'
-    | 'calendar'
-    | 'forms'
-    | 'tables'
-    | 'components'
-    | 'payments'
-    | 'settings'
-    | 'profile'
-    | 'sales'
-    | 'menu'
-    | 'search'
-    | 'bell'
-    | 'arrow-up'
-    | 'arrow-down'
-    | 'close'
-    | 'logout';
+    | "dashboard"
+    | "orders"
+    | "products"
+    | "purchases"
+    | "customers"
+    | "reports"
+    | "calendar"
+    | "forms"
+    | "tables"
+    | "Components"
+    | "payments"
+    | "settings"
+    | "profile"
+    | "sales"
+    | "menu"
+    | "search"
+    | "bell"
+    | "arrow-up"
+    | "arrow-down"
+    | "close"
+    | "logout";
 
 export type DashboardNavItem = {
     label: DashboardTranslation;

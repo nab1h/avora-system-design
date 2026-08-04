@@ -1,6 +1,6 @@
-import { Button } from "@/avora-dash/components/Button";
-import { Card } from "@/avora-dash/components/Card";
-import { Container } from "@/avora-dash/components/Container/Container";
+import { Button } from "@/avora-dash/Components/Button";
+import { Card } from "@/avora-dash/Components/Card";
+import { Container } from "@/avora-dash/Components/Container/Container";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
 import { StoreLayout } from "@/Layouts/StoreLayout";
@@ -77,8 +77,12 @@ export default function ProductShow() {
     const [activeImage, setActiveImage] = useState(0);
     const [authOpen, setAuthOpen] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [selectedColor, setSelectedColor] = useState<number | null>(product.colors[0]?.id ?? null);
-    const [selectedSize, setSelectedSize] = useState<number | null>(product.sizes[0]?.id ?? null);
+    const [selectedColor, setSelectedColor] = useState<number | null>(
+        product.colors[0]?.id ?? null,
+    );
+    const [selectedSize, setSelectedSize] = useState<number | null>(
+        product.sizes[0]?.id ?? null,
+    );
 
     const currency = websiteSettings.currency ?? "EGP";
 
@@ -171,7 +175,10 @@ export default function ProductShow() {
 
                     <div className="grid gap-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(380px,0.88fr)] xl:gap-16">
                         <section>
-                            <Card padding="none" className="overflow-hidden rounded-none border-0 shadow-none">
+                            <Card
+                                padding="none"
+                                className="overflow-hidden rounded-none border-0 shadow-none"
+                            >
                                 {activeProductImage ? (
                                     <img
                                         src={`/storage/${activeProductImage.image}`}
@@ -280,9 +287,76 @@ export default function ProductShow() {
                             )}
 
                             <div className="space-y-4 border-y border-slate-200 py-5 dark:border-slate-800">
-                                {product.sizes.length > 0 && <div><p className="mb-2 text-sm font-medium">{translate({ar:"المقاس",en:"Size"})}</p><div className="flex gap-2">{product.sizes.map(size => <button key={size.id} type="button" onClick={() => setSelectedSize(size.id)} className={`min-w-10 border px-3 py-2 text-sm ${selectedSize === size.id ? "border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-950" : "border-slate-300"}`}>{direction === "rtl" ? size.name_ar : size.name_en}</button>)}</div></div>}
-                                {product.colors.length > 0 && <div><p className="mb-2 text-sm font-medium">{translate({ar:"اللون",en:"Color"})}</p><div className="flex gap-3">{product.colors.map(color => <button key={color.id} type="button" onClick={() => setSelectedColor(color.id)} aria-label={color.name_en} className={`h-8 w-8 border-2 ${selectedColor === color.id ? "border-slate-900 ring-2 ring-slate-300" : "border-slate-300"}`} style={{backgroundColor: color.hex}} />)}</div></div>}
-                                {product.materials.length > 0 && <p className="text-sm text-slate-600 dark:text-slate-300">{translate({ar:"الخامة: ",en:"Material: "})}{product.materials.map(item => direction === "rtl" ? item.name_ar : item.name_en).join("، ")}</p>}
+                                {product.sizes.length > 0 && (
+                                    <div>
+                                        <p className="mb-2 text-sm font-medium">
+                                            {translate({
+                                                ar: "المقاس",
+                                                en: "Size",
+                                            })}
+                                        </p>
+                                        <div className="flex gap-2">
+                                            {product.sizes.map((size) => (
+                                                <button
+                                                    key={size.id}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedSize(size.id)
+                                                    }
+                                                    className={`min-w-10 border px-3 py-2 text-sm ${selectedSize === size.id ? "border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-950" : "border-slate-300"}`}
+                                                >
+                                                    {direction === "rtl"
+                                                        ? size.name_ar
+                                                        : size.name_en}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                {product.colors.length > 0 && (
+                                    <div>
+                                        <p className="mb-2 text-sm font-medium">
+                                            {translate({
+                                                ar: "اللون",
+                                                en: "Color",
+                                            })}
+                                        </p>
+                                        <div className="flex gap-3">
+                                            {product.colors.map((color) => (
+                                                <button
+                                                    key={color.id}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedColor(
+                                                            color.id,
+                                                        )
+                                                    }
+                                                    aria-label={color.name_en}
+                                                    className={`h-8 w-8 border-2 ${selectedColor === color.id ? "border-slate-900 ring-2 ring-slate-300" : "border-slate-300"}`}
+                                                    style={{
+                                                        backgroundColor:
+                                                            color.hex,
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                {product.materials.length > 0 && (
+                                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                                        {translate({
+                                            ar: "الخامة: ",
+                                            en: "Material: ",
+                                        })}
+                                        {product.materials
+                                            .map((item) =>
+                                                direction === "rtl"
+                                                    ? item.name_ar
+                                                    : item.name_en,
+                                            )
+                                            .join("، ")}
+                                    </p>
+                                )}
                                 <p className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-100">
                                     <LuPackageCheck className="h-5 w-5 shrink-0 text-emerald-600" />
 
@@ -297,14 +371,52 @@ export default function ProductShow() {
                                           })}
                                 </p>
 
-                                <div className="flex gap-3"><div className="flex border border-slate-300"><button type="button" className="px-3" onClick={() => setQuantity(Math.max(1, quantity - 1))}><LuMinus /></button><span className="grid min-w-10 place-items-center">{quantity}</span><button type="button" className="px-3" onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}><LuPlus /></button></div><Button size="lg" type="button" disabled={product.stock <= 0} onClick={addToCart} className="flex-1 gap-2 rounded-none bg-slate-900 hover:bg-slate-700">
-                                    <LuShoppingCart className="h-5 w-5" />
+                                <div className="flex gap-3">
+                                    <div className="flex border border-slate-300">
+                                        <button
+                                            type="button"
+                                            className="px-3"
+                                            onClick={() =>
+                                                setQuantity(
+                                                    Math.max(1, quantity - 1),
+                                                )
+                                            }
+                                        >
+                                            <LuMinus />
+                                        </button>
+                                        <span className="grid min-w-10 place-items-center">
+                                            {quantity}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className="px-3"
+                                            onClick={() =>
+                                                setQuantity(
+                                                    Math.min(
+                                                        product.stock,
+                                                        quantity + 1,
+                                                    ),
+                                                )
+                                            }
+                                        >
+                                            <LuPlus />
+                                        </button>
+                                    </div>
+                                    <Button
+                                        size="lg"
+                                        type="button"
+                                        disabled={product.stock <= 0}
+                                        onClick={addToCart}
+                                        className="flex-1 gap-2 rounded-none bg-slate-900 hover:bg-slate-700"
+                                    >
+                                        <LuShoppingCart className="h-5 w-5" />
 
-                                    {translate({
-                                        ar: "إضافة إلى عربة التسوق",
-                                        en: "Add to cart",
-                                    })}
-                                </Button></div>
+                                        {translate({
+                                            ar: "إضافة إلى عربة التسوق",
+                                            en: "Add to cart",
+                                        })}
+                                    </Button>
+                                </div>
                             </div>
 
                             {product.features.length > 0 && (

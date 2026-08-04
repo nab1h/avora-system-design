@@ -1,7 +1,7 @@
 import {
     Select,
     type SelectOption,
-} from '@/avora-dash/components/forms/Select';
+} from "@/avora-dash/Components/forms/Select";
 
 /**
  * @deprecated Prefer the more flexible `Select` component.

@@ -1,5 +1,5 @@
-import { Button } from '@/avora-dash/components/Button';
-import { LanguageButton } from '@/avora-dash/components/LanguageButton';
+import { Button } from "@/avora-dash/Components/Button";
+import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
 import {
     Navbar,
     NavbarActions,
@@ -12,9 +12,9 @@ import {
     NavbarMobileMenu,
     NavbarOverlay,
     NavbarToggle,
-} from '@/avora-dash/components/Navbar';
-import { useLanguage } from '@/avora-dash/providers/LanguageProvider';
-import ModeButton from '@/avora-dash/providers/ModeButton';
+} from "@/avora-dash/Components/Navbar";
+import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
+import ModeButton from "@/avora-dash/providers/ModeButton";
 
 // Copy this file, then change the links and logo for your project.
 export function NavbarInclude() {
@@ -22,10 +22,10 @@ export function NavbarInclude() {
 
     // Change these links for every project.
     const links = [
-        { href: '#home', ar: 'الرئيسية', en: 'Home' },
-        { href: '#services', ar: 'الخدمات', en: 'Services' },
-        { href: '#products', ar: 'المنتجات', en: 'Products' },
-        { href: '#contact', ar: 'تواصل معنا', en: 'Contact' },
+        { href: "#home", ar: "الرئيسية", en: "Home" },
+        { href: "#services", ar: "الخدمات", en: "Services" },
+        { href: "#products", ar: "المنتجات", en: "Products" },
+        { href: "#contact", ar: "تواصل معنا", en: "Contact" },
     ];
 
     const navigationLinks = links.map((link) => (
@@ -35,12 +35,7 @@ export function NavbarInclude() {
     ));
 
     return (
-        <Navbar
-            position="sticky"
-            background="glass"
-            shadow="sm"
-            bordered
-        >
+        <Navbar position="sticky" background="glass" shadow="sm" bordered>
             <NavbarContainer width="wide" height="md">
                 <NavbarBrand>
                     {/* Change this image path and alt text. */}
@@ -48,8 +43,8 @@ export function NavbarInclude() {
                         href="#home"
                         src="/images/avora-logo.svg"
                         alt={translate({
-                            ar: 'شعار المشروع',
-                            en: 'Project logo',
+                            ar: "شعار المشروع",
+                            en: "Project logo",
                         })}
                         imageClassName="h-10"
                     />
@@ -64,8 +59,8 @@ export function NavbarInclude() {
                         {/* Change this button action and text. */}
                         <Button size="sm">
                             {translate({
-                                ar: 'تسجيل الدخول',
-                                en: 'Sign in',
+                                ar: "تسجيل الدخول",
+                                en: "Sign in",
                             })}
                         </Button>
                     </NavbarActions>
@@ -76,11 +71,7 @@ export function NavbarInclude() {
             </NavbarContainer>
 
             {/* Change placement to top, left, right, start, or end. */}
-            <NavbarMobileMenu
-                placement="end"
-                motion="slide"
-                duration="normal"
-            >
+            <NavbarMobileMenu placement="end" motion="slide" duration="normal">
                 <NavbarLinks className="flex-col items-stretch">
                     {navigationLinks}
                 </NavbarLinks>
@@ -89,7 +80,7 @@ export function NavbarInclude() {
                     <ModeButton />
                     <LanguageButton />
                     <Button size="sm" fullWidth>
-                        {translate({ ar: 'تسجيل الدخول', en: 'Sign in' })}
+                        {translate({ ar: "تسجيل الدخول", en: "Sign in" })}
                     </Button>
                 </NavbarActions>
             </NavbarMobileMenu>

@@ -1,11 +1,11 @@
-import { Button } from "@/avora-dash/components/Button";
+import { Button } from "@/avora-dash/Components/Button";
 import { LuMinus, LuPlus, LuTrash2 } from "react-icons/lu";
-import { Drawer } from "@/avora-dash/components/Drawer/Drawer";
+import { Drawer } from "@/avora-dash/Components/Drawer/Drawer";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { router, usePage } from "@inertiajs/react";
 import { CartProduct, PageProps } from "@/types";
 
-interface IProps{
+interface IProps {
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     cartProducts?: CartProduct[];

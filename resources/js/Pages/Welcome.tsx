@@ -1,5 +1,4 @@
-import { Alert } from "@/avora-dash/components/Alert";
-import { Container } from "@/avora-dash/components/Container/Container";
+import { Alert } from "@/avora-dash/Components/Alert";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
@@ -11,12 +10,15 @@ import { StoreDrawer } from "@/Components/StoreDrawer";
 import { ProductsPage } from "./ProductsPage";
 import { ArticlePage } from "./ArticlePage";
 import { StoreHero } from "./StoreHero";
-import { SectionTitle } from "@/avora-dash/components/SectionTitle";
-import { BrandsSlider, type StoreBrand } from '@/Components/BrandsSlider';
-import { ShoppingBenefits } from '@/Components/ShoppingBenefits';
-import { StoreFooter } from '@/Components/StoreFooter';
-import { MainCategoriesSection } from '@/Components/MainCategoriesSection';
-import { ClassesSection } from '@/Components/ClassesSection';
+import { BrandsSlider, type StoreBrand } from "@/Components/BrandsSlider";
+import { ShoppingBenefits } from "@/Components/ShoppingBenefits";
+import { StoreFooter } from "@/Components/StoreFooter";
+import { MainCategoriesSection } from "@/Components/MainCategoriesSection";
+import { ClassesSection } from "@/Components/ClassesSection";
+import DepthGallery from "@/Components/DepthGallery/DepthGallery";
+import { Container } from "@/avora-dash/Components/Container/Container";
+import { SectionTitle } from "@/avora-dash/Components/SectionTitle/SectionTitle";
+
 type WelcomeProps = PageProps<{
     products: StoreProduct[];
     articles: ArticlePreview[];
@@ -39,6 +41,7 @@ export default function Welcome({
     const page = usePage<PageProps & { errors?: Record<string, string> }>();
     const [isOpen, setIsOpen] = useState(false);
     const [cartSuccess, setCartSuccess] = useState(false);
+
     return (
         <>
             <Head
@@ -70,6 +73,7 @@ export default function Welcome({
                     color: colors.text,
                 }}
             >
+                <DepthGallery />
                 <StoreHero />
                 <Container
                     width="wide"

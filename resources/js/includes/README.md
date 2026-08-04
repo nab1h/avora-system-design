@@ -2,7 +2,7 @@
 
 هذا الفولدر مخصص للأجزاء الجاهزة والمركبة من مكوّنات Avora Design System.
 
-- `components`: قطع صغيرة مستقلة مثل Button وCard وModal.
+- `Components`: قطع صغيرة مستقلة مثل Button وCard وModal.
 - `resources/js/includes`: أقسام أو شاشات كاملة ركّبنا فيها هذه القطع معًا، وهي خارج فولدر الديزاين سيستم.
 - `resources/js/Layouts`: أغلفة الصفحات وتركيبها العام، وهي أيضًا خارج الديزاين سيستم.
 
@@ -20,11 +20,7 @@
 استورد أي جزء جاهز من ملف واحد:
 
 ```tsx
-import {
-    NavbarInclude,
-    HeroInclude,
-    ProductGridInclude,
-} from '@/includes';
+import { NavbarInclude, HeroInclude, ProductGridInclude } from "@/includes";
 
 export default function Page() {
     return (

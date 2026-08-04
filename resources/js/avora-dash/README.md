@@ -43,7 +43,7 @@
 
 ```text
 avora/
-├── components/
+├── Components/
 │   ├── Button.tsx
 │   ├── LanguageButton.tsx
 │   ├── Card/
@@ -94,7 +94,7 @@ avora/
 
 القاعدة البسيطة:
 
-- عدّل JSX وسلوك المكوّن داخل `components`.
+- عدّل JSX وسلوك المكوّن داخل `Components`.
 - عدّل الأشكال والأحجام الجاهزة داخل `styles`.
 - عدّل الألوان والمسافات العامة داخل `tokens`.
 
@@ -137,7 +137,7 @@ npm run build
 استخدم `useLanguage` داخل أي مكوّن يحتاج نصوصًا مترجمة:
 
 ```tsx
-import { useLanguage } from '@/avora/providers/LanguageProvider';
+import { useLanguage } from "@/avora/providers/LanguageProvider";
 
 export default function Example() {
     const { translate } = useLanguage();
@@ -145,8 +145,8 @@ export default function Example() {
     return (
         <h1>
             {translate({
-                ar: 'مرحبًا بك',
-                en: 'Welcome',
+                ar: "مرحبًا بك",
+                en: "Welcome",
             })}
         </h1>
     );
@@ -156,9 +156,9 @@ export default function Example() {
 زر تغيير اللغة:
 
 ```tsx
-import { LanguageButton } from '@/avora/components/LanguageButton';
+import { LanguageButton } from "@/avora/Components/LanguageButton";
 
-<LanguageButton />
+<LanguageButton />;
 ```
 
 عند تغيير اللغة يقوم النظام تلقائيًا بـ:
@@ -178,21 +178,21 @@ const { language, direction } = useLanguage();
 زر تغيير الوضع:
 
 ```tsx
-import ModeButton from '@/avora/providers/ModeButton';
+import ModeButton from "@/avora/providers/ModeButton";
 
-<ModeButton />
+<ModeButton />;
 ```
 
 للوصول إلى الألوان الحالية:
 
 ```tsx
-import { useTheme } from '@/avora/providers/ThemeProvider';
+import { useTheme } from "@/avora/providers/ThemeProvider";
 
 const { colors } = useTheme();
 
 <div style={{ color: colors.text, backgroundColor: colors.background }}>
     Content
-</div>
+</div>;
 ```
 
 الألوان الأساسية موجودة في:
@@ -210,7 +210,7 @@ const { colors } = useTheme();
 
 <main style={{ backgroundColor: colors.background, color: colors.text }}>
     Page content
-</main>
+</main>;
 ```
 
 ## 8. Button
@@ -218,7 +218,7 @@ const { colors } = useTheme();
 الاستيراد:
 
 ```tsx
-import { Button } from '@/avora/components/Button';
+import { Button } from "@/avora/Components/Button";
 ```
 
 أبسط استخدام:
@@ -266,9 +266,7 @@ resources/js/avora/styles/buttonVariants.ts
 لتعديل زر واحد فقط استخدم `className`:
 
 ```tsx
-<Button className="h-14 px-8">
-    Custom button
-</Button>
+<Button className="h-14 px-8">Custom button</Button>
 ```
 
 ## 9. Card
@@ -288,29 +286,22 @@ import {
     CardFooter,
     CardMeta,
     CardPrice,
-} from '@/avora/components/Card';
+} from "@/avora/Components/Card";
 ```
 
 مثال كارت منتج كامل:
 
 ```tsx
 <Card variant="elevated" className="max-w-sm overflow-hidden">
-    <CardImage
-        src="/images/product.jpg"
-        alt="اسم المنتج"
-    />
+    <CardImage src="/images/product.jpg" alt="اسم المنتج" />
 
     <CardHeader>
         <CardMeta>منتج جديد</CardMeta>
         <CardTitle>اسم المنتج</CardTitle>
-        <CardDescription>
-            وصف مختصر للمنتج.
-        </CardDescription>
+        <CardDescription>وصف مختصر للمنتج.</CardDescription>
     </CardHeader>
 
-    <CardContent>
-        أي معلومات إضافية.
-    </CardContent>
+    <CardContent>أي معلومات إضافية.</CardContent>
 
     <CardFooter>
         <CardMeta>20 يونيو 2026</CardMeta>
@@ -321,17 +312,17 @@ import {
 
 ### وظيفة كل جزء
 
-| المكوّن | وظيفته |
-|---|---|
-| `Card` | الحاوية الأساسية والحدود والظل |
-| `CardImage` | صورة الكارت |
-| `CardHeader` | منطقة العنوان والوصف والمعلومة الصغيرة |
-| `CardTitle` | العنوان الرئيسي |
-| `CardDescription` | الوصف القصير |
-| `CardContent` | أي محتوى إضافي |
-| `CardFooter` | الجزء السفلي للسعر أو التاريخ أو الزر |
-| `CardMeta` | معلومة صغيرة مثل النوع أو التاريخ |
-| `CardPrice` | السعر بلون الثيم الأساسي |
+| المكوّن           | وظيفته                                 |
+| ----------------- | -------------------------------------- |
+| `Card`            | الحاوية الأساسية والحدود والظل         |
+| `CardImage`       | صورة الكارت                            |
+| `CardHeader`      | منطقة العنوان والوصف والمعلومة الصغيرة |
+| `CardTitle`       | العنوان الرئيسي                        |
+| `CardDescription` | الوصف القصير                           |
+| `CardContent`     | أي محتوى إضافي                         |
+| `CardFooter`      | الجزء السفلي للسعر أو التاريخ أو الزر  |
+| `CardMeta`        | معلومة صغيرة مثل النوع أو التاريخ      |
+| `CardPrice`       | السعر بلون الثيم الأساسي               |
 
 ### أشكال Card
 
@@ -368,7 +359,7 @@ resources/js/avora/styles/cardVariants.ts
 الاستيراد:
 
 ```tsx
-import { Grid, GridItem } from '@/avora/components/Grid';
+import { Grid, GridItem } from "@/avora/Components/Grid";
 ```
 
 ### Grid كروت تلقائي
@@ -413,13 +404,7 @@ import { Grid, GridItem } from '@/avora/components/Grid';
 ### المسافات والعرض والمحاذاة
 
 ```tsx
-<Grid
-    gap="lg"
-    padding="lg"
-    width="wide"
-    align="center"
-    rounded="lg"
->
+<Grid gap="lg" padding="lg" width="wide" align="center" rounded="lg">
     ...
 </Grid>
 ```
@@ -470,23 +455,23 @@ public/images/background.jpg
 
 خيارات الصورة:
 
-| الخاصية | مثال | معناها |
-|---|---|---|
-| `backgroundImage` | `"/images/bg.jpg"` | مسار الصورة |
-| `backgroundImageOpacity` | `{0.25}` | شفافية الصورة من 0 إلى 1 |
-| `backgroundImageSize` | `"cover"` | طريقة ملء المساحة |
-| `backgroundImagePosition` | `"center"` | مكان الصورة |
-| `backgroundImageRepeat` | `"no-repeat"` | هل تتكرر الصورة؟ |
-| `backgroundImageAttachment` | `"fixed"` | هل تثبت عند السكرول؟ |
+| الخاصية                     | مثال               | معناها                   |
+| --------------------------- | ------------------ | ------------------------ |
+| `backgroundImage`           | `"/images/bg.jpg"` | مسار الصورة              |
+| `backgroundImageOpacity`    | `{0.25}`           | شفافية الصورة من 0 إلى 1 |
+| `backgroundImageSize`       | `"cover"`          | طريقة ملء المساحة        |
+| `backgroundImagePosition`   | `"center"`         | مكان الصورة              |
+| `backgroundImageRepeat`     | `"no-repeat"`      | هل تتكرر الصورة؟         |
+| `backgroundImageAttachment` | `"fixed"`          | هل تثبت عند السكرول؟     |
 
 قيم شائعة:
 
 ```tsx
-backgroundImageSize="cover"       // تملأ المساحة وقد يتم قص جزء منها
-backgroundImageSize="contain"     // تظهر الصورة كاملة
-backgroundImageRepeat="repeat"    // تكرار الصورة كنمط
-backgroundImageAttachment="fixed" // الصورة ثابتة أثناء السكرول
-backgroundImageAttachment="scroll" // الصورة تتحرك مع القسم
+backgroundImageSize = "cover"; // تملأ المساحة وقد يتم قص جزء منها
+backgroundImageSize = "contain"; // تظهر الصورة كاملة
+backgroundImageRepeat = "repeat"; // تكرار الصورة كنمط
+backgroundImageAttachment = "fixed"; // الصورة ثابتة أثناء السكرول
+backgroundImageAttachment = "scroll"; // الصورة تتحرك مع القسم
 ```
 
 شفافية الصورة لا تغيّر شفافية النصوص أو الكروت؛ لأن الصورة موجودة في طبقة مستقلة خلف المحتوى.
@@ -517,9 +502,7 @@ backgroundImageAttachment="scroll" // الصورة تتحرك مع القسم
 مثال عنصر يأخذ عرض الجريد بالكامل:
 
 ```tsx
-<GridItem span="full">
-    Full-width content
-</GridItem>
+<GridItem span="full">Full-width content</GridItem>
 ```
 
 لتغيير Layouts أو المسافات الافتراضية عدّل:
@@ -535,15 +518,13 @@ resources/js/avora/styles/gridVariants.ts
 الاستيراد:
 
 ```tsx
-import { Container } from '@/avora/components/Container';
+import { Container } from "@/avora/Components/Container";
 ```
 
 أبسط استخدام:
 
 ```tsx
-<Container>
-    Page content
-</Container>
+<Container>Page content</Container>
 ```
 
 القيم الافتراضية هي:
@@ -583,16 +564,16 @@ import { Container } from '@/avora/components/Container';
 <Container width="full">...</Container>
 ```
 
-| القيمة | الاستخدام المناسب |
-|---|---|
-| `sm` | Form أو محتوى صغير جدًا |
-| `md` | مقال أو Form متوسط |
-| `lg` | صفحة محتوى متوسطة |
-| `xl` | صفحة كبيرة |
-| `2xl` | شاشة واسعة |
-| `content` | محتوى بعرض `max-w-5xl` |
-| `wide` | Layout رئيسي بعرض `max-w-7xl` |
-| `full` | العرض الكامل بدون حد أقصى |
+| القيمة    | الاستخدام المناسب             |
+| --------- | ----------------------------- |
+| `sm`      | Form أو محتوى صغير جدًا       |
+| `md`      | مقال أو Form متوسط            |
+| `lg`      | صفحة محتوى متوسطة             |
+| `xl`      | صفحة كبيرة                    |
+| `2xl`     | شاشة واسعة                    |
+| `content` | محتوى بعرض `max-w-5xl`        |
+| `wide`    | Layout رئيسي بعرض `max-w-7xl` |
+| `full`    | العرض الكامل بدون حد أقصى     |
 
 التوسيط يعمل افتراضيًا. لتعطيله:
 
@@ -657,12 +638,7 @@ import { Container } from '@/avora/components/Container';
 ### الحواف والظل والحدود
 
 ```tsx
-<Container
-    background="surface"
-    rounded="lg"
-    shadow="md"
-    bordered
->
+<Container background="surface" rounded="lg" shadow="md" bordered>
     Content
 </Container>
 ```
@@ -688,12 +664,7 @@ import { Container } from '@/avora/components/Container';
 مثال صفحة تملأ الشاشة:
 
 ```tsx
-<Container
-    as="main"
-    width="full"
-    minHeight="viewport"
-    paddingY="lg"
->
+<Container as="main" width="full" minHeight="viewport" paddingY="lg">
     Page content
 </Container>
 ```
@@ -744,10 +715,7 @@ import { Container } from '@/avora/components/Container';
 لو الخيارات الجاهزة لا تكفي، استخدم `className` أو `style`:
 
 ```tsx
-<Container
-    width="full"
-    className="max-w-[1440px] px-5 lg:px-16"
->
+<Container width="full" className="max-w-[1440px] px-5 lg:px-16">
     Custom container
 </Container>
 ```
@@ -767,7 +735,7 @@ resources/js/avora/styles/containerVariants.ts
 سلوك المكوّن وربطه بألوان الثيم موجود في:
 
 ```text
-resources/js/avora/components/Container/Container.tsx
+resources/js/avora/Components/Container/Container.tsx
 ```
 
 ## 12. Navbar
@@ -789,43 +757,34 @@ import {
     NavbarToggle,
     NavbarMobileMenu,
     NavbarOverlay,
-} from '@/avora/components/Navbar';
+} from "@/avora/Components/Navbar";
 ```
 
 لا يجب استخدام أجزاء مثل `NavbarToggle` أو `NavbarLink` خارج `Navbar`؛ لأنها تعتمد على حالة القائمة الموجودة بداخله.
 
 ### وظيفة كل جزء
 
-| المكوّن | وظيفته |
-|---|---|
-| `Navbar` | الحاوية الرئيسية وحالة فتح قائمة الموبايل |
-| `NavbarContainer` | يحدد أقصى عرض وارتفاع ومسافات المحتوى |
-| `NavbarBrand` | مكان الشعار واسم المشروع ورابط الرئيسية |
-| `NavbarDesktop` | محتوى يظهر من الشاشات المتوسطة ويختفي على الموبايل |
-| `NavbarLinks` | يجمع روابط التنقل ويرتبها |
-| `NavbarLink` | رابط تنقل يدعم حالة `active` |
-| `NavbarLogo` | يعرض لوجو المشروع كصورة |
-| `NavbarActions` | مكان الأزرار واللغة والثيم وحساب المستخدم |
-| `NavbarToggle` | زر فتح وإغلاق قائمة الموبايل |
-| `NavbarMobileMenu` | المحتوى الذي يظهر على الموبايل عند فتح القائمة |
-| `NavbarOverlay` | طبقة داكنة اختيارية خلف قائمة الموبايل |
+| المكوّن            | وظيفته                                             |
+| ------------------ | -------------------------------------------------- |
+| `Navbar`           | الحاوية الرئيسية وحالة فتح قائمة الموبايل          |
+| `NavbarContainer`  | يحدد أقصى عرض وارتفاع ومسافات المحتوى              |
+| `NavbarBrand`      | مكان الشعار واسم المشروع ورابط الرئيسية            |
+| `NavbarDesktop`    | محتوى يظهر من الشاشات المتوسطة ويختفي على الموبايل |
+| `NavbarLinks`      | يجمع روابط التنقل ويرتبها                          |
+| `NavbarLink`       | رابط تنقل يدعم حالة `active`                       |
+| `NavbarLogo`       | يعرض لوجو المشروع كصورة                            |
+| `NavbarActions`    | مكان الأزرار واللغة والثيم وحساب المستخدم          |
+| `NavbarToggle`     | زر فتح وإغلاق قائمة الموبايل                       |
+| `NavbarMobileMenu` | المحتوى الذي يظهر على الموبايل عند فتح القائمة     |
+| `NavbarOverlay`    | طبقة داكنة اختيارية خلف قائمة الموبايل             |
 
 ### مثال Navbar كامل
 
 ```tsx
-<Navbar
-    position="sticky"
-    background="glass"
-    shadow="sm"
-    bordered
->
+<Navbar position="sticky" background="glass" shadow="sm" bordered>
     <NavbarContainer width="wide" height="md">
         <NavbarBrand>
-            <NavbarLogo
-                href="/"
-                src="/logo.svg"
-                alt="Project logo"
-            />
+            <NavbarLogo href="/" src="/logo.svg" alt="Project logo" />
         </NavbarBrand>
 
         <NavbarDesktop>
@@ -833,12 +792,8 @@ import {
                 <NavbarLink href="/" active>
                     الرئيسية
                 </NavbarLink>
-                <NavbarLink href="/products">
-                    المنتجات
-                </NavbarLink>
-                <NavbarLink href="/about">
-                    من نحن
-                </NavbarLink>
+                <NavbarLink href="/products">المنتجات</NavbarLink>
+                <NavbarLink href="/about">من نحن</NavbarLink>
             </NavbarLinks>
 
             <NavbarActions>
@@ -851,21 +806,13 @@ import {
         <NavbarToggle />
     </NavbarContainer>
 
-    <NavbarMobileMenu
-        placement="end"
-        motion="slide"
-        duration="normal"
-    >
+    <NavbarMobileMenu placement="end" motion="slide" duration="normal">
         <NavbarLinks className="flex-col items-stretch">
             <NavbarLink href="/" active>
                 الرئيسية
             </NavbarLink>
-            <NavbarLink href="/products">
-                المنتجات
-            </NavbarLink>
-            <NavbarLink href="/about">
-                من نحن
-            </NavbarLink>
+            <NavbarLink href="/products">المنتجات</NavbarLink>
+            <NavbarLink href="/about">من نحن</NavbarLink>
         </NavbarLinks>
 
         <NavbarActions className="mt-4 border-t pt-4">
@@ -895,11 +842,7 @@ public/images/logo.svg
 
 ```tsx
 <NavbarBrand>
-    <NavbarLogo
-        href="/"
-        src="/images/logo.svg"
-        alt="اسم المشروع"
-    />
+    <NavbarLogo href="/" src="/images/logo.svg" alt="اسم المشروع" />
 </NavbarBrand>
 ```
 
@@ -954,11 +897,7 @@ public/images/logo.svg
 #### الظل والحدود والحواف
 
 ```tsx
-<Navbar
-    shadow="md"
-    bordered
-    rounded="lg"
->
+<Navbar shadow="md" bordered rounded="lg">
     ...
 </Navbar>
 ```
@@ -970,11 +909,7 @@ public/images/logo.svg
 ### خيارات NavbarContainer
 
 ```tsx
-<NavbarContainer
-    width="wide"
-    padding="md"
-    height="lg"
->
+<NavbarContainer width="wide" padding="md" height="lg">
     ...
 </NavbarContainer>
 ```
@@ -1044,10 +979,7 @@ public/images/logo.svg
 لو تستخدم مكتبة Icons:
 
 ```tsx
-<NavbarToggle
-    menuIcon={<MenuIcon />}
-    closeIcon={<CloseIcon />}
-/>
+<NavbarToggle menuIcon={<MenuIcon />} closeIcon={<CloseIcon />} />
 ```
 
 لتغيير حجم زر أو خلفية الأيقونة نفسها:
@@ -1147,12 +1079,9 @@ public/images/logo.svg
 ```tsx
 const [menuOpen, setMenuOpen] = useState(false);
 
-<Navbar
-    open={menuOpen}
-    onOpenChange={setMenuOpen}
->
+<Navbar open={menuOpen} onOpenChange={setMenuOpen}>
     ...
-</Navbar>
+</Navbar>;
 ```
 
 أو اجعل القائمة مفتوحة أول مرة فقط:
@@ -1173,7 +1102,7 @@ Navbar يرث `rtl` و`ltr` تلقائيًا من `LanguageProvider`. اكتب �
 
 ```tsx
 <NavbarLink href="/about">
-    {translate({ ar: 'من نحن', en: 'About us' })}
+    {translate({ ar: "من نحن", en: "About us" })}
 </NavbarLink>
 ```
 
@@ -1190,13 +1119,13 @@ resources/js/avora/styles/navbarVariants.ts
 سلوك Navbar وحالة قائمة الموبايل موجودان في:
 
 ```text
-resources/js/avora/components/Navbar/Navbar.tsx
+resources/js/avora/Components/Navbar/Navbar.tsx
 ```
 
 شكل زر Hamburger الافتراضي موجود في:
 
 ```text
-resources/js/avora/components/Navbar/NavbarToggle.tsx
+resources/js/avora/Components/Navbar/NavbarToggle.tsx
 ```
 
 الأفضل أن تستخدم `menuIcon` و`closeIcon` عندما تريد شكلًا مختلفًا لمشروع واحد، وأن تعدّل `NavbarToggle.tsx` فقط عندما تريد تغيير الشكل الافتراضي لكل المشاريع.
@@ -1299,10 +1228,7 @@ variant: {
 صحيح:
 
 ```tsx
-<Grid
-    background="muted"
-    backgroundImage="/logo.png"
-/>
+<Grid background="muted" backgroundImage="/logo.png" />
 ```
 
 `background` يختار لونًا أو Gradient، و`backgroundImage` يستقبل مسار الصورة.
@@ -1318,7 +1244,7 @@ public/logo.png
 اكتب:
 
 ```tsx
-backgroundImage="/logo.png"
+backgroundImage = "/logo.png";
 ```
 
 لا تكتب `./logo.png` عند استخدام ملفات `public`.
@@ -1346,7 +1272,7 @@ useLanguage must be used inside LanguageProvider
 ## 16. مثال صفحة صغيرة كاملة
 
 ```tsx
-import { Button } from '@/avora/components/Button';
+import { Button } from "@/avora/Components/Button";
 import {
     Card,
     CardDescription,
@@ -1354,11 +1280,11 @@ import {
     CardHeader,
     CardPrice,
     CardTitle,
-} from '@/avora/components/Card';
-import { Grid } from '@/avora/components/Grid';
-import { LanguageButton } from '@/avora/components/LanguageButton';
-import { useLanguage } from '@/avora/providers/LanguageProvider';
-import ModeButton from '@/avora/providers/ModeButton';
+} from "@/avora/Components/Card";
+import { Grid } from "@/avora/Components/Grid";
+import { LanguageButton } from "@/avora/Components/LanguageButton";
+import { useLanguage } from "@/avora/providers/LanguageProvider";
+import ModeButton from "@/avora/providers/ModeButton";
 
 export default function ProductsPage() {
     const { translate } = useLanguage();
@@ -1367,7 +1293,7 @@ export default function ProductsPage() {
         <main className="mx-auto max-w-7xl space-y-8 p-6">
             <header className="flex items-center justify-between gap-4">
                 <h1 className="text-3xl font-bold">
-                    {translate({ ar: 'المنتجات', en: 'Products' })}
+                    {translate({ ar: "المنتجات", en: "Products" })}
                 </h1>
 
                 <div className="flex gap-2">
@@ -1394,8 +1320,8 @@ export default function ProductsPage() {
                             </CardTitle>
                             <CardDescription>
                                 {translate({
-                                    ar: 'وصف مختصر للمنتج.',
-                                    en: 'A short product description.',
+                                    ar: "وصف مختصر للمنتج.",
+                                    en: "A short product description.",
                                 })}
                             </CardDescription>
                         </CardHeader>
@@ -1403,7 +1329,7 @@ export default function ProductsPage() {
                         <CardFooter>
                             <CardPrice>500 EGP</CardPrice>
                             <Button size="sm">
-                                {translate({ ar: 'التفاصيل', en: 'Details' })}
+                                {translate({ ar: "التفاصيل", en: "Details" })}
                             </Button>
                         </CardFooter>
                     </Card>
@@ -1439,14 +1365,14 @@ resources/js/includes
 
 ويحتوي على:
 
-| الملف | المحتوى الجاهز |
-|---|---|
-| `NavbarInclude.tsx` | Navbar كاملة للكمبيوتر والموبايل |
-| `HeroInclude.tsx` | Hero Section بعنوان ووصف وأزرار ومعاينة |
-| `ProductCardInclude.tsx` | كارت منتج يستقبل البيانات عن طريق Props |
-| `ProductGridInclude.tsx` | سيكشن منتجات متجاوب مع بيانات تجريبية |
-| `DashboardInclude.tsx` | Grid إحصائيات Dashboard |
-| `SidebarLayoutInclude.tsx` | صفحة مقسمة إلى Sidebar ومحتوى |
+| الملف                      | المحتوى الجاهز                          |
+| -------------------------- | --------------------------------------- |
+| `NavbarInclude.tsx`        | Navbar كاملة للكمبيوتر والموبايل        |
+| `HeroInclude.tsx`          | Hero Section بعنوان ووصف وأزرار ومعاينة |
+| `ProductCardInclude.tsx`   | كارت منتج يستقبل البيانات عن طريق Props |
+| `ProductGridInclude.tsx`   | سيكشن منتجات متجاوب مع بيانات تجريبية   |
+| `DashboardInclude.tsx`     | Grid إحصائيات Dashboard                 |
+| `SidebarLayoutInclude.tsx` | صفحة مقسمة إلى Sidebar ومحتوى           |
 
 كل ملف يحتوي على تعليقات إنجليزية بسيطة مثل:
 
@@ -1463,11 +1389,7 @@ resources/js/includes
 يمكن استخدام الأجزاء الجاهزة كما هي:
 
 ```tsx
-import {
-    NavbarInclude,
-    HeroInclude,
-    ProductGridInclude,
-} from '@/includes';
+import { NavbarInclude, HeroInclude, ProductGridInclude } from "@/includes";
 
 export default function HomePage() {
     return (
@@ -1483,19 +1405,19 @@ export default function HomePage() {
 مثال Dashboard:
 
 ```tsx
-import { DashboardInclude } from '@/includes';
+import { DashboardInclude } from "@/includes";
 
-<DashboardInclude />
+<DashboardInclude />;
 ```
 
 مثال Sidebar Layout:
 
 ```tsx
-import { SidebarLayoutInclude } from '@/includes';
+import { SidebarLayoutInclude } from "@/includes";
 
 <SidebarLayoutInclude>
     <h1>Page content</h1>
-</SidebarLayoutInclude>
+</SidebarLayoutInclude>;
 ```
 
 ### النسخ والتعديل

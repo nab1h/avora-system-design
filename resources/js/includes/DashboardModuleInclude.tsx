@@ -1,17 +1,33 @@
-import { Button } from "@/avora-dash/components/Button";
-import { DashboardIcon } from "@/avora-dash/components/DashboardIcon";
-import { RecentOrders } from "@/avora-dash/components/dashboard/RecentOrders";
-import { SalesOverview } from "@/avora-dash/components/dashboard/SalesOverview";
-import { FormField } from "@/avora-dash/components/forms/FormField";
-import { Modal } from "@/avora-dash/components/Modal";
+import { Button } from "@/avora-dash/Components/Button";
+import { DashboardIcon } from "@/avora-dash/Components/DashboardIcon";
+import { RecentOrders } from "@/avora-dash/Components/dashboard/RecentOrders";
+import { SalesOverview } from "@/avora-dash/Components/dashboard/SalesOverview";
+import { FormField } from "@/avora-dash/Components/forms/FormField";
+import { Modal } from "@/avora-dash/Components/Modal";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { PaymentGatewaysInclude } from "@/includes/PaymentGatewaysInclude";
 import { DashboardLayout } from "@/Layouts/DashboardLayout";
-import type { AdminPageProps, Attribute, DashboardModuleIncludeProps, PageProps, PaymentGateway, PermissionForm, PermissionRow, RoleForm, RoleOption, RoleRow, SmtpTestForm, UserForm, UserRow, WebsiteSettingForm, WebsiteSettings } from "@/types";
+import type {
+    AdminPageProps,
+    Attribute,
+    DashboardModuleIncludeProps,
+    PageProps,
+    PaymentGateway,
+    PermissionForm,
+    PermissionRow,
+    RoleForm,
+    RoleOption,
+    RoleRow,
+    SmtpTestForm,
+    UserForm,
+    UserRow,
+    WebsiteSettingForm,
+    WebsiteSettings,
+} from "@/types";
 import { router, useForm, usePage } from "@inertiajs/react";
 import { useState, type FormEventHandler } from "react";
-import { Grid, GridItem } from "@/avora-dash/components/Grid";
+import { Grid, GridItem } from "@/avora-dash/Components/Grid";
 
 import { CategoriesPage } from "@/Pages/ecommerce/CategoriesPage";
 import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";
@@ -29,7 +45,10 @@ const sectionTitles = {
     products: { ar: "إدارة المنتجات", en: "Product management" },
     attributes: { ar: "إدارة المواصفات", en: "Properties management" },
     categories: { ar: "إدارة الأصناف", en: "Categories management" },
-    subCategories: { ar: "إدارة الأصناف الفرعية", en: "Sub Categories management" },
+    subCategories: {
+        ar: "إدارة الأصناف الفرعية",
+        en: "Sub Categories management",
+    },
     customers: { ar: "العملاء", en: "Customers" },
     users: { ar: "إدارة المستخدمين", en: "User management" },
     permissions: { ar: "إدارة الصلاحيات", en: "Permission management" },
@@ -358,7 +377,6 @@ export function DashboardModuleInclude({
                     })}
                 </p>
             </div>
-
         </header>
     );
 
@@ -2014,9 +2032,12 @@ export function DashboardModuleInclude({
         if (section === "categories") return CategoriesPage();
         if (section === "brands") return <BrandsPage />;
         if (section === "colors") return <ColorsPage />;
-        if (section === "sizes") return <ProductOptionsPage type="sizes" title="المقاسات" />;
-        if (section === "weights") return <ProductOptionsPage type="weights" title="الأوزان" />;
-        if (section === "materials") return <ProductOptionsPage type="materials" title="الخامات" />;
+        if (section === "sizes")
+            return <ProductOptionsPage type="sizes" title="المقاسات" />;
+        if (section === "weights")
+            return <ProductOptionsPage type="weights" title="الأوزان" />;
+        if (section === "materials")
+            return <ProductOptionsPage type="materials" title="الخامات" />;
         if (section === "classes") return ClassesPage();
         if (section === "offers") return OffersPage();
         if (section === "articles") return <ArticlesPage />;

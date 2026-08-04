@@ -1,19 +1,12 @@
-import { Button } from "@/avora-dash/components/Button";
-import {
-    Alert,
-    type AlertVariant,
-} from "@/avora-dash/components/Alert";
-import { FormField } from "@/avora-dash/components/forms/FormField";
-import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
-import { Select } from "@/avora-dash/components/forms/Select";
-import { Grid } from "@/avora-dash/components/Grid";
-import { GridItem } from "@/avora-dash/components/Grid/GridItem";
-import { Modal } from "@/avora-dash/components/Modal/Modal";
-import {
-    Tabs,
-    TabsList,
-    TabsTrigger,
-} from "@/avora-dash/components/Tabs";
+import { Button } from "@/avora-dash/Components/Button";
+import { Alert, type AlertVariant } from "@/avora-dash/Components/Alert";
+import { FormField } from "@/avora-dash/Components/forms/FormField";
+import { ImageInput } from "@/avora-dash/Components/forms/ImageInput";
+import { Select } from "@/avora-dash/Components/forms/Select";
+import { Grid } from "@/avora-dash/Components/Grid";
+import { GridItem } from "@/avora-dash/Components/Grid/GridItem";
+import { Modal } from "@/avora-dash/Components/Modal/Modal";
+import { Tabs, TabsList, TabsTrigger } from "@/avora-dash/Components/Tabs";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";
 import { Category, PageProps, SubCategory } from "@/types";
@@ -72,8 +65,7 @@ const CategoriesContent = () => {
             status: category.status,
         });
         setOpenModal(true);
-    }
-
+    };
 
     const onSubmitHandler: FormEventHandler = (event) => {
         event.preventDefault();
@@ -143,7 +135,6 @@ const CategoriesContent = () => {
         setDeleteId(id);
         setOpenDeleteModal(true);
     };
-
 
     const confirmDelete = () => {
         if (deleteId === null) return;
@@ -307,15 +298,17 @@ const CategoriesContent = () => {
                                 </td>
                                 <td className="px-6 py-4">
                                     {item.sub_categories.length > 0
-                                        ? item.sub_categories.map((subCategory) => (
-                                              <p
-                                                  key={subCategory.id}
-                                                  className="text-mute"
-                                              >
-                                                  {subCategory.name_ar} -{" "}
-                                                  {subCategory.name_en}
-                                              </p>
-                                          ))
+                                        ? item.sub_categories.map(
+                                              (subCategory) => (
+                                                  <p
+                                                      key={subCategory.id}
+                                                      className="text-mute"
+                                                  >
+                                                      {subCategory.name_ar} -{" "}
+                                                      {subCategory.name_en}
+                                                  </p>
+                                              ),
+                                          )
                                         : "-"}
                                 </td>
                                 <td className="avora-muted px-6 py-4">

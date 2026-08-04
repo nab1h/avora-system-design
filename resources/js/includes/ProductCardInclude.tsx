@@ -1,4 +1,4 @@
-import { Button } from '@/avora-dash/components/Button';
+import { Button } from "@/avora-dash/Components/Button";
 import {
     Card,
     CardDescription,
@@ -8,7 +8,7 @@ import {
     CardMeta,
     CardPrice,
     CardTitle,
-} from '@/avora-dash/components/Card';
+} from "@/avora-dash/Components/Card";
 
 export interface ProductCardIncludeProps {
     image: string;

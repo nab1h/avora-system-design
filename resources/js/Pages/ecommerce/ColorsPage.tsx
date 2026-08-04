@@ -1,18 +1,219 @@
-import { Button } from "@/avora-dash/components/Button";
-import { FormField } from "@/avora-dash/components/forms/FormField";
-import { Modal } from "@/avora-dash/components/Modal";
+import { Button } from "@/avora-dash/Components/Button";
+import { FormField } from "@/avora-dash/Components/forms/FormField";
+import { Modal } from "@/avora-dash/Components/Modal";
 import type { PageProps } from "@/types";
 import { router, useForm, usePage } from "@inertiajs/react";
 import { useState, type FormEventHandler } from "react";
 import { FiEdit2, FiPlus, FiTrash2 } from "react-icons/fi";
 
-type Color = { id: number; name_ar: string; name_en: string; hex: string; products_count: number };
+type Color = {
+    id: number;
+    name_ar: string;
+    name_en: string;
+    hex: string;
+    products_count: number;
+};
 const empty = { name_ar: "", name_en: "", hex: "#000000" };
 
 export function ColorsPage() {
     const colors = (usePage<PageProps>().props.colors ?? []) as Color[];
-    const form = useForm(empty); const [editing, setEditing] = useState<Color | null>(null); const [deleting, setDeleting] = useState<Color | null>(null); const [open, setOpen] = useState(false);
-    const openForm = (color?: Color) => { setEditing(color ?? null); form.setData(color ? { name_ar: color.name_ar, name_en: color.name_en, hex: color.hex } : empty); form.clearErrors(); setOpen(true); };
-    const submit: FormEventHandler = (event) => { event.preventDefault(); const done = () => setOpen(false); editing ? form.put(route("dashboard.colors.update", editing.id), { preserveScroll: true, onSuccess: done }) : form.post(route("dashboard.colors.store"), { preserveScroll: true, onSuccess: done }); };
-    return <section className="space-y-5"><div className="flex items-center justify-between gap-4"><div><h2 className="text-lg font-bold">إدارة الألوان</h2><p className="avora-muted mt-1 text-sm">أضف الألوان التي يمكن ربطها بالمنتجات.</p></div><Button onClick={() => openForm()}><FiPlus /> إضافة لون</Button></div><div className="avora-surface avora-border overflow-hidden rounded-2xl border"><div className="overflow-x-auto"><table className="w-full min-w-[620px] text-sm"><thead className="avora-surface-muted avora-muted"><tr><th className="px-5 py-4 text-start">اللون</th><th className="px-5 py-4 text-start">الاسم بالعربية</th><th className="px-5 py-4 text-start">English name</th><th className="px-5 py-4 text-start">المنتجات</th><th className="px-5 py-4 text-end">إجراءات</th></tr></thead><tbody>{colors.map(color => <tr key={color.id} className="avora-border border-t"><td className="px-5 py-4"><span className="block h-8 w-8 rounded-full border border-slate-300" style={{ backgroundColor: color.hex }} /></td><td className="px-5 py-4 font-semibold">{color.name_ar}</td><td className="px-5 py-4">{color.name_en}</td><td className="px-5 py-4">{color.products_count}</td><td className="px-5 py-4"><div className="flex justify-end gap-2"><Button size="icon" variant="ghost" aria-label="Edit color" onClick={() => openForm(color)}><FiEdit2 /></Button><Button size="icon" variant="ghost" aria-label="Delete color" onClick={() => setDeleting(color)}><FiTrash2 /></Button></div></td></tr>)}</tbody></table>{!colors.length && <p className="avora-muted p-10 text-center">لا توجد ألوان بعد.</p>}</div></div><Modal open={open} onClose={() => setOpen(false)} title={editing ? "تعديل لون" : "إضافة لون"}><form className="space-y-4" onSubmit={submit}><div className="grid gap-4 sm:grid-cols-2"><FormField label="الاسم بالعربية" value={form.data.name_ar} onChange={event => form.setData("name_ar", event.target.value)} error={form.errors.name_ar} /><FormField label="English name" value={form.data.name_en} onChange={event => form.setData("name_en", event.target.value)} error={form.errors.name_en} /></div><label className="block text-sm font-semibold">اللون<input type="color" value={form.data.hex} onChange={event => form.setData("hex", event.target.value)} className="mt-2 block h-10 w-full rounded-lg" /></label><div className="flex justify-end gap-3"><Button type="button" variant="outline" onClick={() => setOpen(false)}>إلغاء</Button><Button type="submit" disabled={form.processing}>حفظ</Button></div></form></Modal><Modal open={!!deleting} onClose={() => setDeleting(null)} title="حذف لون"><p className="mb-5">هل تريد حذف هذا اللون؟ لا يمكن حذفه إذا كان مستخدمًا في منتجات.</p><div className="flex justify-end gap-3"><Button variant="outline" onClick={() => setDeleting(null)}>إلغاء</Button><Button variant="danger" onClick={() => deleting && router.delete(route("dashboard.colors.destroy", deleting.id), { preserveScroll: true, onSuccess: () => setDeleting(null) })}>حذف</Button></div></Modal></section>;
+    const form = useForm(empty);
+    const [editing, setEditing] = useState<Color | null>(null);
+    const [deleting, setDeleting] = useState<Color | null>(null);
+    const [open, setOpen] = useState(false);
+    const openForm = (color?: Color) => {
+        setEditing(color ?? null);
+        form.setData(
+            color
+                ? {
+                      name_ar: color.name_ar,
+                      name_en: color.name_en,
+                      hex: color.hex,
+                  }
+                : empty,
+        );
+        form.clearErrors();
+        setOpen(true);
+    };
+    const submit: FormEventHandler = (event) => {
+        event.preventDefault();
+        const done = () => setOpen(false);
+        editing
+            ? form.put(route("dashboard.colors.update", editing.id), {
+                  preserveScroll: true,
+                  onSuccess: done,
+              })
+            : form.post(route("dashboard.colors.store"), {
+                  preserveScroll: true,
+                  onSuccess: done,
+              });
+    };
+    return (
+        <section className="space-y-5">
+            <div className="flex items-center justify-between gap-4">
+                <div>
+                    <h2 className="text-lg font-bold">إدارة الألوان</h2>
+                    <p className="avora-muted mt-1 text-sm">
+                        أضف الألوان التي يمكن ربطها بالمنتجات.
+                    </p>
+                </div>
+                <Button onClick={() => openForm()}>
+                    <FiPlus /> إضافة لون
+                </Button>
+            </div>
+            <div className="avora-surface avora-border overflow-hidden rounded-2xl border">
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-[620px] text-sm">
+                        <thead className="avora-surface-muted avora-muted">
+                            <tr>
+                                <th className="px-5 py-4 text-start">اللون</th>
+                                <th className="px-5 py-4 text-start">
+                                    الاسم بالعربية
+                                </th>
+                                <th className="px-5 py-4 text-start">
+                                    English name
+                                </th>
+                                <th className="px-5 py-4 text-start">
+                                    المنتجات
+                                </th>
+                                <th className="px-5 py-4 text-end">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {colors.map((color) => (
+                                <tr
+                                    key={color.id}
+                                    className="avora-border border-t"
+                                >
+                                    <td className="px-5 py-4">
+                                        <span
+                                            className="block h-8 w-8 rounded-full border border-slate-300"
+                                            style={{
+                                                backgroundColor: color.hex,
+                                            }}
+                                        />
+                                    </td>
+                                    <td className="px-5 py-4 font-semibold">
+                                        {color.name_ar}
+                                    </td>
+                                    <td className="px-5 py-4">
+                                        {color.name_en}
+                                    </td>
+                                    <td className="px-5 py-4">
+                                        {color.products_count}
+                                    </td>
+                                    <td className="px-5 py-4">
+                                        <div className="flex justify-end gap-2">
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                aria-label="Edit color"
+                                                onClick={() => openForm(color)}
+                                            >
+                                                <FiEdit2 />
+                                            </Button>
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                aria-label="Delete color"
+                                                onClick={() =>
+                                                    setDeleting(color)
+                                                }
+                                            >
+                                                <FiTrash2 />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {!colors.length && (
+                        <p className="avora-muted p-10 text-center">
+                            لا توجد ألوان بعد.
+                        </p>
+                    )}
+                </div>
+            </div>
+            <Modal
+                open={open}
+                onClose={() => setOpen(false)}
+                title={editing ? "تعديل لون" : "إضافة لون"}
+            >
+                <form className="space-y-4" onSubmit={submit}>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <FormField
+                            label="الاسم بالعربية"
+                            value={form.data.name_ar}
+                            onChange={(event) =>
+                                form.setData("name_ar", event.target.value)
+                            }
+                            error={form.errors.name_ar}
+                        />
+                        <FormField
+                            label="English name"
+                            value={form.data.name_en}
+                            onChange={(event) =>
+                                form.setData("name_en", event.target.value)
+                            }
+                            error={form.errors.name_en}
+                        />
+                    </div>
+                    <label className="block text-sm font-semibold">
+                        اللون
+                        <input
+                            type="color"
+                            value={form.data.hex}
+                            onChange={(event) =>
+                                form.setData("hex", event.target.value)
+                            }
+                            className="mt-2 block h-10 w-full rounded-lg"
+                        />
+                    </label>
+                    <div className="flex justify-end gap-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setOpen(false)}
+                        >
+                            إلغاء
+                        </Button>
+                        <Button type="submit" disabled={form.processing}>
+                            حفظ
+                        </Button>
+                    </div>
+                </form>
+            </Modal>
+            <Modal
+                open={!!deleting}
+                onClose={() => setDeleting(null)}
+                title="حذف لون"
+            >
+                <p className="mb-5">
+                    هل تريد حذف هذا اللون؟ لا يمكن حذفه إذا كان مستخدمًا في
+                    منتجات.
+                </p>
+                <div className="flex justify-end gap-3">
+                    <Button variant="outline" onClick={() => setDeleting(null)}>
+                        إلغاء
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() =>
+                            deleting &&
+                            router.delete(
+                                route("dashboard.colors.destroy", deleting.id),
+                                {
+                                    preserveScroll: true,
+                                    onSuccess: () => setDeleting(null),
+                                },
+                            )
+                        }
+                    >
+                        حذف
+                    </Button>
+                </div>
+            </Modal>
+        </section>
+    );
 }

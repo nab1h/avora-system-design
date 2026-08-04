@@ -1,5 +1,5 @@
-import { Button } from "@/avora-dash/components/Button";
-import { FormField } from "@/avora-dash/components/forms/FormField";
+import { Button } from "@/avora-dash/Components/Button";
+import { FormField } from "@/avora-dash/Components/forms/FormField";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import type { PaymentGateway } from "@/types";
 import { useForm } from "@inertiajs/react";
