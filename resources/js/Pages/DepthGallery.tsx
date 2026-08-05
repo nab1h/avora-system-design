@@ -1,5 +1,5 @@
 import { Head } from "@inertiajs/react";
-import DepthGallery from "../Components/DepthGallery/DepthGallery";
+import DepthGallery from "../components/DepthGallery/DepthGallery";
 
 export default function DepthGalleryPage() {
     return (

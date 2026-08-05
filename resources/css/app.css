@@ -1,5 +1,5 @@
 @tailwind base;
-@tailwind Components;
+@tailwind components;
 @tailwind utilities;
 
 @keyframes alert-in {
@@ -80,7 +80,11 @@
     font-weight: 600;
     font-style: normal;
 }
-@layer Components {
+@layer components {
+    .avora-brands-slider .swiper-wrapper {
+        transition-timing-function: linear !important;
+    }
+
     .avora-button-primary {
         background-color: var(--avora-primary);
     }

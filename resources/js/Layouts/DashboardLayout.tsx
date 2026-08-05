@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
-import { DashboardHeader } from "@/avora-dash/Components/navigation/DashboardHeader";
-import { DashboardSidebar } from "@/avora-dash/Components/navigation/DashboardSidebar";
+import { DashboardHeader } from "@/avora-dash/components/navigation/DashboardHeader";
+import { DashboardSidebar } from "@/avora-dash/components/navigation/DashboardSidebar";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);

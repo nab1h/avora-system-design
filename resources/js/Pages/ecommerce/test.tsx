@@ -1,10 +1,10 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { Card } from "@/avora-dash/Components/Card/Card";
-import { CardFooter } from "@/avora-dash/Components/Card/CardFooter";
-import { CardTitle } from "@/avora-dash/Components/Card/CardTitle";
-import { GridItem } from "@/avora-dash/Components/Grid";
-import { Grid } from "@/avora-dash/Components/Grid/Grid";
-import { Modal } from "@/avora-dash/Components/Modal/Modal";
+import { Button } from "@/avora-dash/components/Button";
+import { Card } from "@/avora-dash/components/Card/Card";
+import { CardFooter } from "@/avora-dash/components/Card/CardFooter";
+import { CardTitle } from "@/avora-dash/components/Card/CardTitle";
+import { GridItem } from "@/avora-dash/components/Grid";
+import { Grid } from "@/avora-dash/components/Grid/Grid";
+import { Modal } from "@/avora-dash/components/Modal/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { Attribute, PageProps } from "@/types";
 import { usePage } from "@inertiajs/react";

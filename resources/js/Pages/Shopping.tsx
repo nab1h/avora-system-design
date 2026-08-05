@@ -1,10 +1,10 @@
-import { Container } from "@/avora-dash/Components/Container";
-import { Select } from "@/avora-dash/Components/forms/Select";
-import { ProductCard } from "@/Components/ProductCard";
-import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
-import { StoreFooter } from "@/Components/StoreFooter";
-import { StoreDrawer } from "@/Components/StoreDrawer";
-import { StoreNavbar } from "@/Components/StoreNavbar";
+import { Container } from "@/avora-dash/components/Container";
+import { Select } from "@/avora-dash/components/forms/Select";
+import { ProductCard } from "@/components/ProductCard";
+import { CustomerAuthModal } from "@/components/CustomerAuthModal";
+import { StoreFooter } from "@/components/StoreFooter";
+import { StoreDrawer } from "@/components/StoreDrawer";
+import { StoreNavbar } from "@/components/StoreNavbar";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { Head, router, usePage } from "@inertiajs/react";

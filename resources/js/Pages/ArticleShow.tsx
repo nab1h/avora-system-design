@@ -1,4 +1,4 @@
-import { Container } from "@/avora-dash/Components/Container/Container";
+import { Container } from "@/avora-dash/components/Container/Container";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { StoreLayout } from "@/Layouts/StoreLayout";
 import type { PageProps } from "@/types";

@@ -1,6 +1,6 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { FormField } from "@/avora-dash/Components/forms/FormField";
-import { Modal } from "@/avora-dash/Components/Modal";
+import { Button } from "@/avora-dash/components/Button";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { Modal } from "@/avora-dash/components/Modal";
 import type { PageProps } from "@/types";
 import { router, useForm, usePage } from "@inertiajs/react";
 import { useState, type FormEventHandler } from "react";

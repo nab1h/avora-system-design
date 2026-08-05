@@ -1,5 +1,5 @@
-import { FormButton } from "@/avora-dash/Components/forms/FormButton";
-import { FormField } from "@/avora-dash/Components/forms/FormField";
+import { FormButton } from "@/avora-dash/components/forms/FormButton";
+import { FormField } from "@/avora-dash/components/forms/FormField";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { AuthLayout } from "@/Layouts/AuthLayout";

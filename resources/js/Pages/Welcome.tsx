@@ -1,23 +1,23 @@
-import { Alert } from "@/avora-dash/Components/Alert";
+import { Alert } from "@/avora-dash/components/Alert";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { ArticlePreview, CartProduct, PageProps, StoreProduct } from "@/types";
 import { Head, usePage } from "@inertiajs/react";
 import { useState } from "react";
-import { StoreNavbar } from "@/Components/StoreNavbar";
-import { StoreDrawer } from "@/Components/StoreDrawer";
+import { StoreNavbar } from "@/components/StoreNavbar";
+import { StoreDrawer } from "@/components/StoreDrawer";
 import { ProductsPage } from "./ProductsPage";
 import { ArticlePage } from "./ArticlePage";
 import { StoreHero } from "./StoreHero";
-import { BrandsSlider, type StoreBrand } from "@/Components/BrandsSlider";
-import { ShoppingBenefits } from "@/Components/ShoppingBenefits";
-import { StoreFooter } from "@/Components/StoreFooter";
-import { MainCategoriesSection } from "@/Components/MainCategoriesSection";
-import { ClassesSection } from "@/Components/ClassesSection";
-import DepthGallery from "@/Components/DepthGallery/DepthGallery";
-import { Container } from "@/avora-dash/Components/Container/Container";
-import { SectionTitle } from "@/avora-dash/Components/SectionTitle/SectionTitle";
+import { BrandsSlider, type StoreBrand } from "@/components/BrandsSlider";
+import { ShoppingBenefits } from "@/components/ShoppingBenefits";
+import { StoreFooter } from "@/components/StoreFooter";
+import { MainCategoriesSection } from "@/components/MainCategoriesSection";
+import { ClassesSection } from "@/components/ClassesSection";
+import DepthGallery from "@/components/DepthGallery/DepthGallery";
+import { Container } from "@/avora-dash/components/Container/Container";
+import { SectionTitle } from "@/avora-dash/components/SectionTitle/SectionTitle";
 
 type WelcomeProps = PageProps<{
     products: StoreProduct[];

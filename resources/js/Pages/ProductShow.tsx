@@ -1,8 +1,8 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { Card } from "@/avora-dash/Components/Card";
-import { Container } from "@/avora-dash/Components/Container/Container";
+import { Button } from "@/avora-dash/components/Button";
+import { Card } from "@/avora-dash/components/Card";
+import { Container } from "@/avora-dash/components/Container/Container";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
-import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
+import { CustomerAuthModal } from "@/components/CustomerAuthModal";
 import { StoreLayout } from "@/Layouts/StoreLayout";
 import type { PageProps } from "@/types";
 import { Head, Link, router, usePage } from "@inertiajs/react";

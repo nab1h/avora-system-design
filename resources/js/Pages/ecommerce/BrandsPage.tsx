@@ -1,7 +1,9 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { FormField } from "@/avora-dash/Components/forms/FormField";
-import { ImageInput } from "@/avora-dash/Components/forms/ImageInput";
-import { Modal } from "@/avora-dash/Components/Modal";
+
+import { Button } from "@/avora-dash/components/Button";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
+
+import { Modal } from "@/avora-dash/components/Modal/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import type { PageProps } from "@/types";
 import { router, useForm, usePage } from "@inertiajs/react";
@@ -44,6 +46,7 @@ export function BrandsPage() {
 
     const openCreate = () => {
         setEditing(null);
+        form.transform((data) => data);
         form.setData(emptyForm);
         form.clearErrors();
         setOpen(true);
@@ -66,7 +69,8 @@ export function BrandsPage() {
         event.preventDefault();
 
         if (editing) {
-            form.put(route("dashboard.brands.update", editing.id), {
+            form.transform((data) => ({ ...data, _method: "put" }));
+            form.post(route("dashboard.brands.update", editing.id), {
                 forceFormData: true,
                 preserveScroll: true,
                 onSuccess: () => setOpen(false),

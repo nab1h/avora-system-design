@@ -1,5 +1,5 @@
-import { SectionTitle } from "@/avora-dash/Components/SectionTitle";
-import { Slider, type SliderItem } from "@/avora-dash/Components/Slider";
+import { SectionTitle } from "@/avora-dash/components/SectionTitle";
+import { Slider, type SliderItem } from "@/avora-dash/components/Slider";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { useMemo, type CSSProperties } from "react";
@@ -75,12 +75,14 @@ export function BrandsSlider({ brands }: { brands: StoreBrand[] }) {
                         640: { slidesPerView: 4, spaceBetween: 40 },
                         1024: { slidesPerView: 6, spaceBetween: 56 },
                     }}
-                    arrows
-                    arrowsPosition="inside"
-                    arrowClassName="!shadow-none"
+                    arrows={false}
+                    autoplay={1}
+                    pauseOnMouseEnter
+                    stopAutoplayOnInteraction={false}
                     centeredSlides
-                    loop={false}
-                    className="px-10"
+                    loop
+                    speed={7000}
+                    className="avora-brands-slider px-0"
                 />
             </div>
         </section>

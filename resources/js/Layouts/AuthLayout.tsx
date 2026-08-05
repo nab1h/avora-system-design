@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@inertiajs/react";
-import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
+import { LanguageButton } from "@/avora-dash/components/LanguageButton";
 import ModeButton from "@/avora-dash/providers/ModeButton";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useAppName } from "@/avora-dash/hooks/useAppName";

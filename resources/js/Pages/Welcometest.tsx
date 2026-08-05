@@ -1,4 +1,4 @@
-﻿import { Button } from "@/avora-dash/Components/Button";
+﻿import { Button } from "@/avora-dash/components/Button";
 import {
     Card,
     CardContent,
@@ -9,10 +9,10 @@ import {
     CardMeta,
     CardPrice,
     CardTitle,
-} from "@/avora-dash/Components/Card";
-import { Container } from "@/avora-dash/Components/Container";
-import { Grid, GridItem } from "@/avora-dash/Components/Grid";
-import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
+} from "@/avora-dash/components/Card";
+import { Container } from "@/avora-dash/components/Container";
+import { Grid, GridItem } from "@/avora-dash/components/Grid";
+import { LanguageButton } from "@/avora-dash/components/LanguageButton";
 import {
     Navbar,
     NavbarActions,
@@ -25,15 +25,15 @@ import {
     NavbarMobileMenu,
     NavbarOverlay,
     NavbarToggle,
-} from "@/avora-dash/Components/Navbar";
+} from "@/avora-dash/components/Navbar";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import ModeButton from "@/avora-dash/providers/ModeButton";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { PageProps } from "@/types";
 import { Head, router, usePage } from "@inertiajs/react";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
-import { AddressPage } from "@/Components/AddressPage";
-import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
+import { AddressPage } from "@/components/AddressPage";
+import { CustomerAuthModal } from "@/components/CustomerAuthModal";
 import { useState } from "react";
 import { FaRightFromBracket, FaUserCheck } from "react-icons/fa6";
 

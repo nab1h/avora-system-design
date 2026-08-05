@@ -1,7 +1,7 @@
-import { CardMeta } from "@/avora-dash/Components/Card";
-import { Container } from "@/avora-dash/Components/Container";
-import { Grid } from "@/avora-dash/Components/Grid";
-import { SectionTitle } from "@/avora-dash/Components/SectionTitle";
+import { CardMeta } from "@/avora-dash/components/Card";
+import { Container } from "@/avora-dash/components/Container";
+import { Grid } from "@/avora-dash/components/Grid";
+import { SectionTitle } from "@/avora-dash/components/SectionTitle";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { ProductCardInclude } from "./ProductCardInclude";
 

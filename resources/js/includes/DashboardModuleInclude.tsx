@@ -1,9 +1,9 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { DashboardIcon } from "@/avora-dash/Components/DashboardIcon";
-import { RecentOrders } from "@/avora-dash/Components/dashboard/RecentOrders";
-import { SalesOverview } from "@/avora-dash/Components/dashboard/SalesOverview";
-import { FormField } from "@/avora-dash/Components/forms/FormField";
-import { Modal } from "@/avora-dash/Components/Modal";
+import { Button } from "@/avora-dash/components/Button";
+import { DashboardIcon } from "@/avora-dash/components/DashboardIcon";
+import { RecentOrders } from "@/avora-dash/components/dashboard/RecentOrders";
+import { SalesOverview } from "@/avora-dash/components/dashboard/SalesOverview";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { Modal } from "@/avora-dash/components/Modal";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { PaymentGatewaysInclude } from "@/includes/PaymentGatewaysInclude";
@@ -27,7 +27,7 @@ import type {
 } from "@/types";
 import { router, useForm, usePage } from "@inertiajs/react";
 import { useState, type FormEventHandler } from "react";
-import { Grid, GridItem } from "@/avora-dash/Components/Grid";
+import { Grid, GridItem } from "@/avora-dash/components/Grid";
 
 import { CategoriesPage } from "@/Pages/ecommerce/CategoriesPage";
 import { SubCategoriesPage } from "@/Pages/ecommerce/SubCategoriesPage";

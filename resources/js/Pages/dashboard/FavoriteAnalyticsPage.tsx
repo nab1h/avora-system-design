@@ -1,7 +1,7 @@
 import { DashboardLayout } from "@/Layouts/DashboardLayout";
-import { Button } from "@/avora-dash/Components/Button";
-import { FormField } from "@/avora-dash/Components/forms/FormField";
-import { Select } from "@/avora-dash/Components/forms/Select";
+import { Button } from "@/avora-dash/components/Button";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { Select } from "@/avora-dash/components/forms/Select";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import type { PageProps } from "@/types";
 import { router, usePage } from "@inertiajs/react";

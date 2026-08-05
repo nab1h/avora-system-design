@@ -1,8 +1,8 @@
-import { FormField } from "@/avora-dash/Components/forms/FormField";
+import { FormField } from "@/avora-dash/components/forms/FormField";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useForm } from "@inertiajs/react";
 import { useState, type FormEventHandler } from "react";
-import { Button } from "@/avora-dash/Components/Button";
+import { Button } from "@/avora-dash/components/Button";
 
 export default function DeleteUserForm() {
     const { translate } = useLanguage();

@@ -1,9 +1,9 @@
-import { Container } from "@/avora-dash/Components/Container";
-import { SectionTitle } from "@/avora-dash/Components/SectionTitle";
+import { Container } from "@/avora-dash/components/Container";
+import { SectionTitle } from "@/avora-dash/components/SectionTitle";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
-import { StoreNavbar } from "@/Components/StoreNavbar";
-import { StoreFooter } from "@/Components/StoreFooter";
+import { StoreNavbar } from "@/components/StoreNavbar";
+import { StoreFooter } from "@/components/StoreFooter";
 import { ProductsPage } from "@/Pages/ProductsPage";
 import type { StoreProduct } from "@/types";
 import { Head } from "@inertiajs/react";

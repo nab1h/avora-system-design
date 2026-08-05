@@ -1,5 +1,5 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { Container } from "@/avora-dash/Components/Container";
+import { Button } from "@/avora-dash/components/Button";
+import { Container } from "@/avora-dash/components/Container";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";

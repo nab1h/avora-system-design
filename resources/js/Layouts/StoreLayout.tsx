@@ -1,6 +1,6 @@
-import { StoreDrawer } from "@/Components/StoreDrawer";
-import { StoreNavbar } from "@/Components/StoreNavbar";
-import { StoreFooter } from "@/Components/StoreFooter";
+import { StoreDrawer } from "@/components/StoreDrawer";
+import { StoreNavbar } from "@/components/StoreNavbar";
+import { StoreFooter } from "@/components/StoreFooter";
 import type { CartProduct } from "@/types";
 import type { PageProps } from "@/types";
 import { usePage } from "@inertiajs/react";

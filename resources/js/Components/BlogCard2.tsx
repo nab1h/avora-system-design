@@ -1,5 +1,5 @@
-import { GridItem } from "@/avora-dash/Components/Grid";
-import { Grid } from "@/avora-dash/Components/Grid/Grid";
+import { GridItem } from "@/avora-dash/components/Grid";
+import { Grid } from "@/avora-dash/components/Grid/Grid";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 
 export interface BlogCard2Props {

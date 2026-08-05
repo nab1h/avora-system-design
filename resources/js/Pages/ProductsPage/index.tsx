@@ -1,14 +1,14 @@
-import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
-import { ProductCard } from "@/Components/ProductCard";
-import { Grid, GridItem } from "@/avora-dash/Components/Grid";
-import { Pagination } from "@/avora-dash/Components/Pagination";
+import { CustomerAuthModal } from "@/components/CustomerAuthModal";
+import { ProductCard } from "@/components/ProductCard";
+import { Grid, GridItem } from "@/avora-dash/components/Grid";
+import { Pagination } from "@/avora-dash/components/Pagination";
 import {
     Tabs,
     TabsList,
     TabsPanel,
     TabsPanels,
     TabsTrigger,
-} from "@/avora-dash/Components/Tabs";
+} from "@/avora-dash/components/Tabs";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import type { PageProps, StoreProduct } from "@/types";
 import { router, usePage } from "@inertiajs/react";

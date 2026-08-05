@@ -1,9 +1,9 @@
-import { Alert, type AlertVariant } from "@/avora-dash/Components/Alert";
-import { Button } from "@/avora-dash/Components/Button";
-import { FormField } from "@/avora-dash/Components/forms/FormField";
-import { FileInput } from "@/avora-dash/Components/forms/FileInput";
-import { ImageInput } from "@/avora-dash/Components/forms/ImageInput";
-import { Modal } from "@/avora-dash/Components/Modal";
+import { Alert, type AlertVariant } from "@/avora-dash/components/Alert";
+import { Button } from "@/avora-dash/components/Button";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { FileInput } from "@/avora-dash/components/forms/FileInput";
+import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
+import { Modal } from "@/avora-dash/components/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { PageProps } from "@/types";
 import { router, useForm, usePage } from "@inertiajs/react";

@@ -18,8 +18,6 @@ interface DepthGalleryProps {
 
 export default function DepthGallery({
     title = 'Atmospheric Depth Gallery',
-    subtitle = 'Three.js · Parallax · GLSL',
-    scrollHint = 'Scroll to explore',
     className = '',
 }: DepthGalleryProps) {
     const rootRef = useRef<HTMLElement | null>(null);
@@ -70,21 +68,9 @@ export default function DepthGallery({
                 aria-hidden="true"
             />
 
-            <header className="depth-gallery__frame">
-                <div>
-                    <p className="depth-gallery__eyebrow">{subtitle}</p>
-                    <h1 className="depth-gallery__title">{title}</h1>
-                </div>
 
-                <p className="depth-gallery__hint">{scrollHint}</p>
-            </header>
 
-            {error && (
-                <div className="depth-gallery__error" role="alert">
-                    <strong>WebGL error</strong>
-                    <span>{error}</span>
-                </div>
-            )}
+
         </main>
     );
 }

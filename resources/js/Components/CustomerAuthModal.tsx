@@ -1,6 +1,6 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { FormField } from "@/avora-dash/Components/forms/FormField";
-import { Modal } from "@/avora-dash/Components/Modal";
+import { Button } from "@/avora-dash/components/Button";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { Modal } from "@/avora-dash/components/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import { useForm } from "@inertiajs/react";

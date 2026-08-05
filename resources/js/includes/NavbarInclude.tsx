@@ -1,5 +1,5 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
+import { Button } from "@/avora-dash/components/Button";
+import { LanguageButton } from "@/avora-dash/components/LanguageButton";
 import {
     Navbar,
     NavbarActions,
@@ -12,7 +12,7 @@ import {
     NavbarMobileMenu,
     NavbarOverlay,
     NavbarToggle,
-} from "@/avora-dash/Components/Navbar";
+} from "@/avora-dash/components/Navbar";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import ModeButton from "@/avora-dash/providers/ModeButton";
 

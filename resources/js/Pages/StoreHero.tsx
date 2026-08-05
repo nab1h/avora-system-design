@@ -1,4 +1,4 @@
-import { Slider, type SliderItem } from "@/avora-dash/Components/Slider";
+import { Slider, type SliderItem } from "@/avora-dash/components/Slider";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { Link } from "@inertiajs/react";
 

@@ -1,6 +1,6 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { GridItem } from "@/avora-dash/Components/Grid";
-import { Grid } from "@/avora-dash/Components/Grid/Grid";
+import { Button } from "@/avora-dash/components/Button";
+import { GridItem } from "@/avora-dash/components/Grid";
+import { Grid } from "@/avora-dash/components/Grid/Grid";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 
 export interface BlogCardProps {

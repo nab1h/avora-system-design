@@ -1,4 +1,4 @@
-import { SectionTitle } from "@/avora-dash/Components/SectionTitle";
+import { SectionTitle } from "@/avora-dash/components/SectionTitle";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 import {

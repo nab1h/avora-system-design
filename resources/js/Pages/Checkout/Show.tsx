@@ -1,13 +1,13 @@
-import { Button } from "@/avora-dash/Components/Button";
+import { Button } from "@/avora-dash/components/Button";
 import {
     Card,
     CardContent,
     CardHeader,
     CardMeta,
     CardTitle,
-} from "@/avora-dash/Components/Card";
-import { Container } from "@/avora-dash/Components/Container";
-import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
+} from "@/avora-dash/components/Card";
+import { Container } from "@/avora-dash/components/Container";
+import { LanguageButton } from "@/avora-dash/components/LanguageButton";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import ModeButton from "@/avora-dash/providers/ModeButton";
 import { PageProps, PaymentTransaction } from "@/types";

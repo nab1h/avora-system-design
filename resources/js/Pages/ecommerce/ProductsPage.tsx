@@ -1,9 +1,9 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { FormField } from "@/avora-dash/Components/forms/FormField";
-import { GalleryImageInput } from "@/avora-dash/Components/forms/GalleryImageInput";
-import { ImageInput } from "@/avora-dash/Components/forms/ImageInput";
-import { Select } from "@/avora-dash/Components/forms/Select";
-import { Modal } from "@/avora-dash/Components/Modal";
+import { Button } from "@/avora-dash/components/Button";
+import { FormField } from "@/avora-dash/components/forms/FormField";
+import { GalleryImageInput } from "@/avora-dash/components/forms/GalleryImageInput";
+import { ImageInput } from "@/avora-dash/components/forms/ImageInput";
+import { Select } from "@/avora-dash/components/forms/Select";
+import { Modal } from "@/avora-dash/components/Modal";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import type { PageProps } from "@/types";
 import { Head, router, useForm, usePage } from "@inertiajs/react";

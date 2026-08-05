@@ -1,5 +1,5 @@
-import { Button } from "@/avora-dash/Components/Button";
-import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
+import { Button } from "@/avora-dash/components/Button";
+import { LanguageButton } from "@/avora-dash/components/LanguageButton";
 import {
     Navbar,
     NavbarActions,
@@ -11,7 +11,7 @@ import {
     NavbarLogo,
     NavbarMobileMenu,
     NavbarToggle,
-} from "@/avora-dash/Components/Navbar";
+} from "@/avora-dash/components/Navbar";
 import { useAppName } from "@/avora-dash/hooks/useAppName";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import ModeButton from "@/avora-dash/providers/ModeButton";
@@ -28,8 +28,8 @@ import {
     LuShoppingCart,
     LuUserRound,
 } from "react-icons/lu";
-import { CustomerAuthModal } from "@/Components/CustomerAuthModal";
-import { useRef, useState } from "react";
+import { CustomerAuthModal } from "@/components/CustomerAuthModal";
+import { useEffect, useRef, useState } from "react";
 
 type StoreCategory = {
     id: number;
@@ -88,6 +88,8 @@ export function StoreNavbar({ setIsOpen }: IProps) {
         shopCloseTimeout.current = setTimeout(() => setShopOpen(false), 220);
     };
 
+    const [scrolled, setScrolled] = useState(false);
+
     const navbar = [
         {
             href: route("home"),
@@ -102,9 +104,30 @@ export function StoreNavbar({ setIsOpen }: IProps) {
             name: translate({ ar: "البراندات", en: "Brands" }),
         },
     ];
+
+    // scroll navbar
+    // ===============
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 500);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+    console.log(scrolled);
+    // =======================
     return (
         <>
-            <Navbar position="sticky" background="surface" className="relative">
+            <Navbar
+                position="sticky"
+                shadow={scrolled ? "md" : "none"}
+                className={`
+        top-0 z-50 transition-all duration-300
+        ${scrolled ? "bg-transparent" : "bg-white/90 backdrop-blur-md"}
+    `}
+            >
                 <NavbarContainer
                     width="full"
                     className="min-h-24 my-10  grid grid-cols-[2.5rem_1fr_2.5rem] md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"

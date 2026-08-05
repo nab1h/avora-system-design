@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { Card, CardTitle } from "@/avora-dash/Components/Card";
-import { Container } from "@/avora-dash/Components/Container";
-import { Grid } from "@/avora-dash/Components/Grid";
+import { Card, CardTitle } from "@/avora-dash/components/Card";
+import { Container } from "@/avora-dash/components/Container";
+import { Grid } from "@/avora-dash/components/Grid";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
 

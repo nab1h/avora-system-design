@@ -6,76 +6,75 @@ import FLOWER04 from '../assets/flower-04.webp'
 import FLOWER05 from '../assets/flower-05.webp'
 
 const galleryPlaneData = [
-  {
-    fallbackColor: '#feca4f',
-    accentColor: '#feca4f',
-    textureSrc: FLOWER01,
-    position: { x: -0.9, y: 0 },
-    backgroundColor: '#fffaf0',
-    blob1Color: '#ffdf94',
-    blob2Color: '#fce7c4',
-    label: {
-      word: 'golden',
-      pms: 'PMS 135 C',
-      color: '#2e2e2e',
+    {
+        fallbackColor: "#A86E4A",
+        accentColor: "#D4A373",
+        textureSrc: FLOWER01,
+        position: { x: -0.9, y: 0 },
+        backgroundColor: "#F4EFEA",
+        blob1Color: "#D8B08C",
+        blob2Color: "#E8D8C8",
+        label: {
+            word: "Sunset",
+            pms: "PMS 7572 C",
+            color: "#2B2B2B",
+        },
     },
-  },
-  {
-    fallbackColor: '#80455a',
-    accentColor: '#80455a',
-    textureSrc: FLOWER02,
-    position: { x: 0.8, y: 0 },
-    backgroundColor: '#fffaf0',
-    blob1Color: '#d29a41',
-    blob2Color: '#bb96af',
-    label: {
-      word: 'violet',
-      pms: 'PMS 4985 C',
-      color: '#2e2e2e',
+    {
+        fallbackColor: "#2F2F30",
+        accentColor: "#6D6258",
+        textureSrc: FLOWER02,
+        position: { x: 0.8, y: 0 },
+        backgroundColor: "#F6F4F1",
+        blob1Color: "#B79A7C",
+        blob2Color: "#D7CEC4",
+        label: {
+            word: "Noir",
+            pms: "PMS Cool Gray 11 C",
+            color: "#222222",
+        },
     },
-  },
-  {
-    fallbackColor: '#fa7b71',
-    accentColor: '#fa7b71',
-    textureSrc: FLOWER03,
-    position: { x: -0.7, y: 0 },
-    backgroundColor: '#5f81ab',
-    blob1Color: '#f88b8d',
-    blob2Color: '#cfbbdd',
-    label: {
-      word: 'afterglow',
-      pms: 'PMS 170 C',
-      color: '#f4f4f4',
+    {
+        fallbackColor: "#F3F0EB",
+        accentColor: "#C9B49B",
+        textureSrc: FLOWER03,
+        position: { x: -0.7, y: 0 },
+        backgroundColor: "#ECE7E2",
+        blob1Color: "#E5D8C8",
+        blob2Color: "#C7B299",
+        label: {
+            word: "Cream",
+            pms: "PMS 7527 C",
+            color: "#2A2A2A",
+        },
     },
-  },
-  {
-    fallbackColor: '#3c72c6',
-    accentColor: '#3c72c6',
-    textureSrc: FLOWER04,
-    position: { x: 1, y: 0 },
-    backgroundColor: '#5b9bc2',
-    blob1Color: '#ffaa00',
-    blob2Color: '#00e1ff',
-    label: {
-      word: 'cobalt',
-      pms: 'PMS 660 C',
-      color: '#f4f4f4',
+    {
+        fallbackColor: "#1E1F23",
+        accentColor: "#5E6670",
+        textureSrc: FLOWER04,
+        position: { x: 1, y: 0 },
+        backgroundColor: "#EEF1F4",
+        blob1Color: "#8C949D",
+        blob2Color: "#D4D9DF",
+        label: {
+            word: "Shadow",
+            pms: "PMS 432 C",
+            color: "#2A2A2A",
+        },
     },
-  },
-  {
-    fallbackColor: '#fdd895',
-    accentColor: '#fdd895',
-    textureSrc: FLOWER05,
-    position: { x: -0.7, y: 0 },
-    backgroundColor: '#7d936e',
-    blob1Color: '#fdd895',
-    blob2Color: '#a5b599',
-    label: {
-      word: 'meadow',
-      pms: 'PMS 7507 C',
-      color: '#f4f4f4',
+    {
+        fallbackColor: "#D8B987",
+        accentColor: "#F0D6A4",
+        textureSrc: FLOWER05,
+        position: { x: -0.7, y: 0 },
+        backgroundColor: "#EEF3EC",
+        blob1Color: "#D8C39B",
+        blob2Color: "#C5D5C0",
+        label: {
+            word: "Bloom",
+            pms: "PMS 7501 C",
+            color: "#2B2B2B",
+        },
     },
-  },
-]
-
+];
 export { galleryPlaneData }

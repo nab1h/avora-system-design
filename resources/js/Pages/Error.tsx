@@ -1,4 +1,4 @@
-import { Button } from "@/avora-dash/Components/Button";
+import { Button } from "@/avora-dash/components/Button";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { Head, Link } from "@inertiajs/react";
 

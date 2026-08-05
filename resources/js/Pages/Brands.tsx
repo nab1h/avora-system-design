@@ -1,9 +1,9 @@
-import { Container } from "@/avora-dash/Components/Container";
-import { BrandsSlider, type StoreBrand } from "@/Components/BrandsSlider";
+import { Container } from "@/avora-dash/components/Container";
+import { BrandsSlider, type StoreBrand } from "@/components/BrandsSlider";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
 import { useTheme } from "@/avora-dash/providers/ThemeProvider";
-import { StoreNavbar } from "@/Components/StoreNavbar";
-import { StoreFooter } from "@/Components/StoreFooter";
+import { StoreNavbar } from "@/components/StoreNavbar";
+import { StoreFooter } from "@/components/StoreFooter";
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
 

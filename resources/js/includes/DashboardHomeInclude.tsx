@@ -1,17 +1,17 @@
 import { Link, usePage } from "@inertiajs/react";
 import type { PageProps } from "@/types";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
-import { MetricCard } from "@/avora-dash/Components/dashboard/MetricCard";
+import { MetricCard } from "@/avora-dash/components/dashboard/MetricCard";
 import {
     RecentOrders,
     type RecentOrder,
-} from "@/avora-dash/Components/dashboard/RecentOrders";
+} from "@/avora-dash/components/dashboard/RecentOrders";
 import {
     SalesOverview,
     type MonthlySale,
-} from "@/avora-dash/Components/dashboard/SalesOverview";
+} from "@/avora-dash/components/dashboard/SalesOverview";
 import { DashboardLayout } from "@/Layouts/DashboardLayout";
-import { DashboardIcon } from "@/avora-dash/Components/DashboardIcon";
+import { DashboardIcon } from "@/avora-dash/components/DashboardIcon";
 
 type DashboardMetric = {
     value: string;

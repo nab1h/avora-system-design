@@ -1,7 +1,7 @@
 import { ArticlePreview } from "@/types";
-import { Slider } from "@/avora-dash/Components/Slider/Slider";
+import { Slider } from "@/avora-dash/components/Slider/Slider";
 import { useLanguage } from "@/avora-dash/providers/LanguageProvider";
-import { BlogCard } from "@/Components/BlogCard";
+import { BlogCard } from "@/components/BlogCard";
 import { router } from "@inertiajs/react";
 
 interface IProps {
