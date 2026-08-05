@@ -1,5 +1,5 @@
 import { Button } from "@/avora-dash/components/Button";
-import { LanguageButton } from "@/avora-dash/components/LanguageButton";
+
 import {
     Navbar,
     NavbarActions,
@@ -30,6 +30,7 @@ import {
 } from "react-icons/lu";
 import { CustomerAuthModal } from "@/components/CustomerAuthModal";
 import { useEffect, useRef, useState } from "react";
+import { LanguageButton } from "@/avora-dash/Components/LanguageButton";
 
 type StoreCategory = {
     id: number;
@@ -73,6 +74,7 @@ export function StoreNavbar({ setIsOpen }: IProps) {
         0,
     );
     const favoritesCount = page.props.favoritesCount ?? 0;
+    const isHomePage = page.component === "Welcome";
     const storeCategories = page.props.storeCategories ?? [];
     const storeBrands = page.props.storeBrands ?? [];
     const activeCategory =
@@ -109,23 +111,26 @@ export function StoreNavbar({ setIsOpen }: IProps) {
     // ===============
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 500);
+            setScrolled(window.scrollY > 340);
         };
 
+        handleScroll();
         window.addEventListener("scroll", handleScroll);
 
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-    console.log(scrolled);
     // =======================
     return (
         <>
             <Navbar
-                position="sticky"
+                position={isHomePage ? "fixed" : "sticky"}
+                background={
+                    isHomePage && !scrolled ? "transparent" : "surface"
+                }
                 shadow={scrolled ? "md" : "none"}
                 className={`
         top-0 z-50 transition-all duration-300
-        ${scrolled ? "bg-transparent" : "bg-white/90 backdrop-blur-md"}
+        ${scrolled ? "backdrop-blur-md" : ""}
     `}
             >
                 <NavbarContainer
